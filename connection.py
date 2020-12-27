@@ -35,3 +35,17 @@ def append_to_file(filename, dict_to_add):
         print("The question/answer has been added successfully.")
     except:
         ValueError("An error has occured. Question/Answer has not been added.")
+
+def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
+    try:
+        filename = f"{path}/{filename}"
+        with open(filename, mode="w",  newline='', encoding='utf-8') as file:
+            csv_writer = csv.writer(file, delimiter=csv_separator, quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+            csv_writer.writerow(list_of_dicts_to_save[0].keys())
+            for record in list_of_dicts_to_save:
+                row = record.values()
+                csv_writer.writerow(row)
+    except IOError:
+        print(f"IOError while trying to open {filename} to write.")
+
+
