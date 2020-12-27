@@ -1,16 +1,19 @@
 import connection
+from connection import csv_question_headers
 
 LIST_OF_QUESTIONS = connection.read_from_file("question.csv")
+LIST_OF_QUESTIONS = connection.convert_timestamp_to_date_format(LIST_OF_QUESTIONS)
 LIST_OF_ANSWERS = connection.read_from_file("answer.csv")
 
-# keys for question table (from question.csv)
-id = 'id'
-submission_time = 'submission_time'
-view_number = 'view_number'
-vote_number = 'vote_number'
-title = 'title'
-message = 'message'
-image = 'image'
+titles_for_questions_columns = {
+    csv_question_headers.id:'ID',
+    csv_question_headers.submission_time:'Time',
+    csv_question_headers.view_number:'Views',
+    csv_question_headers.vote_number:'Votes',
+    csv_question_headers.title:'Title',
+    csv_question_headers.message:'Message',
+    csv_question_headers.image:'Image',
+}
 
 def find_by_id(id_to_find, list_of_dicts):
     list_to_return = []
@@ -22,19 +25,9 @@ def find_by_id(id_to_find, list_of_dicts):
     return list_to_return
 
 
-# mode = 'ascending' or 'descending'
-# for question table columns:
-
 def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
 
-    correct_sort_column = [
-        id,
-        submission_time,
-        view_number,
-        vote_number,
-        title,
-        message,
-        ]
+    correct_sort_column = titles_for_questions_columns.keys()
     if not (sort_column in correct_sort_column and mode in ['ascending', 'descending']):
         return list_of_dicts
 

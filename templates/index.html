@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Askmate</title>
+</head>
+<body>
+    <h1>Askmate</h1>
+    <table>
+        <thead>
+            <tr>
+                {% for header in headers.values() %}
+                    <th>
+                        {{ header }}
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for story in stories %}
+                <tr>
+                    {% for header in headers.keys() %}
+                        <td>
+                            {% if header == "id" %}
+                                {{ story[header] }} points
+                            {% elif header == "Estimation" %}
+                                {{ story[header] }}h
+                            {% elif header == "Story Title" %}
+                                <a href="{{ url_for("edit_user_story_get", user_story_id=story["Id"]) }}">{{ story[header] }}</a>
+                            {% else %}
+                                {{ story[header] }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
