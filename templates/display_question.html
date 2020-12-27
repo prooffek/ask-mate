@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Question {{ question["title"] }}</title>
+</head>
+<body>
+    <h1>Question {{ question["title"] }}:</h1>
+    <p>{{ question["message"] }}</p>
+    <br><br>
+    {% for answer in answers %}
+        {% if answer == [] %}
+            <p><span class="tab">No one has respond to this question yet.</span></p>
+        {% else %}
+            <p><span class="tab">{{ answer["message"] }}</span></p>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>
