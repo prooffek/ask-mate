@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ question["title"] }}</title>
+</head>
+<body>
+    <h1>{{ question["title"] }}</h1>
+    <p><em>{{ question["message"] }}</em></p>
+    <p>published: {{ question["submission_time"] }}, viewed: {{ question["view_number"] }}, votes: {{ question["vote_number"] }}</p>
+    <table>
+        {% for answer in answers %}
+            <thead>
+                <tr>
+                    <th>
+                        Answer {{ answer["id"] }}, published: {{ answer["submission_time"] }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {{ answer["message"] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        votes: {{ answer["vote_number"] }}
+                    </td>
+                </tr>
+            </tbody>
+        {% endfor %}
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                {% if question["id"] != "1" %}
+                    <form action="{{ url_for("display_a_question", question_id=prev) }}">
+                        <button type="submit">Previous question</button>
+                    </form>
+                {% else %}
+                    <button disabled>Previous question</button>
+                {% endif %}
+
+                <form action="{{ url_for("index") }}">
+                    <button>Previous question</button>
+                </form>
+
+                {% if question["id"] != max_num %}
+                    <form action="{{ url_for("display_a_question", question_id=next) }}">
+                        <button type="submit">Next question</button>
+                    </form>
+                {% else %}
+                    <button disabled>Previous question</button>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
