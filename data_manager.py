@@ -3,7 +3,7 @@ from connection import csv_question_headers
 
 LIST_OF_QUESTIONS = connection.read_from_file("question.csv")
 LIST_OF_QUESTIONS = connection.convert_timestamp_to_date_format(LIST_OF_QUESTIONS)
-LIST_OF_ANSWERS = connection.read_from_file("answer.csv")
+LIST_OF_ANSWERS = connection.convert_timestamp_to_date_format(connection.read_from_file("answer.csv"))
 
 titles_for_questions_columns = {
     csv_question_headers.id:'ID',
@@ -23,6 +23,10 @@ def find_by_id(id_to_find, list_of_dicts):
             (list_of_dicts == LIST_OF_ANSWERS and dictionary["question_id"] == id_to_find)):
             list_to_return.append(dictionary)
     return list_to_return
+
+
+def navigate_by_id(question_id):
+    return [str(int(question_id) - 1), str(int(question_id) + 1)]
 
 
 def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
