@@ -11,16 +11,16 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    questions_column = data_manager.titles_for_questions_columns
-    stories = data_manager.LIST_OF_QUESTIONS
-    return render_template("index.html", headers=questions_column, stories=stories)
+    headers = data_manager.LIST_OF_QUESTIONS[0].keys()
+    questions = data_manager.LIST_OF_QUESTIONS
+    return render_template("index.html", headers=headers, questions=questions)
 
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
     num_of_questions = len(data_manager.LIST_OF_QUESTIONS)
-    prev, next = data_manager.navigate_by_id(question_dict["id"])
+    prev, next = data_manager.navigate_by_id(question_dict["Id"])
     return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
                             max_num=str(num_of_questions), next=next, prev=prev)
 
