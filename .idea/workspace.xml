@@ -19,7 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="435e4cd4-1626-48f5-ac9b-0aa86c3035d7" name="Default Changelist" comment="złączenie funkcjonalności sortowania; zmiany w index.html, serwer.py" />
+    <list default="true" id="435e4cd4-1626-48f5-ac9b-0aa86c3035d7" name="Default Changelist" comment="złączenie funkcjonalności sortowania; zmiany w index.html, serwer.py">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -55,19 +60,19 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
-  <component name="RunManager" selected="Python.server">
+  <component name="RunManager" selected="Flask server.ask-mate-1-python-EwelinaStasiak">
     <configuration name="127.0.0.1:5000" type="JavascriptDebugType" nameIsGenerated="true" uri="http://127.0.0.1:5000/">
       <method v="2" />
     </configuration>
     <configuration name="ask-mate-1-python-EwelinaStasiak" type="PythonConfigurationType" factoryName="Python">
-      <module name="codecool-websql-python-flask-askmate" />
+      <module name="ask-mate-1-python-EwelinaStasiak" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\rpindela\AppData\Local\Programs\Python\Python38\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -93,6 +98,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/server.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -118,6 +124,8 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Flask server.ask-mate-1-python-EwelinaStasiak" />
+      <item itemvalue="JavaScript Debug.127.0.0.1:5000" />
       <item itemvalue="Python.ask-mate-1-python-EwelinaStasiak" />
       <item itemvalue="Python.server" />
     </list>
@@ -140,6 +148,7 @@
       <workItem from="1609177528203" duration="2009000" />
       <workItem from="1609183507194" duration="119000" />
       <workItem from="1609183628599" duration="295000" />
+      <workItem from="1609186295311" duration="308000" />
     </task>
     <servers />
   </component>
@@ -162,33 +171,18 @@
     <MESSAGE value="złączenie funkcjonalności sortowania; zmiany w index.html, serwer.py" />
     <option name="LAST_COMMIT_MESSAGE" value="złączenie funkcjonalności sortowania; zmiany w index.html, serwer.py" />
   </component>
-  <component name="WindowStateProjectService">
-    <state width="1492" height="224" key="GridCell.Tab.0.bottom" timestamp="1609184763856">
-      <screen x="0" y="0" width="1536" height="864" />
-    </state>
-    <state width="1492" height="224" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1609184763856" />
-    <state width="1492" height="224" key="GridCell.Tab.0.center" timestamp="1609184763856">
-      <screen x="0" y="0" width="1536" height="864" />
-    </state>
-    <state width="1492" height="224" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1609184763856" />
-    <state width="1492" height="224" key="GridCell.Tab.0.left" timestamp="1609184763855">
-      <screen x="0" y="0" width="1536" height="864" />
-    </state>
-    <state width="1492" height="224" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1609184763855" />
-    <state width="1492" height="224" key="GridCell.Tab.0.right" timestamp="1609184763856">
-      <screen x="0" y="0" width="1536" height="864" />
-    </state>
-    <state width="1492" height="224" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1609184763856" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>20</line>
+          <line>18</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ask_mate_1_python_EwelinaStasiak$ask_mate_1_python_EwelinaStasiak.coverage" NAME="ask-mate-1-python-EwelinaStasiak Coverage Results" MODIFIED="1609186542333" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

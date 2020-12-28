@@ -16,8 +16,6 @@ class server_state:
             server_state.actual_sort_direction = 'ascending'
 
 
-
-
 @app.route('/')
 def index():
     headers = data_manager.LIST_OF_QUESTIONS[0].keys()
@@ -49,7 +47,7 @@ def display_a_question(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
     num_of_questions = len(data_manager.LIST_OF_QUESTIONS)
-    prev, next = data_manager.navigate_by_id(question_dict["id"])
+    prev, next = data_manager.navigate_by_id(question_dict["Id"])
     return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
                             max_num=str(num_of_questions), next=next, prev=prev)
 
