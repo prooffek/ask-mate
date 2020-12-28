@@ -4,9 +4,16 @@ import data_manager
 app = Flask(__name__)
 
 
-# @app.route("/")
-# def hello():
-#     return "Hello World!"
+class server_state:
+    actual_sort_column = 'Time'
+    actual_sort_direction = 'ascending'
+    def toogle_sort_direction():
+        if server_state.actual_sort_direction == 'ascending':
+            server_state.actual_sort_direction = 'descending'
+        else:
+            server_state.actual_sort_direction = 'ascending'
+
+
 
 
 @app.route('/')
