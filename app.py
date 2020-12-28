@@ -1,12 +1,14 @@
 from flask import Flask, render_template, url_for
-import data_manager
+import data_manager, connection
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
     headers = data_manager.LIST_OF_QUESTIONS[0].keys()
-    questions = data_manager.LIST_OF_QUESTIONS
+    questions = data_manager.LIST_OF_QUESTIONS  # lista powinna zostać posortowana, rozwiązanie tymczasowe
+    # sort_column = connection.csv_question_headers.submission_time
+    # questions = data_manager.sort_question(data_manager.LIST_OF_QUESTIONS, sort_column)
     return render_template("index.html", headers=headers, questions=questions)
 
 
