@@ -12,7 +12,7 @@
                 {% for header in headers %}
                     <th>
                     {% if header != "Id" and header != "Image" %}
-                        <a href="{{ url_for("index", sort_question_column=header)  }}">{{ header }}</a>
+                        <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">{{ header }}</a>
                     {% endif %}
                     </th>
                 {% endfor %}
