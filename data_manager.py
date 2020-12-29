@@ -58,3 +58,9 @@ def update_questions():
         connection.write_to_file(questions_default_filename, LIST_OF_QUESTIONS)
     except:
         ValueError("Problems while trying update questions, save to file")
+
+def next_id(list_of_dicts):
+    try:
+        return int(max(dictionary["Id"] for dictionary in list_of_dicts)) + 1
+    except:
+        ValueError

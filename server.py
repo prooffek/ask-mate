@@ -1,7 +1,7 @@
-from flask import Flask, render_template, url_for, redirect
-import data_manager
+from flask import Flask, render_template, url_for, redirect, request
+import data_manager, util, connection
 from connection import csv_question_headers
-from flask import request
+
 
 app = Flask(__name__)
 
@@ -22,6 +22,7 @@ def index():
     questions = data_manager.LIST_OF_QUESTIONS
 
     return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
+
 
 @app.route("/sort")
 def sort_questions():
@@ -63,6 +64,7 @@ def vote():
 
 
 
+
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
@@ -71,6 +73,28 @@ def display_a_question(question_id):
     prev, next = data_manager.navigate_by_id(question_dict["Id"])
     return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
                             max_num=str(num_of_questions), next=next, prev=prev)
+
+
+@app.route("/add-question", methods=["GET"])
+def add_question_get():
+    return render_template("add-question.html")
+
+
+@app.route("/add-question", methods=["POST"])
+def add_question_post():
+    data_from_form = dict(request.form)
+    new_question = {
+        "Id": str(data_manager.next_id(data_manager.LIST_OF_QUESTIONS)),
+        "Submission Time": str(util.convert_date_to_timestamp(util.current_datetime())),
+        "View Number": "0",
+        "Vote Number": "0",
+        "Title": data_from_form["Title"],
+        "Message": data_from_form["Message"],
+        "Image": ""
+    }
+    data_manager.LIST_OF_QUESTIONS.append(new_question)
+    connection.append_to_file("question.csv", new_question)
+    return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
 
 if __name__ == "__main__":
