@@ -56,11 +56,12 @@ def append_to_file(filename, dict_to_add):
     filename = f"{path}/{filename}"
 
     list_of_values = list(dict_to_add.values())
-    content_to_add = ",".join(list_of_values) + "\n"
+    # content_to_add = ",".join(list_of_values) + "\n"
 
     try:
         f = open(filename, "a")
-        f.write(content_to_add)
+        csv_writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        csv_writer.writerow(list_of_values)
         f.close()
         print("The question/answer has been added successfully.")
     except:

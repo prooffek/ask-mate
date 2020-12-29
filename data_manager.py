@@ -28,8 +28,8 @@ def find_by_id(id_to_find, list_of_dicts):
     return list_to_return
 
 
-def navigate_by_id(question_id):
-    return [str(int(question_id) - 1), str(int(question_id) + 1)]
+# def navigate_by_id(question_id):
+#     return [str(int(question_id) - 1), str(int(question_id) + 1)]
 
 
 def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
@@ -61,6 +61,11 @@ def update_questions():
 
 def next_id(list_of_dicts):
     try:
-        return int(max(dictionary["Id"] for dictionary in list_of_dicts)) + 1
+        return max(int(dictionary["Id"]) for dictionary in list_of_dicts) + 1
     except:
         ValueError
+
+def update_answer_list(new_answer):
+    connection.append_to_file("answer.csv", new_answer)
+    new_answer = connection.convert_timestamp_to_date_format([new_answer])
+    LIST_OF_ANSWERS.append(new_answer[0])

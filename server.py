@@ -69,10 +69,13 @@ def vote():
 def display_a_question(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
-    num_of_questions = len(data_manager.LIST_OF_QUESTIONS)
-    prev, next = data_manager.navigate_by_id(question_dict["Id"])
-    return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
-                            max_num=str(num_of_questions), next=next, prev=prev)
+    return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts)
+    # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
+    # relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
+    # num_of_questions = len(data_manager.LIST_OF_QUESTIONS)
+    # prev, next = data_manager.navigate_by_id(question_dict["Id"])
+    # return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
+    #                         max_num=str(num_of_questions), next=next, prev=prev)
 
 
 @app.route("/add-question", methods=["GET"])
@@ -95,6 +98,25 @@ def add_question_post():
     data_manager.LIST_OF_QUESTIONS.append(new_question)
     connection.append_to_file("question.csv", new_question)
     return redirect(url_for("display_a_question", question_id=new_question["Id"]))
+
+
+@app.route("/question/<question_id>/new_answer", methods=["GET"])
+def post_an_answer_get(question_id):
+    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
+    return render_template("add-question.html", question_id=question_id, question=question_dict)
+
+
+@app.route("/question/<question_id>/new_answer", methods=["POST"])
+def post_an_answer_post(question_id):
+    new_answer = {
+        "Id": data_manager.next_id(data_manager.LIST_OF_ANSWERS),
+        "Submission Time": util.todays_date(),
+        "Vote Number": 0
+    }
+
+    new_answer.update(request.form)
+    data_manager.update_answer_list(new_answer)
+    return redirect(url_for("display_a_question", question_id=question_id))
 
 
 if __name__ == "__main__":
