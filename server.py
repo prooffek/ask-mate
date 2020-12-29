@@ -57,7 +57,8 @@ def vote():
         data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) + 1
     else:
         data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) - 1
-    data_manager.update_questions()
+
+    data_manager.update_questions(data_manager.LIST_OF_QUESTIONS)
 
     return redirect(url_for("index"))
 

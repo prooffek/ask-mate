@@ -53,9 +53,9 @@ def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
 
     return sorted_list_of_dicts
 
-def update_questions():
+def update_questions(NEW_LIST):
     try:
-        connection.write_to_file(questions_default_filename, LIST_OF_QUESTIONS)
+        connection.write_to_file(questions_default_filename, NEW_LIST)
     except:
         ValueError("Problems while trying update questions, save to file")
 
