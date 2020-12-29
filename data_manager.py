@@ -19,7 +19,7 @@ titles_for_questions_columns = {
 }
 
 
-def find_by_id(id_to_find, list_of_dicts):
+def find_by_id(id_to_find, list_of_dicts, mode="for_question"):
     list_to_return = []
 
     """To make this function more universal, two modes have been applied:
