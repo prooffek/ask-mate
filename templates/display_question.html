@@ -34,25 +34,25 @@
     <table>
         <tbody>
             <tr>
-                {% if question["Id"] != "1" %}
-                    <form action="{{ url_for("display_a_question", question_id=prev) }}">
-                        <button type="submit">Previous question</button>
-                    </form>
-                {% else %}
-                    <button disabled>Previous question</button>
-                {% endif %}
+{#                {% if question["Id"] != "1" %}#}
+{#                    <form action="{{ url_for("display_a_question", question_id=prev) }}">#}
+{#                        <button type="submit">Previous question</button>#}
+{#                    </form>#}
+{#                {% else %}#}
+{#                    <button disabled>Previous question</button>#}
+{#                {% endif %}#}
 
                 <form action="{{ url_for("index") }}">
-                    <button>Previous question</button>
+                    <button>Back to list of questions</button>
                 </form>
 
-                {% if question["Id"] != max_num %}
-                    <form action="{{ url_for("display_a_question", question_id=next) }}">
-                        <button type="submit">Next question</button>
-                    </form>
-                {% else %}
-                    <button disabled>Previous question</button>
-                {% endif %}
+{#                {% if question["Id"] != max_num %}#}
+{#                    <form action="{{ url_for("display_a_question", question_id=next) }}">#}
+{#                        <button type="submit">Next question</button>#}
+{#                    </form>#}
+{#                {% else %}#}
+{#                    <button disabled>Previous question</button>#}
+{#                {% endif %}#}
             </tr>
         </tbody>
     </table>

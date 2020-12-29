@@ -37,11 +37,14 @@ Backup of *.doc*
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
+__pychahe__/*
 *.py[cod]
 *$py.class
 
 # Pychard IDE
-.idea/
+.idea/*
+**/.idea
+
 
 # C extensions
 *.so

@@ -1,59 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="435e4cd4-1626-48f5-ac9b-0aa86c3035d7" name="Default Changelist" comment="">
+    <list default="true" id="2ad5717b-d5d1-447a-9ba8-c6d69bf6d41c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/display_question.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/display_question.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Flask Main" />
-        <option value="HTML File" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1mFE2se2k6pkzLliqppMmXWa3li" />
+  <component name="ProjectId" id="1mIlBBUwrFLa1rR9IRlVpv7kPId" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.path.for.package.eslint" value="project" />
-    <property name="node.js.path.for.package.tslint" value="project" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../codecool-websql-python-flask/Super Sprinter 3000/SuperSprinter by Mateusz Zawistowski" />
+    <property name="restartRequiresConfirmation" value="false" />
   </component>
-  <component name="RunManager" selected="Flask server.ask-mate-1-python-EwelinaStasiak">
-    <configuration name="127.0.0.1:5000" type="JavascriptDebugType" nameIsGenerated="true" uri="http://127.0.0.1:5000/">
-      <method v="2" />
-    </configuration>
-    <configuration name="ask-mate-1-python-EwelinaStasiak" type="PythonConfigurationType" factoryName="Python">
-      <module name="ask-mate-1-python-EwelinaStasiak" />
+  <component name="RunManager">
+    <configuration name="codecool-websql-python-flask-askmate" type="PythonConfigurationType" factoryName="Python">
+      <module name="codecool-websql-python-flask-askmate" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="SDK_HOME" value="C:\Users\rpindela\AppData\Local\Programs\Python\Python38\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -67,34 +50,15 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ask-mate-1-python-EwelinaStasiak" type="Python.FlaskServer">
-      <module name="ask-mate-1-python-EwelinaStasiak" />
-      <option name="target" value="$PROJECT_DIR$/server.py" />
-      <option name="targetType" value="PATH" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="/usr/local/bin/python3.9" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="launchJavascriptDebuger" value="false" />
-      <method v="2" />
-    </configuration>
-    <list>
-      <item itemvalue="Flask server.ask-mate-1-python-EwelinaStasiak" />
-      <item itemvalue="JavaScript Debug.127.0.0.1:5000" />
-      <item itemvalue="Python.ask-mate-1-python-EwelinaStasiak" />
-    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="435e4cd4-1626-48f5-ac9b-0aa86c3035d7" name="Default Changelist" comment="" />
-      <created>1609080736868</created>
+      <changelist id="2ad5717b-d5d1-447a-9ba8-c6d69bf6d41c" name="Default Changelist" comment="" />
+      <created>1609188848892</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
+<<<<<<< HEAD
       <updated>1609080736868</updated>
       <workItem from="1609080739770" duration="2783000" />
 <<<<<<< HEAD
@@ -103,28 +67,26 @@
       <workItem from="1609162756206" duration="2989000" />
       <workItem from="1609177528203" duration="2009000" />
 >>>>>>> b6aa07153d34b549f0d61d9ca3003dce5dcb31f4
+=======
+      <updated>1609188848892</updated>
+      <workItem from="1609188851038" duration="1451000" />
+      <workItem from="1609190736770" duration="1211000" />
+>>>>>>> 86aec6dd78656d6512a17a106a4da38ca9fa0a8b
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server.py</url>
-          <line>20</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+<<<<<<< HEAD
 <<<<<<< HEAD
     <SUITE FILE_PATH="coverage/ask_mate_1_python_EwelinaStasiak$ask_mate_1_python_EwelinaStasiak.coverage" NAME="ask-mate-1-python-EwelinaStasiak Coverage Results" MODIFIED="1609168663866" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
 =======
     <SUITE FILE_PATH="coverage/ask_mate_1_python_EwelinaStasiak$ask_mate_1_python_EwelinaStasiak.coverage" NAME="ask-mate-1-python-EwelinaStasiak Coverage Results" MODIFIED="1609181620174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
 >>>>>>> b6aa07153d34b549f0d61d9ca3003dce5dcb31f4
+=======
+    <SUITE FILE_PATH="coverage/codecool_websql_python_flask_askmate$codecool_websql_python_flask_askmate.coverage" NAME="codecool-websql-python-flask-askmate Coverage Results" MODIFIED="1609192001912" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+>>>>>>> 86aec6dd78656d6512a17a106a4da38ca9fa0a8b
   </component>
 </project>

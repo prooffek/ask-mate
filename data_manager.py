@@ -6,10 +6,10 @@ LIST_OF_QUESTIONS = connection.convert_timestamp_to_date_format(LIST_OF_QUESTION
 LIST_OF_ANSWERS = connection.convert_timestamp_to_date_format(connection.read_from_file("answer.csv"))
 
 titles_for_questions_columns = {
-    csv_question_headers.id:'ID',
-    csv_question_headers.submission_time:'Time',
-    csv_question_headers.view_number:'Views',
-    csv_question_headers.vote_number:'Votes',
+    csv_question_headers.id:'Id',
+    csv_question_headers.submission_time:'Submission Time',
+    csv_question_headers.view_number:'View Number',
+    csv_question_headers.vote_number:'Vote Number',
     csv_question_headers.title:'Title',
     csv_question_headers.message:'Message',
     csv_question_headers.image:'Image',
@@ -36,7 +36,7 @@ def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
         return list_of_dicts
 
 
-    if sort_column in [id, submission_time, view_number, vote_number]:
+    if sort_column in [csv_question_headers.id, csv_question_headers.view_number, csv_question_headers.vote_number]:
         sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: int(row[sort_column]))
     else:
         sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: row[sort_column])
@@ -45,3 +45,10 @@ def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
         sorted_list_of_dicts = sorted_list_of_dicts[::-1]
 
     return sorted_list_of_dicts
+
+
+def next_id(list_of_dicts):
+    try:
+        return int(max(dictionary["Id"] for dictionary in list_of_dicts)) + 1
+    except:
+        ValueError
