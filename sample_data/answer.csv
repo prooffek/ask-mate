@@ -1,6 +1,9 @@
-Id,Submission Time,Vote Number,Question Id,Message,Image
-1,1493398154,4,1,"You need to use brackets: my_list = []",
-2,1493088154,35,1,"Look it up in the Python docs",
-3,1609271172,0,"1","Whatever",""
-4,1609271263,0,"6","The answer to the ultimate question of life, the Universe, and everything is...",""
-5,1609271273,0,"6","42",""
+"Id","Submission Time","Vote Number","Question Id","Message","Image"
+"1",1493398154,"4","1","You need to use brackets: my_list = []",""
+"2",1493088154,"35","1","Look it up in the Python docs",""
+"4",1609271263,"0","6","The answer to the ultimate question of life, the Universe, and everything is...",""
+"5",1609271273,"0","6","42",""
+"6",1609272021,"0","6","I hate that!",""
+"7",1609280177,"0","1","Whatever",""
+"8",1609280712,"0","1","So",""
+"9",1609280957,"0","1","haha",""

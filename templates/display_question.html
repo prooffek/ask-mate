@@ -25,12 +25,16 @@
                 </tr>
                 <tr>
                     <td>
-                        votes: {{ answer["Vote Number"] }}
+                        <form action="{{ url_for("delete_answer", answer_id=answer["Id"]) }}">
+                            <button>Delete this answer</button>
+                            votes: {{ answer["Vote Number"] }}
+                        </form>
                     </td>
                 </tr>
             </tbody>
         {% endfor %}
     </table>
+    <br><br>
     <table>
         <tbody>
             <tr>

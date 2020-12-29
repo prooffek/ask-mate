@@ -71,7 +71,7 @@ def append_to_file(filename, dict_to_add):
 def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
     try:
         filename = f"{path}/{filename}"
-        list_of_dicts_to_save = connection.convert_date_to_timestamp_format(list_of_dicts_to_save)
+        list_of_dicts_to_save = convert_date_to_timestamp_format(list_of_dicts_to_save)
         with open(filename, mode="w",  newline='', encoding='utf-8') as file:
             csv_writer = csv.writer(file, delimiter=csv_separator, quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
             csv_writer.writerow(list_of_dicts_to_save[0].keys())

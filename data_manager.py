@@ -18,13 +18,28 @@ titles_for_questions_columns = {
     csv_question_headers.image:'Image',
 }
 
-def find_by_id(id_to_find, list_of_dicts):
+def find_by_id(id_to_find, list_of_dicts, mode="for_question"):
     list_to_return = []
 
+    """To make this function more universal, two modes have been applied:
+        mode_1: looks for questions and answers based on the question_id - necessary to link answers with proper questions
+        mode 2: looks for answers based on the answer_id - necessary to delete answer without affecting other data"""
+
     for dictionary in list_of_dicts:
-        if ((list_of_dicts == LIST_OF_QUESTIONS and dictionary["Id"] == id_to_find) or
-            (list_of_dicts == LIST_OF_ANSWERS and dictionary["Question Id"] == id_to_find)):
+        mode_1 = (mode == "for_question" and
+                    ((list_of_dicts == LIST_OF_QUESTIONS and dictionary["Id"] == id_to_find) or
+                    (list_of_dicts == LIST_OF_ANSWERS and dictionary["Question Id"] == id_to_find)))
+        mode_2 = (mode == "for_answer" and dictionary["Id"] == id_to_find)
+
+        if mode_1 or mode_2:
             list_to_return.append(dictionary)
+
+    # for dictionary in list_of_dicts:
+    #     if ((mode == "for_question" and ((list_of_dicts == LIST_OF_QUESTIONS and dictionary["Id"] == id_to_find) or
+    #              (list_of_dicts == LIST_OF_ANSWERS and dictionary["Question Id"] == id_to_find))) or
+    #         (mode == "for_answer" and dictionary["Id"] == id_to_find)):
+    #         list_to_return.append(dictionary)
+
     return list_to_return
 
 
@@ -69,3 +84,13 @@ def update_answer_list(new_answer):
     connection.append_to_file("answer.csv", new_answer)
     new_answer = connection.convert_timestamp_to_date_format([new_answer])
     LIST_OF_ANSWERS.append(new_answer[0])
+
+
+def delete_dict(list_of_dicts, dict_to_remove):
+    if list_of_dicts == LIST_OF_QUESTIONS:
+        pass
+    elif list_of_dicts == LIST_OF_ANSWERS:
+        list_of_dicts.remove(dict_to_remove)
+        connection.write_to_file("answer.csv", list_of_dicts)
+
+

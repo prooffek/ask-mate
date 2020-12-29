@@ -109,13 +109,23 @@ def post_an_answer_get(question_id):
 @app.route("/question/<question_id>/new_answer", methods=["POST"])
 def post_an_answer_post(question_id):
     new_answer = {
-        "Id": data_manager.next_id(data_manager.LIST_OF_ANSWERS),
+        "Id": str(data_manager.next_id(data_manager.LIST_OF_ANSWERS)),
         "Submission Time": util.todays_date(),
-        "Vote Number": 0
+        "Vote Number": "0"
     }
 
     new_answer.update(request.form)
     data_manager.update_answer_list(new_answer)
+    return redirect(url_for("display_a_question", question_id=question_id))
+
+
+@app.route("/answer/<answer_id>/delete endpoint")
+def delete_answer(answer_id):
+    list_of_dicts = data_manager.LIST_OF_ANSWERS
+    answer_to_remove = data_manager.find_by_id(answer_id, list_of_dicts, "for_answer")[0]
+    question_id = answer_to_remove["Question Id"]
+    data_manager.delete_dict(list_of_dicts, answer_to_remove)
+
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
