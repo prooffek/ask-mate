@@ -47,9 +47,12 @@ def convert_timestamp_to_date_format(table: list) -> list:
 
 
 def convert_date_to_timestamp_format(table: list) -> list:
+    new_table = []
     for row in table:
-        row[csv_question_headers.submission_time] = str(int(datetime.timestamp((row[csv_question_headers.submission_time]))))
-    return table
+        new_row = row.copy()
+        new_row[csv_question_headers.submission_time] = str(int(datetime.timestamp((new_row[csv_question_headers.submission_time]))))
+        new_table.append(new_row)
+    return new_table
 
 
 def append_to_file(filename, dict_to_add):
@@ -71,11 +74,11 @@ def append_to_file(filename, dict_to_add):
 def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
     try:
         filename = f"{path}/{filename}"
-        list_of_dicts_to_save = convert_date_to_timestamp_format(list_of_dicts_to_save)
+        list_of_dicts_to_save_new = (convert_date_to_timestamp_format(list_of_dicts_to_save)).copy()
         with open(filename, mode="w",  newline='', encoding='utf-8') as file:
             csv_writer = csv.writer(file, delimiter=csv_separator, quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
-            csv_writer.writerow(list_of_dicts_to_save[0].keys())
-            for record in list_of_dicts_to_save:
+            csv_writer.writerow(list_of_dicts_to_save_new[0].keys())
+            for record in list_of_dicts_to_save_new:
                 row = record.values()
                 csv_writer.writerow(row)
     except IOError:
