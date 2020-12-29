@@ -5,29 +5,31 @@
     <title>{{ question["Title"] }}</title>
 </head>
 <body>
-    <h1>{{ question["Title"] }}</h1>
-    <p><em>{{ question["Message"] }}</em></p>
-    <p>published: {{ question["Submission Time"] }}, viewed: {{ question["View Number"] }}, votes: {{ question["Vote Number"] }}</p>
+    <p>{{ question["Submission Time"] }}, viewed: {{ question["View Number"] }}     votes: {{ question["Vote Number"] }}</p>
+
+    <h1>{{ question["Title"] }} </h1>
+    <p><b><h3>{{ question["Message"] }}</h3></b></p>
+
     <table>
         {% for answer in answers %}
             <thead>
                 <tr>
                     <th>
-                        Answer {{ answer["Id"] }}, published: {{ answer["Submission Time"] }}
+
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        {{ answer["Message"] }}
+                        <b>{{ answer["Message"] }} </b>
                     </td>
                 </tr>
                 <tr>
                     <td>
+                        <i><small>{{ answer["Submission Time"] }}      votes: {{ answer["Vote Number"] }}</small></i>
                         <form action="{{ url_for("delete_answer", answer_id=answer["Id"]) }}">
                             <button>Delete this answer</button>
-                            votes: {{ answer["Vote Number"] }}
                         </form>
                     </td>
                 </tr>
