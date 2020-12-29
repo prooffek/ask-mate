@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2ad5717b-d5d1-447a-9ba8-c6d69bf6d41c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/archived_question.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/new_question.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/opened_question.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
@@ -25,7 +28,14 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../codecool-websql-python-flask/Super Sprinter 3000/SuperSprinter by Mateusz Zawistowski" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
   </component>
   <component name="RunManager">
     <configuration name="codecool-websql-python-flask-askmate" type="PythonConfigurationType" factoryName="Python">
@@ -61,6 +71,8 @@
       <updated>1609188848892</updated>
       <workItem from="1609188851038" duration="1451000" />
       <workItem from="1609190736770" duration="1211000" />
+      <workItem from="1609192333444" duration="12418000" />
+      <workItem from="1609247750030" duration="10656000" />
     </task>
     <servers />
   </component>
@@ -68,6 +80,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/codecool_websql_python_flask_askmate$codecool_websql_python_flask_askmate.coverage" NAME="codecool-websql-python-flask-askmate Coverage Results" MODIFIED="1609192001912" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/codecool_websql_python_flask_askmate$codecool_websql_python_flask_askmate.coverage" NAME="codecool-websql-python-flask-askmate Coverage Results" MODIFIED="1609266084609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
   </component>
 </project>

@@ -1,9 +1,12 @@
 import connection
 from connection import csv_question_headers
 
-LIST_OF_QUESTIONS = connection.read_from_file("question.csv")
+questions_default_filename = "question.csv"
+answers_default_filename = "answer.csv"
+
+LIST_OF_QUESTIONS = connection.read_from_file(questions_default_filename)
 LIST_OF_QUESTIONS = connection.convert_timestamp_to_date_format(LIST_OF_QUESTIONS)
-LIST_OF_ANSWERS = connection.convert_timestamp_to_date_format(connection.read_from_file("answer.csv"))
+LIST_OF_ANSWERS = connection.convert_timestamp_to_date_format(connection.read_from_file(answers_default_filename))
 
 titles_for_questions_columns = {
     csv_question_headers.id:'Id',
@@ -38,6 +41,10 @@ def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
 
     if sort_column in [csv_question_headers.id, csv_question_headers.view_number, csv_question_headers.vote_number]:
         sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: int(row[sort_column]))
+        sorted_list_of_dicts = sorted_list_of_dicts[::-1]
+    elif sort_column == csv_question_headers.submission_time:
+        sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: (row[sort_column]))
+        sorted_list_of_dicts = sorted_list_of_dicts[::-1]
     else:
         sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: row[sort_column])
 
@@ -45,3 +52,9 @@ def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
         sorted_list_of_dicts = sorted_list_of_dicts[::-1]
 
     return sorted_list_of_dicts
+
+def update_questions():
+    try:
+        connection.write_to_file(questions_default_filename, LIST_OF_QUESTIONS)
+    except:
+        ValueError("Problems while trying update questions, save to file")

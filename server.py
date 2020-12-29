@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 
 class server_state:
-    actual_sort_column = 'Time'
+    actual_sort_column = 'Submission Time'
     actual_sort_direction = 'ascending'
     def toogle_sort_direction():
         if server_state.actual_sort_direction == 'ascending':
@@ -21,7 +21,7 @@ def index():
     headers = data_manager.LIST_OF_QUESTIONS[0].keys()
     questions = data_manager.LIST_OF_QUESTIONS
 
-    return render_template("index.html", headers=headers, questions=questions)
+    return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
 
 @app.route("/sort")
 def sort_questions():
@@ -42,6 +42,26 @@ def sort_questions():
     data_manager.LIST_OF_QUESTIONS = data_manager.sort_question(list_of_dicts=data_manager.LIST_OF_QUESTIONS, sort_column=server_state.actual_sort_column,
                                          mode=server_state.actual_sort_direction)
     return redirect(url_for("index"))
+
+
+@app.route("/vote", methods=["POST"])
+def vote():
+    question_id = request.form.get("question_id")
+    vote_type = request.form.get("vote")
+
+    question = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+    question_index = data_manager.LIST_OF_QUESTIONS.index(question[0])
+
+    if vote_type == "up_vote":
+        data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) + 1
+    else:
+        data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) - 1
+    data_manager.update_questions()
+
+    return redirect(url_for("index"))
+
+
+
 
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
