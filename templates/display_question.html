@@ -2,30 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ question["title"] }}</title>
+    <title>{{ question["Title"] }}</title>
 </head>
 <body>
-    <h1>{{ question["title"] }}</h1>
-    <p><em>{{ question["message"] }}</em></p>
-    <p>published: {{ question["submission_time"] }}, viewed: {{ question["view_number"] }}, votes: {{ question["vote_number"] }}</p>
+    <h1>{{ question["Title"] }}</h1>
+    <p><em>{{ question["Message"] }}</em></p>
+    <p>published: {{ question["Submission Time"] }}, viewed: {{ question["View Number"] }}, votes: {{ question["Vote Number"] }}</p>
     <table>
         {% for answer in answers %}
             <thead>
                 <tr>
                     <th>
-                        Answer {{ answer["id"] }}, published: {{ answer["submission_time"] }}
+                        Answer {{ answer["Id"] }}, published: {{ answer["Submission Time"] }}
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        {{ answer["message"] }}
+                        {{ answer["Message"] }}
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        votes: {{ answer["vote_number"] }}
+                        votes: {{ answer["Vote Number"] }}
                     </td>
                 </tr>
             </tbody>
@@ -34,7 +34,7 @@
     <table>
         <tbody>
             <tr>
-                {% if question["id"] != "1" %}
+                {% if question["Id"] != "1" %}
                     <form action="{{ url_for("display_a_question", question_id=prev) }}">
                         <button type="submit">Previous question</button>
                     </form>
@@ -46,7 +46,7 @@
                     <button>Previous question</button>
                 </form>
 
-                {% if question["id"] != max_num %}
+                {% if question["Id"] != max_num %}
                     <form action="{{ url_for("display_a_question", question_id=next) }}">
                         <button type="submit">Next question</button>
                     </form>
