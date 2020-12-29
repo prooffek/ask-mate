@@ -31,9 +31,11 @@ def read_from_file(filename):
     keys = tmp_data[0]
     for element in tmp_data[1:]:
         tmp_dict = {}
-        for i in range(len(keys)):
-            tmp_dict[keys[i]] = element[i]
-        data.append(tmp_dict)
+        empty_list = []
+        if element != empty_list:
+            for i in range(len(keys)):
+                tmp_dict[keys[i]] = element[i]
+            data.append(tmp_dict)
 
     return data
 
