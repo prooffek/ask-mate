@@ -1,5 +1,5 @@
 import connection
-from connection import csv_question_headers
+from connection import csv_question_headers, csv_answer_headers
 
 questions_default_filename = "question.csv"
 answers_default_filename = "answer.csv"
@@ -17,6 +17,7 @@ titles_for_questions_columns = {
     csv_question_headers.message:'Message',
     csv_question_headers.image:'Image',
 }
+
 
 def find_by_id(id_to_find, list_of_dicts):
     list_to_return = []
@@ -52,6 +53,10 @@ def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
         sorted_list_of_dicts = sorted_list_of_dicts[::-1]
 
     return sorted_list_of_dicts
+
+def sort_answers(list_of_dicts: list, sort_column = csv_answer_headers.vote_number, mode='ascending') -> list:
+    sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: int(row[csv_answer_headers.vote_number]))
+    return sorted_list_of_dicts[::-1]
 
 def update_questions(NEW_LIST):
     try:

@@ -70,6 +70,7 @@ def vote():
 def display_a_question(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
+    relevant_answers_dicts = data_manager.sort_answers(relevant_answers_dicts)
     return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts)
     # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     # relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)

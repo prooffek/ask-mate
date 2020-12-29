@@ -11,6 +11,15 @@ class csv_question_headers:
     message = "Message"
     image = "Image"
 
+class csv_answer_headers:
+    id = "Id"
+    subission_time = "Submission Time"
+    vote_number = "Vote Number"
+    question_id = "Question Id"
+    message = "Message"
+    image = "Image"
+
+
 
 path = f"{Path(__name__).parent}/sample_data"
 
