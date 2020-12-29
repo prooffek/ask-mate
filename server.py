@@ -1,7 +1,7 @@
-from flask import Flask, render_template, url_for, redirect
-import data_manager
+from flask import Flask, render_template, url_for, redirect, request
+import data_manager, util, connection
 from connection import csv_question_headers
-from flask import request
+
 
 app = Flask(__name__)
 
@@ -62,7 +62,19 @@ def add_question_get():
 
 @app.route("/add-question", methods=["POST"])
 def add_question_post():
-    pass
+    data_from_form = dict(request.form)
+    new_question = {
+        "Id": str(data_manager.next_id(data_manager.LIST_OF_QUESTIONS)),
+        "Submission Time": str(util.convert_date_to_timestamp(util.current_datetime())),
+        "View Number": "0",
+        "Vote Number": "0",
+        "Title": data_from_form["Title"],
+        "Message": data_from_form["Message"],
+        "Image": ""
+    }
+    data_manager.LIST_OF_QUESTIONS.append(new_question)
+    connection.append_to_file("question.csv", new_question)
+    return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
 
 if __name__ == "__main__":
