@@ -31,12 +31,20 @@
                 <tr>
                     <td>
                         <i><small>{{ answer["Submission Time"] }}      votes: {{ answer["Vote Number"] }}</small></i>
+                        <form action="{{ url_for("delete_answer", answer_id=answer["Id"]) }}">
+                            <button>Delete this answer</button>
+                        </form>
                     </td>
                 </tr>
             </tbody>
         {% endfor %}
     </table>
+<<<<<<< HEAD
     <table border="0">
+=======
+    <br><br>
+    <table>
+>>>>>>> fbdc46752115f8b48b63aa8455fe03236ed695bc
         <tbody>
             <tr>
 {#                {% if question["Id"] != "1" %}#}

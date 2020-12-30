@@ -21,7 +21,9 @@ def index():
     headers = data_manager.LIST_OF_QUESTIONS[0].keys()
     questions = data_manager.LIST_OF_QUESTIONS
 
-    return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
+    answers_number_for_questions = data_manager.find_answers_number_for_questions(questions, data_manager.LIST_OF_ANSWERS)
+
+    return render_template("index.html", headers=headers, questions=questions, server_state=server_state, answers_number=answers_number_for_questions)
 
 
 @app.route("/sort")
@@ -30,18 +32,29 @@ def sort_questions():
     if sort_question_column == None:
         sort_question_column = 'Submission Time'
 
-    if server_state.actual_sort_column == list(data_manager.titles_for_questions_columns.keys())[
-        list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]:
-        server_state.toogle_sort_direction()
-    else:
-        server_state.actual_sort_direction = 'ascending'
 
-    # get key for value in dictionary i.e. for "Time" -> "submission_time"
-    server_state.actual_sort_column = list(data_manager.titles_for_questions_columns.keys())[
-        list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]
+    if not sort_question_column =="Answers":
+        if server_state.actual_sort_column == list(data_manager.titles_for_questions_columns.keys())[
+            list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]:
+            server_state.toogle_sort_direction()
+        else:
+            server_state.actual_sort_direction = 'ascending'
 
-    data_manager.LIST_OF_QUESTIONS = data_manager.sort_question(list_of_dicts=data_manager.LIST_OF_QUESTIONS, sort_column=server_state.actual_sort_column,
+            # get key for value in dictionary i.e. for "Time" -> "submission_time"
+        server_state.actual_sort_column = list(data_manager.titles_for_questions_columns.keys())[
+            list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]
+
+        data_manager.LIST_OF_QUESTIONS = data_manager.sort_question(list_of_dicts=data_manager.LIST_OF_QUESTIONS, sort_column=server_state.actual_sort_column,
                                          mode=server_state.actual_sort_direction)
+    else:
+        if server_state.actual_sort_column == "Answers":
+            server_state.toogle_sort_direction()
+        else:
+            server_state.actual_sort_direction = 'descending'
+        server_state.actual_sort_column = "Answers"
+        answers_number_for_questions = data_manager.find_answers_number_for_questions(data_manager.LIST_OF_QUESTIONS,
+                                                                                      data_manager.LIST_OF_ANSWERS)
+        data_manager.LIST_OF_QUESTIONS = data_manager.sort_question_by_answers_number(data_manager.LIST_OF_QUESTIONS, answers_number_for_questions, mode=server_state.actual_sort_direction)
     return redirect(url_for("index"))
 
 

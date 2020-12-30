@@ -2,25 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ask Mate</title>
+    <title>LAB Stackoverflow</title>
 </head>
-<body>
-    <h1>Ask Mate</h1>
-<<<<<<< HEAD
+<body bgcolor="#feffff">
+    <a href="{{ url_for("index") }}">
+    <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
+    </a>
     <table border="0">
-=======
     <br>
     <form action="{{ url_for('add_question_get')}}">
         <button><b>Add new question</b></button>
     </form>
     <br><br>
-    <table>
->>>>>>> 0751399c95e480a1aaf5387c01822ab68458be33
         <thead>
             <tr>
                 {% for header in headers %}
                     <th scope="col">
-                    {% if header != "Id" and header != "Image" %}
+                    {% if header != "Id" and header != "Image" and header != "Message"  and header != "Submission Time"  %}
                     <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">{{ header }}
                         {% if header == server_state.actual_sort_column %}
                             {% if server_state.actual_sort_direction == 'descending' %}
@@ -32,6 +30,16 @@
                     {% endif %}
                     </th>
                 {% endfor %}
+                <th>
+                    <a href="{{ url_for("sort_questions", sort_question_column="Submission Time")  }}">Date Asked
+                    {% if "Submission Time" == server_state.actual_sort_column %}
+                        {% if server_state.actual_sort_direction == 'descending' %}
+                        <img src="static/images/up-arrow-4.png" width="10" height="auto">
+                        {% else %}
+                        <img src="static/images/down-arrow-4.png" width="10" height="auto">
+                        {% endif %}
+                    {% endif %}
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -46,33 +54,46 @@
                     </form>
                     </td>
                 {% else %}
-                    <td rowspan="4" style="text-align:center">
-                    {% if header == "Message" %}
-                    {{ question[header] | truncate(30) }}
-                    {% elif header == "Title" %}
+                    <td rowspan="2" style="text-align:center">
+                    {% if header == "Title" %}
                     <a href="{{ url_for("display_a_question", question_id=question["Id"])}}">{{ question[header]  | truncate(50)  }}</a>
-                    {% elif header != "Id" and header != "Image" %}
+                    {% elif header != "Id" and header != "Image" and header != "Message"   and header != "Submission Time" %}
                     {{ question[header] }}
                     {% endif %}
                     </td>
                 {% endif %}
-                {% endfor %}
+            {% endfor %}
+                <td></td>
             </tr>
             <tr>
                 <td style="text-align:center">{{ question["Vote Number"] }}</td>
+                <td>{{ question["Submission Time"]}}</td>
             </tr>
             <tr>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td style="text-align:center">
                 <form method = "POST" action="{{ url_for("vote") }}">
                     <input type="hidden" name="question_id" value="{{ question["Id"] }}">
                     <button type="submit" style="border: 0 none; background: none;" name="vote" value="down_vote"><img src="static/images/down-chevron.png" width="12" height="auto"></button>
                 </form>
                 </td>
+                <td rowspan="1" style="text-align:center">
+                {{ question["Message"] | truncate(30) }}
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td style="text-align:center"></td>
-            </tr>
-            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
             </tr>
             {% endfor %}

@@ -19,7 +19,16 @@
                 {% for header in headers %}
                     <th scope="col">
                     {% if header != "Id" and header != "Image" and header != "Message"  and header != "Submission Time"  %}
-                    <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">{{ header }}
+                        {% if header == "Vote Number" %}
+                            <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">Votes</a>
+                        {% elif header == "View Number" %}
+                            <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">Views</a>
+                        {% elif header == "Title" %}
+                            <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">Question</a>
+                        {% else %}
+                            <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">{{ header }}</a>
+                        {% endif %}
+
                         {% if header == server_state.actual_sort_column %}
                             {% if server_state.actual_sort_direction == 'descending' %}
                             <img src="static/images/up-arrow-4.png" width="10" height="auto">
@@ -29,6 +38,17 @@
                         {% endif %}
                     {% endif %}
                     </th>
+                    {% if header == "Vote Number" %}
+                    <th><a href="{{ url_for("sort_questions", sort_question_column="Answers")  }}">Answers</a>
+                    {% if "Answers" == server_state.actual_sort_column %}
+                        {% if server_state.actual_sort_direction == 'ascending' %}
+                        <img src="static/images/up-arrow-4.png" width="10" height="auto">
+                        {% else %}
+                        <img src="static/images/down-arrow-4.png" width="10" height="auto">
+                        {% endif %}
+                    {% endif %}
+                    </th>
+                    {% endif %}
                 {% endfor %}
                 <th>
                     <a href="{{ url_for("sort_questions", sort_question_column="Submission Time")  }}">Date Asked
@@ -53,10 +73,11 @@
                         <button type="submit" style="border: 0 none; background: none;" name="vote" value="up_vote"><img src="static/images/up-chevron.png" width="12" height="auto"></button>
                     </form>
                     </td>
+                    <td rowspan="2" style="text-align:center">{{ answers_number[question["Id"]] }}</td>
                 {% else %}
                     <td rowspan="2" style="text-align:center">
                     {% if header == "Title" %}
-                    <a href="{{ url_for("display_a_question", question_id=question["Id"])}}">{{ question[header]  | truncate(50)  }}</a>
+                    <a href="{{ url_for("display_a_question", question_id=question["Id"])}}">{{ question[header]  | truncate(70)  }}</a>
                     {% elif header != "Id" and header != "Image" and header != "Message"   and header != "Submission Time" %}
                     {{ question[header] }}
                     {% endif %}
@@ -72,6 +93,7 @@
             <tr>
                 <td></td>
                 <td></td>
+
                 <td></td>
                 <td style="text-align:center">
                 <form method = "POST" action="{{ url_for("vote") }}">
@@ -79,14 +101,16 @@
                     <button type="submit" style="border: 0 none; background: none;" name="vote" value="down_vote"><img src="static/images/down-chevron.png" width="12" height="auto"></button>
                 </form>
                 </td>
+                <td></td>
                 <td rowspan="1" style="text-align:center">
-                {{ question["Message"] | truncate(30) }}
+                {{ question["Message"] | truncate(50) }}
                 </td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

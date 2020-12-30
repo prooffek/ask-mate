@@ -43,6 +43,16 @@ def find_by_id(id_to_find, list_of_dicts, mode="for_question"):
 
     return list_to_return
 
+def find_answers_number_for_questions(LIST_OF_QUESTIONS: list, LIST_OF_ANSWERS: list) -> dict:
+    # function returns dict question_id:number_of_answers
+    answers_number_for_questions = {}
+    for question in LIST_OF_QUESTIONS:
+        current_answers_number = len(find_by_id(question[csv_question_headers.id], LIST_OF_ANSWERS, "for_question"))
+        answers_number_for_questions[str(question[csv_question_headers.id])] = current_answers_number
+    return answers_number_for_questions
+
+
+
 
 # def navigate_by_id(question_id):
 #     return [str(int(question_id) - 1), str(int(question_id) + 1)]
@@ -68,6 +78,20 @@ def sort_question(list_of_dicts: list, sort_column, mode='ascending') -> list:
         sorted_list_of_dicts = sorted_list_of_dicts[::-1]
 
     return sorted_list_of_dicts
+
+
+
+def sort_question_by_answers_number(list_of_dicts: list, answers_number_for_question: dict, mode='ascending') -> list:
+    sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: answers_number_for_question[row[csv_question_headers.id]])
+    if mode == 'descending':
+        sorted_list_of_dicts = sorted_list_of_dicts[::-1]
+    return sorted_list_of_dicts
+
+answers_dict = find_answers_number_for_questions(LIST_OF_QUESTIONS, LIST_OF_ANSWERS)
+answers_dict
+sorted_by_answers = sort_question_by_answers_number(LIST_OF_QUESTIONS,answers_dict)
+sorted_by_answers
+
 
 def sort_answers(list_of_dicts: list, sort_column = csv_answer_headers.vote_number, mode='ascending') -> list:
     sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: int(row[csv_answer_headers.vote_number]))
