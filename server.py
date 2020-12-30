@@ -103,15 +103,16 @@ def add_question_post():
     data_from_form = dict(request.form)
     new_question = {
         "Id": str(data_manager.next_id(data_manager.LIST_OF_QUESTIONS)),
-        "Submission Time": str(util.convert_date_to_timestamp(util.current_datetime())),
+        "Submission Time": util.todays_date(),
         "View Number": "0",
         "Vote Number": "0",
         "Title": data_from_form["Title"],
         "Message": data_from_form["Message"],
         "Image": ""
     }
+    connection.convert_timestamp_to_date_format([new_question])
     data_manager.LIST_OF_QUESTIONS.append(new_question)
-    connection.append_to_file("question.csv", new_question)
+    data_manager.update_questions(data_manager.LIST_OF_QUESTIONS)
     return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
 
