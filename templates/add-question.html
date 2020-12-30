@@ -9,6 +9,9 @@
     {% endif %}
 </head>
 <body>
+<a href="{{ url_for("index") }}">
+    <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
+    </a>
     {% if not question_id %}
         <h1>Add new question</h1>
         <form action="{{ url_for('add_question_post') }}" method="post">

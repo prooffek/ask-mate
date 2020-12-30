@@ -13,6 +13,7 @@
     <h1>{{ question["Title"] }} </h1>
     <p><b><h3>{{ question["Message"] }}</h3></b></p>
 
+
     <table  border="0">
         {% for answer in answers %}
             <thead>
@@ -56,6 +57,10 @@
 
                 <form action="{{ url_for("index") }}">
                     <button>Back to list of questions</button>
+                </form>
+
+                <form action="{{ url_for('delete_question', question_id=question["Id"])}}">
+                    <button>Delete question</button>
                 </form>
 
 {#                {% if question["Id"] != max_num %}#}

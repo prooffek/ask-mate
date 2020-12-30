@@ -117,7 +117,8 @@ def update_answer_list(new_answer):
 
 def delete_dict(list_of_dicts, dict_to_remove):
     if list_of_dicts == LIST_OF_QUESTIONS:
-        pass
+        list_of_dicts.remove(dict_to_remove)
+        update_questions(list_of_dicts)
     elif list_of_dicts == LIST_OF_ANSWERS:
         list_of_dicts.remove(dict_to_remove)
         connection.write_to_file("answer.csv", list_of_dicts)

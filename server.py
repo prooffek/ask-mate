@@ -145,5 +145,17 @@ def delete_answer(answer_id):
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    answers_to_remove = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
+    question_to_remove = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+    if len(answers_to_remove) != 0:
+        for answer in answers_to_remove:
+            data_manager.delete_dict(data_manager.LIST_OF_ANSWERS, answer)
+    data_manager.delete_dict(data_manager.LIST_OF_QUESTIONS, question_to_remove[0])
+
+    return redirect(url_for("index"))
+
+
 if __name__ == "__main__":
     app.run()
