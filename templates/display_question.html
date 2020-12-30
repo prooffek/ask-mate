@@ -31,6 +31,9 @@
                 <tr>
                     <td>
                         <i><small>{{ answer["Submission Time"] }}      votes: {{ answer["Vote Number"] }}</small></i>
+                        <form action="{{ url_for("delete_answer", answer_id=answer["Id"]) }}">
+                            <button>Delete this answer</button>
+                        </form>
                     </td>
                 </tr>
             </tbody>
