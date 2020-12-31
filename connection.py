@@ -93,4 +93,5 @@ def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
     except IOError:
         print(f"IOError while trying to open {filename} to write.")
 
-
+#answers = read_from_file("answer.csv")
+#write_to_file("answer.csv", answers)

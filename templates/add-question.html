@@ -9,9 +9,18 @@
     {% endif %}
 </head>
 <body>
-<a href="{{ url_for("index") }}">
-    <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
-    </a>
+    <table>
+        <tr>
+            <td>
+                <a href="{{ url_for("index") }}">
+                <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
+                </a></td>
+            <td>
+                <img src="/static/images/discussion.png" width = "100" height="auto">
+            </td>
+        </tr>
+
+    </table>
     {% if not question_id %}
         <h1>Add new question</h1>
         <form action="{{ url_for('add_question_post') }}" method="post">

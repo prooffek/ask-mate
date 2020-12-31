@@ -74,15 +74,28 @@ def vote():
         else:
             data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) - 1
 
-        data_manager.update_questions(data_manager.LIST_OF_QUESTIONS)
+        data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
 
         if url_origin == "index":
             return redirect(url_for("index"))
         elif url_origin == "display_question":
             return redirect(url_for("display_a_question", question_id = question_id))
     else: # vote_for_answer
-        return("<h1>voting for answer</h1>")
+        answer_id = request.form.get("answer_id")
+        answer = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")
+        answer_index = data_manager.LIST_OF_ANSWERS.index(answer[0])
 
+        if vote_type == "up_vote":
+            data_manager.LIST_OF_ANSWERS[answer_index]["Vote Number"] = int(data_manager.LIST_OF_ANSWERS[answer_index]["Vote Number"]) + 1
+        else:
+            data_manager.LIST_OF_ANSWERS[answer_index]["Vote Number"] = int(data_manager.LIST_OF_ANSWERS[answer_index]["Vote Number"]) + 1
+
+        data_manager.update_file(data_manager.LIST_OF_ANSWERS, file_type="answer")
+
+        if url_origin == "index":
+            return redirect(url_for("index"))
+        elif url_origin == "display_question":
+            return redirect(url_for("display_a_question", question_id = question_id))
 
 
 
@@ -120,7 +133,7 @@ def add_question_post():
     }
     connection.convert_timestamp_to_date_format([new_question])
     data_manager.LIST_OF_QUESTIONS.append(new_question)
-    data_manager.update_questions(data_manager.LIST_OF_QUESTIONS)
+    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
     return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
 

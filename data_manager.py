@@ -87,21 +87,21 @@ def sort_question_by_answers_number(list_of_dicts: list, answers_number_for_ques
         sorted_list_of_dicts = sorted_list_of_dicts[::-1]
     return sorted_list_of_dicts
 
-answers_dict = find_answers_number_for_questions(LIST_OF_QUESTIONS, LIST_OF_ANSWERS)
-answers_dict
-sorted_by_answers = sort_question_by_answers_number(LIST_OF_QUESTIONS,answers_dict)
-sorted_by_answers
-
 
 def sort_answers(list_of_dicts: list, sort_column = csv_answer_headers.vote_number, mode='ascending') -> list:
     sorted_list_of_dicts = sorted(list_of_dicts, key=lambda row: int(row[csv_answer_headers.vote_number]))
     return sorted_list_of_dicts[::-1]
 
-def update_questions(NEW_LIST):
+def update_file(NEW_LIST: list, file_type="question"):
     try:
-        connection.write_to_file(questions_default_filename, NEW_LIST)
+        if file_type == "question":
+            filename = questions_default_filename
+        elif file_type == "answer":
+            filename = answers_default_filename
+        connection.write_to_file(filename, NEW_LIST)
     except:
         ValueError("Problems while trying update questions, save to file")
+
 
 def next_id(list_of_dicts):
     try:
