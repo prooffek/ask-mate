@@ -61,19 +61,27 @@ def sort_questions():
 @app.route("/vote", methods=["POST"])
 def vote():
     question_id = request.form.get("question_id")
-    vote_type = request.form.get("vote")
+    vote_type = request.form.get("vote") # vote_up or vote_down
+    url_origin = request.form.get("url_origin")
+    vote_for_answer_or_question = request.form.get("vote_for_answer_or_question") # vote_for_answer or vote_for_question
 
-    question = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-    question_index = data_manager.LIST_OF_QUESTIONS.index(question[0])
+    if vote_for_answer_or_question == "vote_for_question":
+        question = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+        question_index = data_manager.LIST_OF_QUESTIONS.index(question[0])
 
-    if vote_type == "up_vote":
-        data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) + 1
-    else:
-        data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) - 1
+        if vote_type == "up_vote":
+            data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) + 1
+        else:
+            data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) - 1
 
-    data_manager.update_questions(data_manager.LIST_OF_QUESTIONS)
+        data_manager.update_questions(data_manager.LIST_OF_QUESTIONS)
 
-    return redirect(url_for("index"))
+        if url_origin == "index":
+            return redirect(url_for("index"))
+        elif url_origin == "display_question":
+            return redirect(url_for("display_a_question", question_id = question_id))
+    else: # vote_for_answer
+        return("<h1>voting for answer</h1>")
 
 
 
