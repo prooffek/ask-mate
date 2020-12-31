@@ -105,6 +105,7 @@ def display_a_question(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
     relevant_answers_dicts = data_manager.sort_answers(relevant_answers_dicts)
+    # img_path = data_manager.get_image_path()
     return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts)
     # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     # relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
@@ -129,11 +130,17 @@ def add_question_post():
         "Vote Number": "0",
         "Title": data_from_form["Title"],
         "Message": data_from_form["Message"],
-        "Image": ""
+        "Image": request.files["Image"].filename
     }
+
+    if new_question["Image"] != '':
+        image_file = request.files["Image"]
+        data_manager.add_immage(image_file)
+
     connection.convert_timestamp_to_date_format([new_question])
     data_manager.LIST_OF_QUESTIONS.append(new_question)
     data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+
     return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
 
@@ -151,7 +158,13 @@ def post_an_answer_post(question_id):
         "Vote Number": "0"
     }
 
-    new_answer.update(request.form)
+    new_answer.update(dict(request.form))
+
+    if "Image" in request.files and request.files["Image"].filename != '':
+        image_file = request.files["Image"]
+        data_manager.add_immage(image_file)
+        new_answer["Image"] = image_file.filename
+
     data_manager.update_answer_list(new_answer)
     return redirect(url_for("display_a_question", question_id=question_id))
 

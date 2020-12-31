@@ -66,6 +66,11 @@
             <td></td>
             <td colspan="2" style="text-align: left; vertical-align: top"><big>{{ question["Message"] }}</big></td>
             <td></td>
+            <td>
+                {% if question["Image"] != "" %}
+                    <img src="/sample_data/users_images/{{ question["Image"] }}" alt="{{ question["Image"] }}" title="{{ question["Image"] }}">
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <td></td>
@@ -115,7 +120,13 @@
                 <td></td>
                 <td rowspan="3" style="text-align: left; vertical-align: top">
 
-                    <big>{{ answer["Message"] }} </big></td>
+                    <big>{{ answer["Message"] }} </big>
+                </td>
+                <td rowspan="3" style="text-align: left; vertical-align: top">
+                    {% if answer["Image"] != "" %}
+                        <img src="/sample_data/users_images/{{ answer["Image"] }}" alt="{{ answer["Image"] }}" title="{{ answer["Image"] }}">
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td style="text-align:center">{{ answer["Vote Number"] }}</td>
@@ -137,34 +148,6 @@
             </tr>
 
         {% endfor %}
-    </table>
-
-    <table border="1">
-        <tbody>
-            <tr>
-{#                {% if question["Id"] != "1" %}#}
-{#                    <form action="{{ url_for("display_a_question", question_id=prev) }}">#}
-{#                        <button type="submit">Previous question</button>#}
-{#                    </form>#}
-{#                {% else %}#}
-{#                    <button disabled>Previous question</button>#}
-{#                {% endif %}#}
-
-
-
-
-
-
-
-{#                {% if question["Id"] != max_num %}#}
-{#                    <form action="{{ url_for("display_a_question", question_id=next) }}">#}
-{#                        <button type="submit">Next question</button>#}
-{#                    </form>#}
-{#                {% else %}#}
-{#                    <button disabled>Previous question</button>#}
-{#                {% endif %}#}
-            </tr>
-        </tbody>
     </table>
 </body>
 </html>

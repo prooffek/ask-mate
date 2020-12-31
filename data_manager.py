@@ -1,4 +1,4 @@
-import connection
+import connection, os
 from connection import csv_question_headers, csv_answer_headers
 
 questions_default_filename = "question.csv"
@@ -118,9 +118,12 @@ def update_answer_list(new_answer):
 def delete_dict(list_of_dicts, dict_to_remove):
     if list_of_dicts == LIST_OF_QUESTIONS:
         list_of_dicts.remove(dict_to_remove)
-        update_questions(list_of_dicts)
+        update_file(list_of_dicts)
+        # update_questions(list_of_dicts)
     elif list_of_dicts == LIST_OF_ANSWERS:
         list_of_dicts.remove(dict_to_remove)
         connection.write_to_file("answer.csv", list_of_dicts)
 
 
+def add_immage(image_file):
+    connection.image_to_file(image_file)

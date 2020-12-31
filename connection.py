@@ -1,6 +1,11 @@
-import csv
+import csv, os
 from pathlib import Path
 from datetime import datetime
+
+
+path = f"{Path(__name__).parent}/sample_data"
+IMAGE_PATH = f"{path}/users_images"
+
 
 class csv_question_headers:
     id = "Id"
@@ -18,10 +23,6 @@ class csv_answer_headers:
     question_id = "Question Id"
     message = "Message"
     image = "Image"
-
-
-
-path = f"{Path(__name__).parent}/sample_data"
 
 
 def read_from_file(filename):
@@ -95,3 +96,7 @@ def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
 
 #answers = read_from_file("answer.csv")
 #write_to_file("answer.csv", answers)
+
+
+def image_to_file(image):
+    image.save(os.path.join(IMAGE_PATH, image.filename))
