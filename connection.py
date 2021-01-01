@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 path = f"{Path(__name__).parent}/sample_data"
-IMAGE_PATH = f"{path}/users_images"
+IMAGE_PATH = f"/static/users_images"
 
 
 class csv_question_headers:

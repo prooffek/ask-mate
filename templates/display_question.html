@@ -66,11 +66,17 @@
             <td></td>
             <td colspan="2" style="text-align: left; vertical-align: top"><big>{{ question["Message"] }}</big></td>
             <td></td>
+        </tr>
+        <tr>
+            <td></td>
             <td>
                 {% if question["Image"] != "" %}
-                    <img src="/sample_data/users_images/{{ question["Image"] }}" alt="{{ question["Image"] }}" title="{{ question["Image"] }}">
+                    <form action="{{ img_path }}/{{ question["Image"] }}" target="_blank">
+                        <button><img src="{{ img_path }}/{{ question["Image"] }}" alt="{{ question["Image"] }}" title="{{ question["Image"] }}" width="100" height="auto"></button>
+                    </form>
                 {% endif %}
             </td>
+            <td></td>
         </tr>
         <tr>
             <td></td>
@@ -124,7 +130,9 @@
                 </td>
                 <td rowspan="3" style="text-align: left; vertical-align: top">
                     {% if answer["Image"] != "" %}
-                        <img src="/sample_data/users_images/{{ answer["Image"] }}" alt="{{ answer["Image"] }}" title="{{ answer["Image"] }}">
+                        <form action="{{ img_path }}/{{ answer["Image"] }}" target="_blank">
+                            <button><img src="{{ img_path }}/{{ answer["Image"] }}" alt="{{ answer["Image"] }}" title="{{ answer["Image"] }}" width="100" height="auto"></button>
+                        </form>
                     {% endif %}
                 </td>
             </tr>
