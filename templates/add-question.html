@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     {% if not question_id %}
@@ -23,23 +23,28 @@
     </table>
     {% if not question_id %}
         <h1>Add new question</h1>
-        <form action="{{ url_for('add_question_post') }}" method="post">
+        <form action="{{ url_for('add_question_post') }}" method="post" enctype="multipart/form-data">
             <label for="Title"><b>Title question:</b></label><br>
             <input name="Title" id="Title" type="text" minlength="5" maxlength="100" value="">
             <br><br>
             <label for="Message"><b>Message question:</b></label><br>
             <textarea name="Message" id="Message" minlength="5" maxlength="1500"></textarea><br><br>
+            <input type="file" name="Image" id="Image" value="No file uploaded yet">
+            <br><br>
             <input type="submit" value="Add new question">
         </form>
     {% else %}
         <h1>{{ question["Title"] }}:</h1>
         <p>{{ question["Message"] }}</p>
-        <form action="{{ url_for("post_an_answer_post", question_id=question["Id"]) }}" method="post">
+        <form action="{{ url_for("post_an_answer_post", question_id=question["Id"]) }}" method="post" enctype="multipart/form-data">
             <input name="Question Id" id="Question Id" type="hidden" value="{{ question_id }}">
             <label for="Message">New answer:</label><br><br>
             <textarea name="Message" id="Message" minlength="1" maxlength="5000"></textarea>
             <br><br>
             <input name="Image" id="Image" type="hidden" value="">
+            <br><br>
+            <input type="file" name="Image" id="Image" value="No file uploaded yet">
+            <br><br>
             <button type="submit">Add answer</button>
         </form>
     {% endif %}

@@ -154,14 +154,16 @@ def vote():
             return redirect(url_for("display_a_question", question_id = question_id))
 
 
-
-
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
     relevant_answers_dicts = data_manager.sort_answers(relevant_answers_dicts)
-    return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts)
+    question_dict["View Number"] = int(question_dict.get("View Number")) + 1
+    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+    # img_path = data_manager.get_image_path()
+    return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
+                           img_path=connection.IMAGE_PATH)
     # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     # relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
     # num_of_questions = len(data_manager.LIST_OF_QUESTIONS)
@@ -185,11 +187,17 @@ def add_question_post():
         "Vote Number": "0",
         "Title": data_from_form["Title"],
         "Message": data_from_form["Message"],
-        "Image": ""
+        "Image": request.files["Image"].filename
     }
+
+    if new_question["Image"] != '':
+        image_file = request.files["Image"]
+        data_manager.add_immage(image_file)
+
     connection.convert_timestamp_to_date_format([new_question])
     data_manager.LIST_OF_QUESTIONS.append(new_question)
     data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+
     return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
 
@@ -207,7 +215,13 @@ def post_an_answer_post(question_id):
         "Vote Number": "0"
     }
 
-    new_answer.update(request.form)
+    new_answer.update(dict(request.form))
+
+    if "Image" in request.files and request.files["Image"].filename != '':
+        image_file = request.files["Image"]
+        data_manager.add_immage(image_file)
+        new_answer["Image"] = image_file.filename
+
     data_manager.update_answer_list(new_answer)
     return redirect(url_for("display_a_question", question_id=question_id))
 
@@ -232,6 +246,26 @@ def delete_question(question_id):
     data_manager.delete_dict(data_manager.LIST_OF_QUESTIONS, question_to_remove[0])
 
     return redirect(url_for("index"))
+
+
+@app.route("/question/<question_id>/edit", methods=["GET"])
+def edit_question_get(question_id):
+    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+    return render_template("edit.html", question_id=question_id, question=question_dict[0])
+    
+
+
+@app.route("/question/<question_id>/edit", methods=["POST"])
+def edit_question_post(question_id):
+    data_from_form = dict(request.form)
+    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+    question_to_edit = question_dict[0]
+    question_to_edit["Title"] = data_from_form["Title"]
+    question_to_edit["Message"] = data_from_form["Message"]
+    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+
+    return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
+
 
 
 if __name__ == "__main__":
