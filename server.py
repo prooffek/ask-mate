@@ -105,7 +105,7 @@ def sort_questions():
             list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]
 
 
-        server_state.FILTERED_LIST_OF_QUESTIONS = data_manager.sort_question(list_of_dicts=data_manager.LIST_OF_QUESTIONS, sort_column=server_state.actual_sort_column,
+        data_manager.LIST_OF_QUESTIONS = data_manager.sort_question(list_of_dicts=data_manager.LIST_OF_QUESTIONS, sort_column=server_state.actual_sort_column,
                                          mode=server_state.actual_sort_direction)
     else:
         if server_state.actual_sort_column == "Answers":
@@ -115,7 +115,7 @@ def sort_questions():
         server_state.actual_sort_column = "Answers"
         answers_number_for_questions = data_manager.find_answers_number_for_questions(data_manager.LIST_OF_QUESTIONS,
                                                                                       data_manager.LIST_OF_ANSWERS)
-        server_state.FILTERED_LIST_OF_QUESTIONS = data_manager.sort_question_by_answers_number(data_manager.LIST_OF_QUESTIONS, answers_number_for_questions, mode=server_state.actual_sort_direction)
+        data_manager.LIST_OF_QUESTIONS = data_manager.sort_question_by_answers_number(data_manager.LIST_OF_QUESTIONS, answers_number_for_questions, mode=server_state.actual_sort_direction)
     return redirect(url_for("index"))
 
 
