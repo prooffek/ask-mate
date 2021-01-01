@@ -1,5 +1,7 @@
 from flask import Flask, render_template, url_for, redirect, request
 import data_manager, util, connection
+import copy
+import data_manager_filter
 from connection import csv_question_headers
 
 
@@ -7,8 +9,24 @@ app = Flask(__name__)
 
 
 class server_state:
+    #sorting status
     actual_sort_column = 'Submission Time'
     actual_sort_direction = 'ascending'
+
+    #filtering status
+    actual_advanced_filter_on = "no"        #valid values: "yes" or "no"
+    actual_filter_by_date_mode = "none"     #valid values: filter_by_date_mode
+    actual_filter_by_status_mode = "active" #valid values: filter_by_status_mode
+    actual_filter_by_search_mode = "none"   #valid values: filter_by_search_mode
+
+    FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
+
+    def toogle_advanced_filter():
+        if server_state.actual_advanced_filter_on == "no":
+            server_state.actual_advanced_filter_on = "yes"
+        else:
+            server_state.actual_advanced_filter_on = "no"
+
     def toogle_sort_direction():
         if server_state.actual_sort_direction == 'ascending':
             server_state.actual_sort_direction = 'descending'
@@ -16,19 +34,56 @@ class server_state:
             server_state.actual_sort_direction = 'ascending'
 
 
-@app.route('/')
+
+@app.route('/', methods=["GET"])
 def index():
     headers = data_manager.LIST_OF_QUESTIONS[0].keys()
-    questions = data_manager.LIST_OF_QUESTIONS
 
-    answers_number_for_questions = data_manager.find_answers_number_for_questions(questions, data_manager.LIST_OF_ANSWERS)
+    questions = server_state.FILTERED_LIST_OF_QUESTIONS
+
+    answers = data_manager.LIST_OF_ANSWERS
+    answers_number_for_questions = data_manager.find_answers_number_for_questions(questions, answers)
 
     return render_template("index.html", headers=headers, questions=questions, server_state=server_state, answers_number=answers_number_for_questions)
 
+@app.route('/', methods=["POST"])
+def index_post():
+    if request.form.get("actual_advanced_filter_clicked") == "clicked":
+        server_state.toogle_advanced_filter()
+
+    return redirect(url_for("index"))
+
+@app.route("/filter")
+def filter_question() -> list:
+    if not request.args.get('filter_by_date_mode') == None:
+        server_state.actual_filter_by_date_mode = request.args.get('new_filter_by_date_mode')
+    if not request.args.get('filter_by_status_mode') == None:
+        server_state.actual_filter_by_status_mode = request.args.get('new_filter_by_status_mode')
+    if not request.args.get('filter_by_search_mode') == None:
+        server_state.actual_filter_by_search_mode = request.args.get('new_filter_by_search_mode')
+    if not request.args.get('reset_filtering') == None:
+        server_state.actual_filter_by_date_mode = "none"
+        server_state.actual_filter_by_status_mode = "active"
+        server_state.actual_filter_by_search_mode = "none"
+
+    NEW_FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
+
+    # Three filters apply to list of questions
+    #1th filtering by date
+    NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_date(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_date_mode)
+    #2nd filtering by status
+    NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_status(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_status_mode)
+    #3th filtering by search
+    NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_search(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_search_mode)
+
+    server_state.FILTERED_LIST_OF_QUESTIONS = NEW_FILTERED_LIST_OF_QUESTIONS
+
+    return redirect(url_for("index"))
 
 @app.route("/sort")
 def sort_questions():
     sort_question_column = request.args.get('sort_question_column')
+
     if sort_question_column == None:
         sort_question_column = 'Submission Time'
 
@@ -44,7 +99,8 @@ def sort_questions():
         server_state.actual_sort_column = list(data_manager.titles_for_questions_columns.keys())[
             list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]
 
-        data_manager.LIST_OF_QUESTIONS = data_manager.sort_question(list_of_dicts=data_manager.LIST_OF_QUESTIONS, sort_column=server_state.actual_sort_column,
+
+        server_state.FILTERED_LIST_OF_QUESTIONS = data_manager.sort_question(list_of_dicts=data_manager.LIST_OF_QUESTIONS, sort_column=server_state.actual_sort_column,
                                          mode=server_state.actual_sort_direction)
     else:
         if server_state.actual_sort_column == "Answers":
@@ -54,7 +110,7 @@ def sort_questions():
         server_state.actual_sort_column = "Answers"
         answers_number_for_questions = data_manager.find_answers_number_for_questions(data_manager.LIST_OF_QUESTIONS,
                                                                                       data_manager.LIST_OF_ANSWERS)
-        data_manager.LIST_OF_QUESTIONS = data_manager.sort_question_by_answers_number(data_manager.LIST_OF_QUESTIONS, answers_number_for_questions, mode=server_state.actual_sort_direction)
+        server_state.FILTERED_LIST_OF_QUESTIONS = data_manager.sort_question_by_answers_number(data_manager.LIST_OF_QUESTIONS, answers_number_for_questions, mode=server_state.actual_sort_direction)
     return redirect(url_for("index"))
 
 
