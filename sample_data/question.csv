@@ -1,9 +1,5 @@
 "Id","Submission Time","View Number","Vote Number","Title","Message","Image"
-"5","1609359109",4,"0","test55","testsks",""
-"4","1609348035","2","2","Propozycje na Sylwestra","Any ideas?
-",""
-"1","1493368154","29","17","How to make lists in Python?","I am totally new to this, any hints?",""
-"2","1493068124","15","18","Wordpress loading multiple jQuery Versions","I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
+"2","1493068124","17","18","Wordpress loading multiple jQuery Versions","I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
 
 I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
 
@@ -12,7 +8,8 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 jquery
 booklet
 app.js (bundled file with webpack, including jquery)","images/image1.png"
-"3","1493015432",1367,"68","Drawing canvas with an image picked with Cordova Camera Plugin","I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
+"3","1493015432","1371","68","Drawing canvas with an image picked with Cordova Camera Plugin","I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
 
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",""
-"6","1609422189",2,"0","What is life?","I'm so confused right now...","new_question.png"
+"4","1609504607",4,"0","test edit ","edit test edit test",""
+"5","1609504614",6,"0","Edit question?","you can edit question??",""

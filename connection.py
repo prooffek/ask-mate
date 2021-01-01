@@ -72,7 +72,7 @@ def append_to_file(filename, dict_to_add):
     # content_to_add = ",".join(list_of_values) + "\n"
 
     try:
-        f = open(filename, "a")
+        f = open(filename, "a", encoding='utf-8')
         csv_writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
         csv_writer.writerow(list_of_values)
         f.close()

@@ -192,5 +192,25 @@ def delete_question(question_id):
     return redirect(url_for("index"))
 
 
+@app.route("/question/<question_id>/edit", methods=["GET"])
+def edit_question_get(question_id):
+    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+    return render_template("edit.html", question_id=question_id, question=question_dict[0])
+    
+
+
+@app.route("/question/<question_id>/edit", methods=["POST"])
+def edit_question_post(question_id):
+    data_from_form = dict(request.form)
+    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+    question_to_edit = question_dict[0]
+    question_to_edit["Title"] = data_from_form["Title"]
+    question_to_edit["Message"] = data_from_form["Message"]
+    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+
+    return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
+
+
+
 if __name__ == "__main__":
     app.run()
