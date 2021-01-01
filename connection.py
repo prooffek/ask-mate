@@ -5,6 +5,7 @@ from datetime import datetime
 
 path = f"{Path(__name__).parent}/sample_data"
 IMAGE_PATH = f"/static/users_images"
+IMAGE_FOLDER_PATH = f"{Path(__name__).parent}{IMAGE_PATH}"
 
 
 class csv_question_headers:
@@ -99,4 +100,4 @@ def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
 
 
 def image_to_file(image):
-    image.save(os.path.join(IMAGE_PATH, image.filename))
+    image.save(os.path.join(IMAGE_FOLDER_PATH, image.filename))
