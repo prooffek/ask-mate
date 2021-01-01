@@ -130,3 +130,6 @@ def delete_dict(list_of_dicts, dict_to_remove):
 
 def add_immage(image_file):
     connection.image_to_file(image_file)
+
+def remove_image(image_filename):
+    connection.delete_image(image_filename)

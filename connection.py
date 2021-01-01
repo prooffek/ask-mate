@@ -101,3 +101,7 @@ def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
 
 def image_to_file(image):
     image.save(os.path.join(IMAGE_FOLDER_PATH, image.filename))
+
+def delete_image(filename):
+    path_image = os.path.join(IMAGE_FOLDER_PATH, filename)
+    os.remove(path_image)
