@@ -1,7 +1,5 @@
 "Id","Submission Time","View Number","Vote Number","Title","Message","Image"
-<<<<<<< HEAD
-<<<<<<< HEAD
-"91","1561892075","1962","64","User-friendly contextually-based approach","evolve clicks-and-mortar ROI",""
+"91","1561892075",1963,"64","User-friendly contextually-based approach","evolve clicks-and-mortar ROI",""
 "44","1593531382","1858","112","Monitored fault-tolerant customer loyalty","incubate wireless niches",""
 "50","1557448074","1858","128","Implemented 24/7 concept","morph dot-com bandwidth",""
 "55","1540774684","1843","28","Right-sized composite matrix","whiteboard world-class architectures",""
@@ -25,7 +23,7 @@
 "11","1537355888","1418","147","Innovative value-added toolset","transition compelling interfaces",""
 "95","1538576691","1412","122","Re-engineered clear-thinking time-frame","engineer plug-and-play systems",""
 "25","1557208346","1403","107","Expanded client-driven application","implement holistic applications",""
-"8","1592988675","1386","115","Networked tangible infrastructure","aggregate ubiquitous users",""
+"8","1592988675","1388","115","Networked tangible infrastructure","aggregate ubiquitous users",""
 "67","1548622031","1373","167","Down-sized attitude-oriented budgetary management","incubate visionary eyeballs",""
 "33","1563161500","1292","128","Function-based bifurcated superstructure","engineer plug-and-play technologies",""
 "20","1547316552","1287","184","Virtual multimedia knowledge base","monetize bleeding-edge infrastructures",""
@@ -45,7 +43,7 @@
 "79","1596101537","996","126","Persistent zero defect projection","evolve clicks-and-mortar mindshare",""
 "43","1559183762","980","204","User-centric 24/7 neural-net","revolutionize e-business users",""
 "27","1543113346","962","145","Distributed regional matrices","facilitate e-business action-items",""
-"72","1589341635","919","130","User-friendly bifurcated paradigm","synergize distributed portals",""
+"72","1589341635",920,"130","User-friendly bifurcated paradigm","synergize distributed portals",""
 "19","1582642700","895","116","Grass-roots disintermediate open architecture","deliver user-centric mindshare",""
 "96","1583637704","894","127","Optimized 5th generation infrastructure","productize impactful vortals",""
 "87","1546266122","862","67","Streamlined systemic benchmark","whiteboard cross-platform content",""
@@ -64,7 +62,7 @@
 "1","1565972590","615","28","Multi-channelled cohesive extranet","incubate virtual deliverables",""
 "100","1551219426","615","192","Synchronised attitude-oriented capability","engage proactive niches",""
 "29","1548805253","606","109","Polarised maximized ability","maximize visionary interfaces",""
-"9","1544840120","602","130","Exclusive reciprocal collaboration","empower rich eyeballs",""
+"9","1544840120","604","130","Exclusive reciprocal collaboration","empower rich eyeballs",""
 "38","1558453648","577","140","Extended solution-oriented open system","transform extensible models",""
 "13","1598185577","540","7","Horizontal foreground model","recontextualize robust systems",""
 "62","1560707391","538","84","Configurable high-level contingency","innovate end-to-end architectures",""
@@ -75,7 +73,7 @@
 "17","1562747144","478","197","Mandatory executive intranet","orchestrate cross-platform e-tailers",""
 "53","1587723426","467","90","Inverse dedicated framework","mesh compelling functionalities",""
 "48","1561451388","451","158","Open-architected contextually-based budgetary management","optimize wireless partnerships",""
-"7","1572603416","446","128","Innovative transitional task-force","streamline plug-and-play vortals",""
+"7","1572603416","447","128","Innovative transitional task-force","streamline plug-and-play vortals",""
 "16","1586448434","435","64","Advanced well-modulated local area network","synergize best-of-breed e-business",""
 "31","1574586151","391","37","Monitored real-time strategy","orchestrate B2B applications",""
 "2","1538024900","389","83","Synergized secondary framework","morph back-end technologies",""
@@ -96,27 +94,3 @@
 "70","1582923053","66","123","Cross-platform discrete protocol","harness viral infomediaries",""
 "84","1582505613","19","89","Synergized object-oriented Graphical User Interface","recontextualize web-enabled networks",""
 "77","1536568040","19","102","Ameliorated well-modulated matrix","expedite frictionless paradigms",""
-=======
-"1","1493368154",31,"17","How to make lists in Python?","I am totally new to this, any hints?",""
-"2","1493068124",18,"18","Wordpress loading multiple jQuery Versions","I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
-=======
-"1","1493368154","31","17","How to make lists in Python?","I am totally new to this, any hints?",""
-"2","1493068124","18","18","Wordpress loading multiple jQuery Versions","I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
->>>>>>> b8abb0929bea34a8d627e631d9508dec7f73d23c
-I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
-BUT in my theme i also using jquery via webpack so the loading order is now following:
-jquery
-booklet
-app.js (bundled file with webpack, including jquery)","images/image1.png"
-"3","1493015432","1374","68","Drawing canvas with an image picked with Cordova Camera Plugin","I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
-This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",""
-<<<<<<< HEAD
-"6","1609422189",11,"0","What is life?","I'm so confused right now...","new_question.png"
-"7","1609494905",3,"0","Question1","Test1","ditu-china.png"
->>>>>>> 3670aa7215bade63a48651ae451569f533089df8
-=======
-"6","1609422189","11","0","What is life?","I'm so confused right now...","new_question.png"
-"7","1609494905","3","0","Question1","Test1","ditu-china.png"
-"8","1609521494","15","0","edit que","question to edit with picture","delete_answer.png"
-"9","1609523876",6,"0","happy new year","happy !!","360_F_346274028_nh8yZoDhlcRKN5iMogYPjdNeM2iwbruF.jpg"
->>>>>>> b8abb0929bea34a8d627e631d9508dec7f73d23c

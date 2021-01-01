@@ -119,10 +119,7 @@ def delete_dict(list_of_dicts, dict_to_remove):
     if list_of_dicts == LIST_OF_QUESTIONS:
         list_of_dicts.remove(dict_to_remove)
         update_file(list_of_dicts)
-<<<<<<< HEAD
-=======
-        # update_questions(list_of_dicts)
->>>>>>> 3670aa7215bade63a48651ae451569f533089df8
+
     elif list_of_dicts == LIST_OF_ANSWERS:
         list_of_dicts.remove(dict_to_remove)
         connection.write_to_file("answer.csv", list_of_dicts)
