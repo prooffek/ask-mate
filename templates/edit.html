@@ -22,6 +22,12 @@
         <input name="Title" id="Title" type="text" minlength="5" maxlength="100" value="{{ question['Title'] }}"><br><br>
         <label for="Message"><b>Message question:</b></label><br>
         <textarea name="Message" id="Message" minlength="5" maxlength="1500">{{ question["Message"]}}</textarea><br><br>
+        {% if question["Image"] != "" %}
+            <img src="{{ img_path }}/{{ question["Image"] }}" alt="{{ question["Image"] }}" title="{{ question["Image"] }}" width="100" height="auto"><br><br>
+            <input type="file" name="Image" id="Image"><br><br>
+        {% else %}
+            <input type="file" name="Image" id="Image" value="No file uploaded yet"><br><br>
+        {% endif %}
         <input type="submit" value="Edit question">
     </form>
 

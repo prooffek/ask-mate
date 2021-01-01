@@ -206,6 +206,13 @@ def edit_question_post(question_id):
     question_to_edit = question_dict[0]
     question_to_edit["Title"] = data_from_form["Title"]
     question_to_edit["Message"] = data_from_form["Message"]
+    if "Image" in request.files and request.files["Image"].filename != '':
+        if request.files["Image"].filename != question_to_edit["Image"]:
+            image_file = request.files["Image"]
+            data_manager.add_immage(image_file)
+            data_manager.remove_image(question_to_edit["Image"])
+            question_to_edit["Image"] = image_file.filename
+
     data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
 
     return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
