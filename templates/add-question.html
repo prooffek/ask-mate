@@ -31,6 +31,11 @@
             <textarea name="Message" id="Message" minlength="5" maxlength="1500"></textarea><br><br>
             <input type="file" name="Image" id="Image" value="No file uploaded yet">
             <br><br>
+            <label for="question_tags">Choose tags:</label><br><br>
+                {% for tag in tags_list %}
+                    <input type="checkbox" name="{{ tag['Name'] }}" id="{{ tag['Name'] }}" value="{{ tag['Name'] }}">{{ tag['Name'] }}
+                {% endfor %}
+            <br><br>
             <input type="submit" value="Add new question">
         </form>
     {% else %}
@@ -44,6 +49,11 @@
             <input name="Image" id="Image" type="hidden" value="">
             <br><br>
             <input type="file" name="Image" id="Image" value="No file uploaded yet">
+            <br><br>
+            <label for="answer_tags">Choose tags:</label><br><br>
+                {% for tag in tags_list %}
+                    <input type="checkbox" name="{{ tag['Name'] }}" id="{{ tag['Name'] }}" value="{{ tag['Name'] }}">{{ tag['Name'] }}
+                {% endfor %}
             <br><br>
             <button type="submit">Add answer</button>
         </form>
