@@ -9,37 +9,42 @@ app = Flask(__name__)
 
 
 class server_state:
-    #sorting status
+    #SORTING
     actual_sort_column = 'Submission Time'
     actual_sort_direction = 'ascending'
 
-    #filtering status
-    actual_advanced_filter_on = "no"        #valid values: "yes" or "no"
-    actual_filter_by_date_mode = "none"     #valid values: filter_by_date_mode
-    actual_filter_by_status_mode = "active" #valid values: filter_by_status_mode
-    actual_filter_by_search_mode = "none"   #valid values: filter_by_search_mode
-
-    FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
-    #server_state.FILTERED_LIST_OF_QUESTIONS = data_manager.sort_question_by_answers_number(data_manager.LIST_OF_QUESTIONS, answers_number_for_questions, mode=server_state.actual_sort_direction)
-
-    def update_filtered_list_of_questions():
-        server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
-
-    def toogle_advanced_filter():
-        if server_state.actual_advanced_filter_on == "no":
-            server_state.actual_advanced_filter_on = "yes"
-        else:
-            server_state.actual_advanced_filter_on = "no"
-
     def toogle_sort_direction():
         if server_state.actual_sort_direction == 'ascending':
-
-
             server_state.actual_sort_direction = 'descending'
         else:
             server_state.actual_sort_direction = 'ascending'
 
+    #FILTERING
+    #used in index.html when clicked actual setting for a filter
+    actual_advanced_filter_on_date = "no"           #valid values: "yes" or "no"
+    actual_advanced_filter_on_status = "no"         #valid values: "yes" or "no"
 
+    #default values for starting page
+    actual_filter_by_date_mode = "last_month"       #valid values: filter_by_date_mode
+    actual_filter_by_status_mode = "active"         #valid values: filter_by_status_mode
+    actual_filter_by_search_mode = "none"           #valid values: filter_by_search_mode
+
+    FILTERED_LIST_OF_QUESTIONS = []
+
+    def update_filtered_list_of_questions():
+        server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
+
+    def toogle_advanced_filter_date():
+        if server_state.actual_advanced_filter_on_date == "no":
+            server_state.actual_advanced_filter_on_date = "yes"
+        else:
+            server_state.actual_advanced_filter_on_date = "no"
+
+    def toogle_advanced_filter_status():
+        if server_state.actual_advanced_filter_on_status == "no":
+            server_state.actual_advanced_filter_on_status = "yes"
+        else:
+            server_state.actual_advanced_filter_on_status = "no"
 
 
 @app.route('/', methods=["GET"])
@@ -56,8 +61,11 @@ def index():
 
 @app.route('/', methods=["POST"])
 def index_post():
-    if request.form.get("actual_advanced_filter_clicked") == "clicked":
-        server_state.toogle_advanced_filter()
+    if request.form.get("actual_advanced_filter_date_clicked") == "clicked":
+        server_state.toogle_advanced_filter_date()
+
+    if request.form.get("actual_advanced_filter_status_clicked") == "clicked":
+        server_state.toogle_advanced_filter_status()
 
     return redirect(url_for("index"))
 

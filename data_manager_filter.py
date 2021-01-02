@@ -1,7 +1,5 @@
-filter_by_date_mode = {"none":1,"hot_last_week":2, "hot_last_month":3,\
-                       "hot_last_3months":4, "unanswered_this_week":5,\
-                       "unanswered_this_month":6, "unanswered_more_then_month":7}
-filter_by_status_mode = {"none": 1, "new": 2, "discussed": 3, "closed": 4, "active":5}
+filter_by_date_mode = {"last_month":1, "last_3_months":2,"all_time":4}
+filter_by_status_mode = {"active": 1, "active: new": 2, "active: discussed": 3, "closed": 4}
 filter_by_search_mode = {"none": 1, "search_text":""}
 
 
