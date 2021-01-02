@@ -16,4 +16,4 @@ app.js (bundled file with webpack, including jquery)","images/image1.png",""
 
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)","",""
 "6","1609422189","9","0","What is life?","I'm so confused right now...","new_question.png",""
-"7","1609494905","11","0","Question1","Test1","ditu-china.png",""
+"7","1609494905",12,"0","Question1","Test1","ditu-china.png","Existential"

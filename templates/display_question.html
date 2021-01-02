@@ -38,8 +38,12 @@
                 <button type="submit" style="border: 0 none; background: none;" name="vote" value="up_vote"><img src="/static/images/up-chevron.png" width="12" height="auto"></button>
             </form>
 
-            <td rowspan="3" colspan="2" style="text-align: left; vertical-align: center" >
-                <big><b>{{ question["Title"] }}</b></big></td>
+            <td rowspan="3" colspan="2" style="text-align: left; vertical-align: center"  >
+                <big><b>{{ question["Title"] }}</b></big>
+                    <form action="{{ url_for('edit_question_get', question_id=question["Id"])}}" style="display: inline; vertical-align: top">
+                    <button type="submit" style="border: 0 none; background: none;" name="edit_question" value="edit_question"><img src="/static/images/edit_question.png" width="22" height="auto"></button>
+                </form>
+            </td>
             <td></td>
         </tr>
         <tr>
@@ -81,7 +85,7 @@
         </tr>
         <tr>
             <td></td>
-            <td style="horiz-align: center">
+            <td style="horiz-align: center" vertical-align: top>
                 {% if question["Tag"] != [""] %}
                     <p><b>Tags:</b>
                     {% for tag in question["Tag"] %}
@@ -94,14 +98,12 @@
         </tr>
         <tr>
             <td></td>
-            <td style="horiz-align: center">
+            <td style="horiz-align: center" vertical-align: top>
                 <small>Viewed {{ question["View Number"] }} times  Question asked {{ question["Submission Time"] }} </small>
                 <form action="{{ url_for('delete_question', question_id=question["Id"])}}" style="display: inline; vertical-align: top">
                     <button type="submit" style="border: 0 none; background: none;" name="delete_question" value="delete_question"><img src="/static/images/delete_question.png" width="22" height="auto"></button>
                 </form>
-                <form action="{{ url_for('edit_question_get', question_id=question["Id"])}}" style="display: inline; vertical-align: top">
-                    <button type="submit" style="border: 0 none; background: none;" name="edit_question" value="edit_question"><img src="/static/images/edit_question.png" width="22" height="auto"></button>
-                </form>
+
             </td>
             <td>
             </td>
