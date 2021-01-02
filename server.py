@@ -33,9 +33,12 @@ class server_state:
 
     def toogle_sort_direction():
         if server_state.actual_sort_direction == 'ascending':
+
+
             server_state.actual_sort_direction = 'descending'
         else:
             server_state.actual_sort_direction = 'ascending'
+
 
 
 
