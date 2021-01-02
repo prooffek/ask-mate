@@ -23,55 +23,58 @@
 <br>
 <table border="1" width="50%">
     <tr>
-        <tdcolspan="3"></td>
-        <td width="20%"></td>
-        <td></td>
-        <td style="text-align: right">Question date:</td>
-        <td style="text-align: center">Last Month</td>
-        <td style="text-align: center">Last 3 months</td>
-        <td style="text-align: center">All Time</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td  style="text-align: right" >
+        <td  style="text-align: right" colspan="1" width="25%">
+            Active Questions filter :</td>
+
+        <td style="text-align: center" width="15%">
 
         <form method = "POST" action="{{ url_for("index_post") }}">
-            <button type="submit" style="border: 0 none; background: none;" name="actual_advanced_filter_clicked" value="clicked">
-                {% if server_state.actual_advanced_filter_on == "no" %}
+            <button type="submit" style="border: 0 none; background: none;" name="actual_advanced_filter_status_clicked" value="clicked">
+                {% if server_state.actual_advanced_status_filter_on == "no" %}
                 <img src="/static/images/advanced_filter_off.png" width="22" height="auto">
-                Advanced filter (click)
+                status (click)
                 {% else %}
                 <img src="/static/images/advanced_filter_on.png"  width="22" height="auto">
-                 Advanced filter
+                 Last 3 Months
                 {% endif %}
             </button>
         </form>
 
+        <td style="text-align: center" width="15%" >
+            <img src="/static/images/advanced_filter_on.png"  width="22" height="auto">
+            Active</td>
+        <td style="text-align: center"></td>
+        <td style="text-align: right"></td>
 
-        <a href="{{ url_for("index_post", actual_advanced_filter_clicked="clicked")  }}"></a>
+    </tr>
+    <tr>
+
+        <td></td>
+        <td  style="text-align: right" >
+
         </td>
         <td></td>
         <td></td>
         <td></td>
     </tr>
-    {% if server_state.actual_advanced_filter_on == "yes" %}
+    {% if server_state.actual_advanced_filter_on_status == "yes" %}
     <tr>
-        <td></td>
-        <td></td>
+
+
         <td style="text-align: right" >Status: </td>
-        <td style="text-align: center">new</td>
-        <td style="text-align: center">discussed</td>
+        <td style="text-align: center">active</td>
+        <td style="text-align: center">active: new</td>
+        <td style="text-align: center">active: discussed</td>
         <td style="text-align: center">closed</td>
 
     </tr>
     {% endif %}
     <tr>
-        <td style="text-align: right">filter search:</td>
-        <td  colspan="4">
-
+        <td style="text-align: right">Search: </td>
+        <td  colspan="5">
+        <input name="search" type="text" id="search" placeholder="Type in for search in questions and answers.." size="70%"/>
+        find
         </td>
-        <td style="text-align: center">find</td>
     </tr>
 
 
