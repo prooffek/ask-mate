@@ -3,10 +3,15 @@ from connection import csv_question_headers, csv_answer_headers
 
 questions_default_filename = "question.csv"
 answers_default_filename = "answer.csv"
+tags_default_filename = "tag.csv"
 
-LIST_OF_QUESTIONS = connection.read_from_file(questions_default_filename)
-LIST_OF_QUESTIONS = connection.convert_timestamp_to_date_format(LIST_OF_QUESTIONS)
+LIST_OF_QUESTIONS = connection.convert_timestamp_to_date_format(connection.read_from_file(questions_default_filename))
+LIST_OF_QUESTIONS = connection.str_to_list(LIST_OF_QUESTIONS)
+
 LIST_OF_ANSWERS = connection.convert_timestamp_to_date_format(connection.read_from_file(answers_default_filename))
+LIST_OF_ANSWERS = connection.str_to_list(LIST_OF_ANSWERS)
+
+LIST_OF_TAGS = connection.read_from_file(tags_default_filename)
 
 titles_for_questions_columns = {
     csv_question_headers.id:'Id',
@@ -110,8 +115,9 @@ def next_id(list_of_dicts):
         ValueError
 
 def update_answer_list(new_answer):
-    connection.append_to_file("answer.csv", new_answer)
+    connection.append_to_file("answer.csv", [new_answer])
     new_answer = connection.convert_timestamp_to_date_format([new_answer])
+    new_answer = connection.str_to_list(new_answer)
     LIST_OF_ANSWERS.append(new_answer[0])
 
 
@@ -128,5 +134,11 @@ def delete_dict(list_of_dicts, dict_to_remove):
 def add_immage(image_file):
     connection.image_to_file(image_file)
 
+
 def remove_image(image_filename):
     connection.delete_image(image_filename)
+
+
+def get_tags_list(dictionary):
+    names_list = [dictionary["Name"] for dictionary in LIST_OF_TAGS]
+    return [value for key, value in dictionary.items() if key in names_list]

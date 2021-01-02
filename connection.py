@@ -66,8 +66,26 @@ def convert_date_to_timestamp_format(table: list) -> list:
     return new_table
 
 
+def str_to_list(list_of_dicts, key="Tag", separator=","):
+    for dictionary in list_of_dicts:
+        dictionary[key] = dictionary[key].split(separator)
+
+    return list_of_dicts
+
+
+def list_to_str(list_of_dicts, key="Tag", separator=","):
+    for dictionary in list_of_dicts:
+        if dictionary[key] == [""]:
+            dictionary[key] = ""
+        else:
+            dictionary[key] = separator.join(dictionary[key])
+
+    return list_of_dicts
+
+
 def append_to_file(filename, dict_to_add):
     filename = f"{path}/{filename}"
+    dict_to_add = list_to_str(dict_to_add)[0]
 
     list_of_values = list(dict_to_add.values())
     # content_to_add = ",".join(list_of_values) + "\n"
@@ -86,6 +104,7 @@ def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
     try:
         filename = f"{path}/{filename}"
         list_of_dicts_to_save_new = (convert_date_to_timestamp_format(list_of_dicts_to_save)).copy()
+        list_of_dicts_to_save_new = (list_to_str(list_of_dicts_to_save_new))
         with open(filename, mode="w",  newline='', encoding='utf-8') as file:
             csv_writer = csv.writer(file, delimiter=csv_separator, quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
             csv_writer.writerow(list_of_dicts_to_save_new[0].keys())

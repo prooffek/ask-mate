@@ -169,25 +169,19 @@ def display_a_question(question_id):
     relevant_answers_dicts = data_manager.sort_answers(relevant_answers_dicts)
     question_dict["View Number"] = int(question_dict.get("View Number")) + 1
     data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-    # img_path = data_manager.get_image_path()
     return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
                            img_path=connection.IMAGE_PATH)
-    # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    # relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
-    # num_of_questions = len(data_manager.LIST_OF_QUESTIONS)
-    # prev, next = data_manager.navigate_by_id(question_dict["Id"])
-    # return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
-    #                         max_num=str(num_of_questions), next=next, prev=prev)
 
 
 @app.route("/add-question", methods=["GET"])
 def add_question_get():
-    return render_template("add-question.html")
+    return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
 
 
 @app.route("/add-question", methods=["POST"])
 def add_question_post():
     data_from_form = dict(request.form)
+    tags_list = data_manager.get_tags_list(data_from_form)
     new_question = {
         "Id": str(data_manager.next_id(data_manager.LIST_OF_QUESTIONS)),
         "Submission Time": util.todays_date(),
@@ -195,7 +189,8 @@ def add_question_post():
         "Vote Number": "0",
         "Title": data_from_form["Title"],
         "Message": data_from_form["Message"],
-        "Image": request.files["Image"].filename
+        "Image": request.files["Image"].filename,
+        "Tag": tags_list
     }
 
     if new_question["Image"] != '':
@@ -212,23 +207,27 @@ def add_question_post():
 @app.route("/question/<question_id>/new_answer", methods=["GET"])
 def post_an_answer_get(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    return render_template("add-question.html", question_id=question_id, question=question_dict)
+    return render_template("add-question.html", question_id=question_id, question=question_dict,
+                           tags_list=data_manager.LIST_OF_TAGS)
 
 
 @app.route("/question/<question_id>/new_answer", methods=["POST"])
 def post_an_answer_post(question_id):
+    data_from_form = dict(request.form)
+    tags_list = data_manager.get_tags_list(data_from_form)
     new_answer = {
         "Id": str(data_manager.next_id(data_manager.LIST_OF_ANSWERS)),
         "Submission Time": util.todays_date(),
-        "Vote Number": "0"
+        "Vote Number": "0",
+        "Question Id": data_from_form["Question Id"],
+        "Message": data_from_form["Message"],
+        "Image": request.files["Image"].filename,
+        "Tag": tags_list
     }
-
-    new_answer.update(dict(request.form))
 
     if "Image" in request.files and request.files["Image"].filename != '':
         image_file = request.files["Image"]
         data_manager.add_immage(image_file)
-        new_answer["Image"] = image_file.filename
 
     data_manager.update_answer_list(new_answer)
     return redirect(url_for("display_a_question", question_id=question_id))

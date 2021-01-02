@@ -86,6 +86,19 @@
         <tr>
             <td></td>
             <td style="horiz-align: center" vertical-align: top>
+                {% if question["Tag"] != [""] %}
+                    <p><b>Tags:</b>
+                    {% for tag in question["Tag"] %}
+                        {{ tag }};
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="horiz-align: center" vertical-align: top>
                 <small>Viewed {{ question["View Number"] }} times  Question asked {{ question["Submission Time"] }} </small>
                 <form action="{{ url_for('delete_question', question_id=question["Id"])}}" style="display: inline; vertical-align: top">
                     <button type="submit" style="border: 0 none; background: none;" name="delete_question" value="delete_question"><img src="/static/images/delete_question.png" width="22" height="auto"></button>
@@ -93,7 +106,6 @@
 
             </td>
             <td>
-
             </td>
             <td></td>
         </tr>
@@ -133,7 +145,6 @@
             <tr>
                 <td></td>
                 <td rowspan="3" style="text-align: left; vertical-align: top">
-
                     <big>{{ answer["Message"] }} </big>
                 </td>
                 <td rowspan="3" style="text-align: left; vertical-align: top">
@@ -146,6 +157,7 @@
             </tr>
             <tr>
                 <td style="text-align:center">{{ answer["Vote Number"] }}</td>
+                <td></td>
             </tr>
             <tr>
             <td style="text-align:center">
@@ -159,8 +171,16 @@
             </td>
             </tr>
             <tr>
-                <td><br></td>
-                <td><br></td>
+                <td></td>
+                <td style="horiz-align: center">
+                    {% if answer["Tag"] != [""] %}
+                        <p><b>Tags:</b>
+                            {% for tag in answer["Tag"] %}
+                                {{ tag }};
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </table>
