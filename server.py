@@ -25,8 +25,8 @@ class server_state:
     actual_advanced_filter_on_status = "no"         #valid values: "yes" or "no"
 
     #default values for starting page
-    actual_filter_by_date_mode = "last_month"       #valid values: filter_by_date_mode
-    actual_filter_by_status_mode = "active"         #valid values: filter_by_status_mode
+    actual_filter_by_date_mode = "Last month"      #valid values: filter_by_date_mode
+    actual_filter_by_status_mode = "Active"         #valid values: filter_by_status_mode
     actual_filter_by_search_mode = "none"           #valid values: filter_by_search_mode
 
     FILTERED_LIST_OF_QUESTIONS = []
@@ -63,8 +63,20 @@ def index():
 def index_post():
     if request.form.get("actual_advanced_filter_date_clicked") == "clicked":
         server_state.toogle_advanced_filter_date()
+        if server_state.actual_advanced_filter_on_status == "yes":
+            server_state.toogle_advanced_filter_status()
 
     if request.form.get("actual_advanced_filter_status_clicked") == "clicked":
+        server_state.toogle_advanced_filter_status()
+        if server_state.actual_advanced_filter_on_date == "yes":
+            server_state.toogle_advanced_filter_date()
+
+    if request.form.get("date_filter_changed") == "true":
+        server_state.actual_filter_by_date_mode = request.form.get("date_filter")
+        server_state.toogle_advanced_filter_date()
+
+    if request.form.get("status_filter_changed") == "true":
+        server_state.actual_filter_by_status_mode = request.form.get("status_filter")
         server_state.toogle_advanced_filter_status()
 
     return redirect(url_for("index"))

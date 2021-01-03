@@ -1,5 +1,5 @@
-filter_by_date_mode = {"last_month":1, "last_3_months":2,"all_time":4}
-filter_by_status_mode = {"active": 1, "active: new": 2, "active: discussed": 3, "closed": 4}
+filter_by_date_mode = {"Last month":1, "3 last months":2,"All time":4}
+filter_by_status_mode = {"Active": 1, "Active: New": 2, "Active: Discussed": 3, "Closed": 4, "All":5}
 filter_by_search_mode = {"none": 1, "search_text":""}
 
 
