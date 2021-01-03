@@ -79,6 +79,9 @@
                     <form action="{{ img_path }}/{{ question["Image"] }}" target="_blank">
                         <button><img src="{{ img_path }}/{{ question["Image"] }}" alt="{{ question["Image"] }}" title="{{ question["Image"] }}" width="100" height="auto"></button>
                     </form>
+                    <form action="{{ url_for('delete_image_from_question', question_id=question["Id"])}}" style="display: inline; vertical-align: top">
+                        <button type="submit" style="border: 0 none; background: none;" name="delete_image" value="delete_image"><img src="/static/images/remove_image.png" width="33" height="auto"></button>
+                    </form>
                 {% endif %}
             </td>
             <td></td>
