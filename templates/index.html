@@ -17,6 +17,23 @@
                 <button type="submit" style="border: 0 none; background: none;" name="ask_a_question" value="ask_a_question"><img src="/static/images/ask_a_question.png" width="200" height="auto"></button>
             </form>
         </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+            <form action="{{ url_for('login_get')}}">
+                <button type="submit" style="border: 0 none; background: none;" name="login" value="login"><img src="/static/images/user.png" width="35" height="35"></button>
+            </form>
+        </td>
+        <td>
+            <form action="{{ url_for('register_get')}}">
+                <button type="submit" style="border: 0 none; background: none;" name="register" value="register"><img src="/static/images/new_user.png" width="35" height="35"></button>
+            </form>
+        </td>
 
     </tr>
 </table>

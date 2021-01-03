@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if login_or_register == "login" %}
+        <title>Sing in</title>
+    {% else %}
+        <title>Sign up</title>
+    {% endif %}
+</head>
+<body>
+    <a href="{{ url_for("index") }}">
+        <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
+    </a>
+    {% if login_or_register == "login" %}
+        <h1>Sing in</h1>
+        <br><br>
+        <form action="{{ url_for("login_post") }}" method="post">
+            <label for="Username">Username:</label>
+            <input type="text" id="Username" name="Username" minlength="4"><br><br>
+            <label for="Password">Password:</label>
+            <input type="password" id="Password" name="Password" minlength="8" required><br><br>
+            <input type="submit" value="Sing in">
+        </form>
+    {% else %}
+        <h1>Sign up</h1>
+        <br><br>
+        <form action="{{ url_for("register_post") }}" method="post">
+            <label for="Username">Username:</label>
+            <input type="text" id="Username" name="Username" minlength="4"><br><br>
+            <label for="Password">Password:</label>
+            <input type="password" id="Password" name="Password" minlength="8" required><br><br>
+            <input type="submit" value="Sign up">
+        </form>
+    {% endif %}
+</body>
+</html>
