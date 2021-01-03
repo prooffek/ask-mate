@@ -304,5 +304,25 @@ def delete_image_from_question(question_id):
     return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
 
 
+@app.route("/login")
+def login_get():
+    return render_template("login_register.html", login_or_register="login")
+
+
+@app.route("/login")
+def login_post():
+    pass
+
+
+@app.route("/register")
+def register_get():
+    return render_template("login_register.html", login_or_register="register")
+
+
+@app.route("/register")
+def register_post():
+    pass
+
+
 if __name__ == "__main__":
     app.run()
