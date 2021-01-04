@@ -241,6 +241,18 @@
                     </form>
                     </td>
                     <td rowspan="2" style="text-align:center">{{ answers_number[question["Id"]] }}</td>
+                {% elif header == "Status" %}
+                    <td rowspan="2" style="text-align:center">
+                        {% if question["Status"] == "new" %}
+                            <img src="/static/images/question_status_new.png" width="33" height="auto">
+                        {% elif question["Status"] == "discussed" %}
+                            <img src="/static/images/question_status_discussed.png" width="33" height="auto">
+                        {% elif question["Status"] == "closed" %}
+                            <img src="/static/images/question_status_closed.png" width="33" height="auto">
+                        {% endif %}
+                        <br>
+                        {{ question["Status"] }}
+                    </td>
                 {% else %}
                     <td rowspan="2" style="text-align:center">
                     {% if header == "Title" %}
