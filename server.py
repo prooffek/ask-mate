@@ -28,7 +28,7 @@ class server_state:
 
     default_filter_by_date = "Last month"
     default_filter_by_status = "active"
-    default_filter_by_search = "none"
+    default_filter_by_search = ""
 
     #default values for starting page
     actual_filter_by_date_mode = default_filter_by_date             #valid values: filter_by_date_mode
@@ -96,7 +96,7 @@ def index_post():
     if request.form.get("filter_reset_button_clicked") == "clicked":
             server_state.actual_filter_by_date_mode = server_state.default_filter_by_date
             server_state.actual_filter_by_status_mode = server_state.default_filter_by_status
-            server_state.actual_filter_by_search_mode =  server_state.default_filter_by_search
+            server_state.actual_filter_by_search_mode = server_state.default_filter_by_search
             server_state.filter_reset_active = "no"
 
     if not (server_state.actual_filter_by_date_mode == server_state.default_filter_by_date and \
@@ -104,6 +104,9 @@ def index_post():
         server_state.actual_filter_by_search_mode == server_state.default_filter_by_search):
             server_state.filter_reset_active = "yes"
 
+    if request.form.get("filter_search_clicked") == "yes":
+        server_state.actual_filter_by_search_mode = request.form.get("searched_text")
+        server_state.filter_reset_active = "yes"
 
     return redirect(url_for("filter_question"))
 
@@ -111,14 +114,14 @@ def index_post():
 def filter_question() -> list:
 
     NEW_FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
-    NEW_FILTERED_LIST_OF_QUESTIONS
     # Three filters apply to list of questions
     #1th filtering by date
     NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_date(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_date_mode)
     #2nd filtering by status
     NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_status(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_status_mode)
     #3th filtering by search
-    NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_search(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_search_mode)
+    NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_search(NEW_FILTERED_LIST_OF_QUESTIONS,\
+                                                                          server_state.actual_filter_by_search_mode)
 
     server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(NEW_FILTERED_LIST_OF_QUESTIONS)
 

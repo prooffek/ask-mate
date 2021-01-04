@@ -168,8 +168,11 @@
     <tr>
         <td style="text-align: right">Search: </td>
         <td  colspan="5">
-        <input name="search" type="text" id="search" placeholder="Type in for search in questions and answers.." size="70%"/>
-        find
+        <form method = "POST" action="{{ url_for("index_post") }}">
+            <input  name="searched_text" type="text"  value="{{ server_state.actual_filter_by_search_mode }}" placeholder="Type in for search in questions.." size="65%"/>
+            <button type="submit" style="border: 0 none; background: none;" name="filter_search_clicked" value="yes"><img src="/static/images/search.png" width="26" height="auto">Search</button>
+        </form>
+
         </td>
     </tr>
 
