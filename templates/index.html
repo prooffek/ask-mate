@@ -63,6 +63,15 @@
                 <img src="/static/images/up-chevron-2.png"  width="16" height="auto">
                 {% endif %}
             </button>
+
+            <button type="submit" style="border: 0 none; background: none;" name="filter_reset_button_clicked" value="clicked">
+                {% if server_state.filter_reset_active == "no" %}
+                {% else %}
+                <img src="/static/images/clear_filter.png"  width="22" height="auto">
+                    Reset All Filters
+                {% endif %}
+            </button>
+
         </form>
     </tr>
     {% if server_state.actual_advanced_filter_on_date == "yes" %}
