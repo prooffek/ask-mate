@@ -16,6 +16,7 @@ class csv_question_headers:
     title = "Title"
     message = "Message"
     image = "Image"
+    status = "Status"
 
 class csv_answer_headers:
     id = "Id"

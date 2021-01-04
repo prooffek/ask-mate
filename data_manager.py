@@ -1,5 +1,6 @@
 import connection, os
 from connection import csv_question_headers, csv_answer_headers
+from data_manager_filter import Questions_status
 
 questions_default_filename = "question.csv"
 answers_default_filename = "answer.csv"
@@ -21,7 +22,9 @@ titles_for_questions_columns = {
     csv_question_headers.title:'Title',
     csv_question_headers.message:'Message',
     csv_question_headers.image:'Image',
+    csv_question_headers.status:'Status'
 }
+
 
 
 def find_by_id(id_to_find, list_of_dicts, mode="for_question"):
@@ -55,6 +58,16 @@ def find_answers_number_for_questions(LIST_OF_QUESTIONS: list, LIST_OF_ANSWERS: 
         current_answers_number = len(find_by_id(question[csv_question_headers.id], LIST_OF_ANSWERS, "for_question"))
         answers_number_for_questions[str(question[csv_question_headers.id])] = current_answers_number
     return answers_number_for_questions
+
+def update_questions_statuses(LIST_OF_QUESTIONS: list, LIST_OF_ANSWERS: list):
+    for question in LIST_OF_QUESTIONS:
+        current_answers_number = len(find_by_id(question[csv_question_headers.id], LIST_OF_ANSWERS, "for_question"))
+        if question[csv_question_headers.status] == Questions_status["closed"]:
+            question[csv_question_headers.status] = Questions_status["closed"]
+        elif current_answers_number > 0:
+            question[csv_question_headers.status] = Questions_status["discussed"]
+        else:
+            question[csv_question_headers.status] = Questions_status["new"]
 
 
 

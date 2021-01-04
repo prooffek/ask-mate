@@ -27,7 +27,7 @@ class server_state:
     filter_reset_active = "no"
 
     default_filter_by_date = "Last month"
-    default_filter_by_status = "Active"
+    default_filter_by_status = "active"
     default_filter_by_search = "none"
 
     #default values for starting page
@@ -39,6 +39,8 @@ class server_state:
     FILTERED_LIST_OF_QUESTIONS = []
 
     def update_filtered_list_of_questions():
+        data_manager.update_questions_statuses(data_manager.LIST_OF_QUESTIONS, data_manager.LIST_OF_ANSWERS)
+        data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
         server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
         filter_question()
 

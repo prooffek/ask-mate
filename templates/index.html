@@ -85,8 +85,8 @@
                 {% endif %}
             </button>
 
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="All time">
-                {% if server_state.actual_filter_by_date_mode == "All time" %}
+            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="All">
+                {% if server_state.actual_filter_by_date_mode == "All" %}
                 <img src="/static/images/filter_date_on.png" width="22" height="auto">
                 All time
                 {% else %}
@@ -108,50 +108,50 @@
 
         <form method = "POST" action="{{ url_for("index_post") }}">
             <input type="hidden" name="status_filter_changed" value="true">
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="Active">
-                {% if server_state.actual_filter_by_status_mode == "Active" %}
+            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="active">
+                {% if server_state.actual_filter_by_status_mode == "active" %}
                 <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                Active
+                active
                 {% else %}
                 <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                Active
+                active
                 {% endif %}
             </button>
 
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="Active: New">
-                {% if server_state.actual_filter_by_status_mode == "Active: New" %}
+            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="new">
+                {% if server_state.actual_filter_by_status_mode == "new" %}
                 <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                Active: New
+                new
                 {% else %}
                 <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                Active: New
+                new
                 {% endif %}
             </button>
 
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="Active: Discussed">
-                {% if server_state.actual_filter_by_status_mode == "Active: Discussed" %}
+            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="discussed">
+                {% if server_state.actual_filter_by_status_mode == "discussed" %}
                 <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                Active: Discussed
+                discussed
                 {% else %}
                 <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                Active: Discussed
+                discussed
                 {% endif %}
             </button>
 
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="Closed">
-                {% if server_state.actual_filter_by_status_mode == "Closed" %}
+            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="closed">
+                {% if server_state.actual_filter_by_status_mode == "closed" %}
                 <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                Closed
+                closed
                 {% else %}
                 <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                Closed
+                closed
                 {% endif %}
             </button>
 
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="All">
-                {% if server_state.actual_filter_by_status_mode == "All" %}
+            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="all">
+                {% if server_state.actual_filter_by_status_mode == "all" %}
                 <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                All
+                all
                 {% else %}
                 <img src="/static/images/filter_date_off.png"  width="22" height="auto">
                 All
@@ -278,8 +278,10 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
             <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
