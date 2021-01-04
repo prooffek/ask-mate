@@ -27,7 +27,7 @@ class server_state:
     filter_reset_active = "no"
 
     default_filter_by_date = "Last month"
-    default_filter_by_status = "Active"
+    default_filter_by_status = "active"
     default_filter_by_search = "none"
 
     #default values for starting page
@@ -39,6 +39,8 @@ class server_state:
     FILTERED_LIST_OF_QUESTIONS = []
 
     def update_filtered_list_of_questions():
+        data_manager.update_questions_statuses(data_manager.LIST_OF_QUESTIONS, data_manager.LIST_OF_ANSWERS)
+        data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
         server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
         filter_question()
 
@@ -195,6 +197,19 @@ def vote():
         elif url_origin == "display_question":
             return redirect(url_for("display_a_question", question_id = question_id))
 
+
+@app.route("/change-question-status", methods=["POST"])
+def change_question_status():
+    new_question_status = request.form.get("new_question_status")
+    question_id = request.form.get("question_id")
+    question = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
+    question_index = data_manager.LIST_OF_QUESTIONS.index(question)
+    if new_question_status == "close":
+        data_manager.LIST_OF_QUESTIONS[question_index]["Status"] = "closed"
+    elif new_question_status == "new":
+        data_manager.LIST_OF_QUESTIONS[question_index]["Status"] = "new"
+    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+    return redirect(url_for("index"))
 
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
