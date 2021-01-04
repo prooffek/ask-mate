@@ -23,16 +23,24 @@ class server_state:
     #used in index.html when clicked actual setting for a filter
     actual_advanced_filter_on_date = "no"           #valid values: "yes" or "no"
     actual_advanced_filter_on_status = "no"         #valid values: "yes" or "no"
+    actual_filter_reset_button_active = "no"
+    filter_reset_active = "no"
+
+    default_filter_by_date = "Last month"
+    default_filter_by_status = "Active"
+    default_filter_by_search = "none"
 
     #default values for starting page
-    actual_filter_by_date_mode = "Last month"      #valid values: filter_by_date_mode
-    actual_filter_by_status_mode = "Active"         #valid values: filter_by_status_mode
-    actual_filter_by_search_mode = "none"           #valid values: filter_by_search_mode
+    actual_filter_by_date_mode = default_filter_by_date             #valid values: filter_by_date_mode
+    actual_filter_by_status_mode = default_filter_by_status         #valid values: filter_by_status_mode
+    actual_filter_by_search_mode = default_filter_by_search         #valid values: filter_by_search_mode
+
 
     FILTERED_LIST_OF_QUESTIONS = []
 
     def update_filtered_list_of_questions():
         server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
+        filter_question()
 
     def toogle_advanced_filter_date():
         if server_state.actual_advanced_filter_on_date == "no":
@@ -45,6 +53,7 @@ class server_state:
             server_state.actual_advanced_filter_on_status = "yes"
         else:
             server_state.actual_advanced_filter_on_status = "no"
+
 
 
 @app.route('/', methods=["GET"])
@@ -61,6 +70,8 @@ def index():
 
 @app.route('/', methods=["POST"])
 def index_post():
+
+    # FILTERING
     if request.form.get("actual_advanced_filter_date_clicked") == "clicked":
         server_state.toogle_advanced_filter_date()
         if server_state.actual_advanced_filter_on_status == "yes":
@@ -79,23 +90,26 @@ def index_post():
         server_state.actual_filter_by_status_mode = request.form.get("status_filter")
         server_state.toogle_advanced_filter_status()
 
-    return redirect(url_for("index"))
+
+    if request.form.get("filter_reset_button_clicked") == "clicked":
+            server_state.actual_filter_by_date_mode = server_state.default_filter_by_date
+            server_state.actual_filter_by_status_mode = server_state.default_filter_by_status
+            server_state.actual_filter_by_search_mode =  server_state.default_filter_by_search
+            server_state.filter_reset_active = "no"
+
+    if not (server_state.actual_filter_by_date_mode == server_state.default_filter_by_date and \
+        server_state.actual_filter_by_status_mode == server_state.default_filter_by_status and \
+        server_state.actual_filter_by_search_mode == server_state.default_filter_by_search):
+            server_state.filter_reset_active = "yes"
+
+
+    return redirect(url_for("filter_question"))
 
 @app.route("/filter")
 def filter_question() -> list:
-    if not request.args.get('filter_by_date_mode') == None:
-        server_state.actual_filter_by_date_mode = request.args.get('new_filter_by_date_mode')
-    if not request.args.get('filter_by_status_mode') == None:
-        server_state.actual_filter_by_status_mode = request.args.get('new_filter_by_status_mode')
-    if not request.args.get('filter_by_search_mode') == None:
-        server_state.actual_filter_by_search_mode = request.args.get('new_filter_by_search_mode')
-    if not request.args.get('reset_filtering') == None:
-        server_state.actual_filter_by_date_mode = "none"
-        server_state.actual_filter_by_status_mode = "active"
-        server_state.actual_filter_by_search_mode = "none"
 
     NEW_FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
-
+    NEW_FILTERED_LIST_OF_QUESTIONS
     # Three filters apply to list of questions
     #1th filtering by date
     NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_date(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_date_mode)
@@ -104,7 +118,7 @@ def filter_question() -> list:
     #3th filtering by search
     NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_search(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_search_mode)
 
-    server_state.FILTERED_LIST_OF_QUESTIONS = NEW_FILTERED_LIST_OF_QUESTIONS
+    server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(NEW_FILTERED_LIST_OF_QUESTIONS)
 
     return redirect(url_for("index"))
 
