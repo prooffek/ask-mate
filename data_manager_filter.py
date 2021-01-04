@@ -9,8 +9,21 @@ Questions_status = {"closed":"closed", "new":"new", "discussed":"discussed", "al
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
-def filter_by_search(list_of_dicts_fo_filter, filter_by_search_mode) -> list:
-    return  list_of_dicts_fo_filter
+def filter_by_search(list_of_dicts_fo_filter, searched_text) -> list:
+    if searched_text == "":
+        return list_of_dicts_fo_filter
+
+    not_found_value = -1
+    filtered_list = []
+
+    for row in list_of_dicts_fo_filter:
+        found_search_text_in_title = str(row["Title"]).find(str(searched_text))
+        found_search_text_in_message = str(row["Message"]).find(str(searched_text))
+
+        if found_search_text_in_message != not_found_value or found_search_text_in_title != not_found_value:
+            filtered_list.append(row)
+
+    return  filtered_list
 
 
 
@@ -47,4 +60,3 @@ def filter_by_date(list_of_dicts_to_filter, this_filter_by_date_mode) -> list:
 
     return new_filtered_list
 
-#new_filtered_list = filter_by_search()
