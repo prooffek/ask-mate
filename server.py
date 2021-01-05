@@ -373,7 +373,7 @@ def login_google():
 
 @app.route("/login-google", methods=["POST"])
 def login_google_post():
-    pass
+    return ("<h1>google login</h1>")
 
 
 if __name__ == "__main__":
