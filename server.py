@@ -367,6 +367,14 @@ def register_get():
 def register_post():
     pass
 
+@app.route("/login-google", methods=["GET"])
+def login_google():
+    pass
+
+@app.route("/login-google", methods=["POST"])
+def login_google_post():
+    pass
+
 
 if __name__ == "__main__":
     app.run()
