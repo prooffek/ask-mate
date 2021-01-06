@@ -2,8 +2,8 @@ import connection, os
 from connection import csv_question_headers, csv_answer_headers
 from data_manager_filter import Questions_status
 
-questions_default_filename = "question.csv"
-answers_default_filename = "answer.csv"
+questions_default_filename = "question_long_list.csv" #"question.csv"
+answers_default_filename = "answer_short_list.csv" #"answer.csv"
 tags_default_filename = "tag.csv"
 
 LIST_OF_QUESTIONS = connection.convert_timestamp_to_date_format(connection.read_from_file(questions_default_filename))
@@ -128,7 +128,7 @@ def next_id(list_of_dicts):
         ValueError
 
 def update_answer_list(new_answer):
-    connection.append_to_file("answer.csv", [new_answer])
+    connection.append_to_file(answers_default_filename, [new_answer])
     new_answer = connection.convert_timestamp_to_date_format([new_answer])
     new_answer = connection.str_to_list(new_answer)
     LIST_OF_ANSWERS.append(new_answer[0])
@@ -141,7 +141,7 @@ def delete_dict(list_of_dicts, dict_to_remove):
 
     elif list_of_dicts == LIST_OF_ANSWERS:
         list_of_dicts.remove(dict_to_remove)
-        connection.write_to_file("answer.csv", list_of_dicts)
+        connection.write_to_file(answers_default_filename, list_of_dicts)
 
 
 def add_immage(image_file):

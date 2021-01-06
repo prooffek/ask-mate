@@ -2,7 +2,11 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Edit question</title>
+    {% if question_id %}
+        <title>Edit question</title>
+    {% else %}
+        <title>Edit answer</title>
+    {% endif %}
 </head>
 <body>
     <table>
@@ -16,21 +20,44 @@
             </td>
         </tr>
     </table>
-    <h1>Edit question</h1>
-    <form action="{{ url_for('edit_question_post', question_id=question['Id']) }}" method="post" enctype="multipart/form-data">
-        <label for="Title"><b>Title question:</b></label><br>
-        <input name="Title" id="Title" type="text" minlength="5" maxlength="100" value="{{ question['Title'] }}"><br><br>
-        <label for="Message"><b>Message question:</b></label><br>
-        <textarea name="Message" id="Message" minlength="5" maxlength="1500">{{ question["Message"]}}</textarea><br><br>
-        {% if question["Image"] != "" %}
-            <img src="{{ img_path }}/{{ question["Image"] }}" alt="{{ question["Image"] }}" title="{{ question["Image"] }}" width="100" height="auto">
+    {% if question_id %}
+        <h1>Edit question</h1>
+        <form action="{{ url_for('edit_question_post', question_id=question['Id']) }}" method="post" enctype="multipart/form-data">
+            <label for="Title"><b>Title question:</b></label><br>
+            <input name="Title" id="Title" type="text" minlength="5" maxlength="100" value="{{ question['Title'] }}"><br><br>
+            <label for="Message"><b>Message question:</b></label><br>
+            <textarea name="Message" id="Message" minlength="5" maxlength="1500">{{ question["Message"]}}</textarea><br><br>
+            {% if question["Image"] != "" %}
+                <img src="{{ img_path }}/{{ question["Image"] }}" alt="{{ question["Image"] }}" title="{{ question["Image"] }}" width="100" height="auto">
+                <br><br>
+                <input type="file" name="Image" id="Image"><br><br>
+            {% else %}
+                <input type="file" name="Image" id="Image" value="No file uploaded yet"><br><br>
+            {% endif %}
+            <input type="submit" value="Edit question">
+        </form>
+    {% else %}
+        <h1>Edit answer</h1>
+        <form action="{{ url_for("edit_answer_post", answer_id=answer["Id"]) }}" method="post" enctype="multipart/form-data">
+            <label for="Message"> Answer:</label><br><br>
+            <textarea name="Message" id="Message" minlength="1" maxlength="5000">{{ answer["Message"] }}</textarea>
             <br><br>
-            <input type="file" name="Image" id="Image"><br><br>
-        {% else %}
-            <input type="file" name="Image" id="Image" value="No file uploaded yet"><br><br>
+            <label for="Image">Choose a new image:</label><br><br>
+            <input type="file" name="Image" id="Image" value="{{ answer["Image"] }}">
+            <br><br><br><br>
+            <input type="submit" value="Edit">
+            <br><br>
+        </form>
+        <p>Image attached:</p>
+        {% if answer["Image"] != "" %}
+            <form action="{{ img_path }}" target="_blank">
+                <button><img src="{{ img_path }}" alt="{{ answer["Image"] }}" title="{{ answer["Image"] }}" width="100" height="auto"></button>
+            </form>
+            <br><br>
+            <form action="{{ url_for("delete_answer_img", answer_id=answer["Id"]) }}">
+                <button type="submit" style="border: 0 none; background: none;" name="delete_image" value="delete_image"><img src="/static/images/remove_image.png" width="33" height="auto"></button>
+            </form>
         {% endif %}
-        <input type="submit" value="Edit question">
-    </form>
-
+    {% endif %}
 </body>
 </html>

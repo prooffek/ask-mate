@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, request
-import data_manager, util, connection
+import data_manager, util, connection, os
 import copy
 import data_manager_filter
 from connection import csv_question_headers
@@ -346,6 +346,39 @@ def delete_image_from_question(question_id):
     data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
 
     return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
+
+
+@app.route("/<answer_id>/delete-img")
+def delete_answer_img(answer_id):
+    answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
+    data_manager.remove_image(answer_dict["Image"])
+    answer_dict["Image"] = ""
+
+    data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
+    return redirect(url_for('display_a_question', question_id=answer_dict['Question Id']))
+
+
+@app.route("/edit/<answer_id>")
+def edit_answer_get(answer_id):
+    answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
+    img_path = os.path.join(connection.IMAGE_PATH, answer_dict["Image"])
+    return render_template('edit.html', answer_id=answer_id, answer=answer_dict, img_path=img_path)
+
+
+@app.route("/edit/<answer_id>", methods=["POST"])
+def edit_answer_post(answer_id):
+    current_answer = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
+    new_answer = dict(request.form)
+    current_answer["Message"] = new_answer["Message"]
+
+    if "Image" in request.files and request.files["Image"].filename != '':
+        data_manager.remove_image(current_answer["Image"])
+        current_answer["Image"] = request.files["Image"].filename
+        image_file = request.files["Image"]
+        data_manager.add_immage(image_file)
+
+    data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
+    return redirect(url_for('display_a_question', question_id=current_answer['Question Id']))
 
 
 @app.route("/login")
