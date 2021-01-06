@@ -124,4 +124,7 @@ def image_to_file(image):
 
 def delete_image(filename):
     path_image = os.path.join(IMAGE_FOLDER_PATH, filename)
-    os.remove(path_image)
+    try:
+        os.remove(path_image)
+    except:
+        ValueError(f"There's no {filename} in the directory")
