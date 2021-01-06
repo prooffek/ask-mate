@@ -148,8 +148,14 @@ def add_immage(image_file):
     connection.image_to_file(image_file)
 
 
-def remove_image(image_filename):
-    connection.delete_image(image_filename)
+def remove_image(dict_to_edit, mode):
+    connection.delete_image(dict_to_edit["Image"])
+    dict_to_edit["Image"] = ""
+    if mode == "question":
+        update_file(LIST_OF_QUESTIONS)
+    else:
+        update_file(LIST_OF_ANSWERS, "answer")
+
 
 
 def get_tags_list(dictionary):

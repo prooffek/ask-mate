@@ -338,23 +338,16 @@ def edit_question_post(question_id):
 
 @app.route("/question/<question_id>/remove_image")
 def delete_image_from_question(question_id):
-    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-    question_to_edit = question_dict[0]
-    data_manager.remove_image(question_to_edit["Image"])
-    question_to_edit["Image"] = ""
-
-    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-
-    return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
+    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
+    data_manager.remove_image(question_dict, "question")
+    return redirect(url_for("display_a_question", question_id=question_dict["Id"]))
 
 
 @app.route("/<answer_id>/delete-img")
 def delete_answer_img(answer_id):
     answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
-    data_manager.remove_image(answer_dict["Image"])
-    answer_dict["Image"] = ""
+    data_manager.remove_image(answer_dict, "answer")
 
-    data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
     return redirect(url_for('display_a_question', question_id=answer_dict['Question Id']))
 
 
