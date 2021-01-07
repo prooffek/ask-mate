@@ -4,9 +4,7 @@ import copy
 import data_manager_filter
 from connection import csv_question_headers
 
-
 app = Flask(__name__)
-
 
 class server_state:
     #SORTING
@@ -20,9 +18,8 @@ class server_state:
             server_state.actual_sort_direction = 'ascending'
 
     #FILTERING
-    #used in index.html when clicked actual setting for a filter
-    actual_advanced_filter_on_date = "no"           #valid values: "yes" or "no"
-    actual_advanced_filter_on_status = "no"         #valid values: "yes" or "no"
+    actual_advanced_filter_on_date = "no"
+    actual_advanced_filter_on_status = "no"
     actual_filter_reset_button_active = "no"
     filter_reset_active = "no"
 
@@ -34,7 +31,6 @@ class server_state:
     actual_filter_by_date_mode = default_filter_by_date             #valid values: filter_by_date_mode
     actual_filter_by_status_mode = default_filter_by_status         #valid values: filter_by_status_mode
     actual_filter_by_search_mode = default_filter_by_search         #valid values: filter_by_search_mode
-
 
     FILTERED_LIST_OF_QUESTIONS = []
 
@@ -56,8 +52,6 @@ class server_state:
         else:
             server_state.actual_advanced_filter_on_status = "no"
 
-
-
 @app.route('/', methods=["GET"])
 def index():
     headers = data_manager.LIST_OF_QUESTIONS[0].keys()
@@ -72,8 +66,6 @@ def index():
 
 @app.route('/', methods=["POST"])
 def index_post():
-
-    # FILTERING
     if request.form.get("actual_advanced_filter_date_clicked") == "clicked":
         server_state.toogle_advanced_filter_date()
         if server_state.actual_advanced_filter_on_status == "yes":
@@ -91,7 +83,6 @@ def index_post():
     if request.form.get("status_filter_changed") == "true":
         server_state.actual_filter_by_status_mode = request.form.get("status_filter")
         server_state.toogle_advanced_filter_status()
-
 
     if request.form.get("filter_reset_button_clicked") == "clicked":
             server_state.actual_filter_by_date_mode = server_state.default_filter_by_date
@@ -112,8 +103,8 @@ def index_post():
 
 @app.route("/filter")
 def filter_question() -> list:
-
     NEW_FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
+
     # Three filters apply to list of questions
     #1th filtering by date
     NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_date(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_date_mode)
@@ -122,7 +113,6 @@ def filter_question() -> list:
     #3th filtering by search
     NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_search(NEW_FILTERED_LIST_OF_QUESTIONS,\
                                                                           server_state.actual_filter_by_search_mode)
-
     server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(NEW_FILTERED_LIST_OF_QUESTIONS)
 
     return redirect(url_for("index"))
@@ -134,7 +124,6 @@ def sort_questions():
     if sort_question_column == None:
         sort_question_column = 'Submission Time'
 
-
     if not sort_question_column =="Answers":
         if server_state.actual_sort_column == list(data_manager.titles_for_questions_columns.keys())[
             list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]:
@@ -142,7 +131,7 @@ def sort_questions():
         else:
             server_state.actual_sort_direction = 'ascending'
 
-            # get key for value in dictionary i.e. for "Time" -> "submission_time"
+        # get key for value in dictionary i.e. for "Time" -> "submission_time"
         server_state.actual_sort_column = list(data_manager.titles_for_questions_columns.keys())[
             list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]
 
@@ -159,7 +148,6 @@ def sort_questions():
                                                                                       data_manager.LIST_OF_ANSWERS)
         data_manager.LIST_OF_QUESTIONS = data_manager.sort_question_by_answers_number(data_manager.LIST_OF_QUESTIONS, answers_number_for_questions, mode=server_state.actual_sort_direction)
     return redirect(url_for("index"))
-
 
 @app.route("/vote", methods=["POST"])
 def vote():
@@ -200,7 +188,6 @@ def vote():
         elif url_origin == "display_question":
             return redirect(url_for("display_a_question", question_id = question_id))
 
-
 @app.route("/change-question-status", methods=["POST"])
 def change_question_status():
     new_question_status = request.form.get("new_question_status")
@@ -224,11 +211,9 @@ def display_a_question(question_id):
     return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
                            img_path=connection.IMAGE_PATH)
 
-
 @app.route("/add-question", methods=["GET"])
 def add_question_get():
     return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
-
 
 @app.route("/add-question", methods=["POST"])
 def add_question_post():
@@ -255,13 +240,11 @@ def add_question_post():
 
     return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
-
 @app.route("/question/<question_id>/new_answer", methods=["GET"])
 def post_an_answer_get(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     return render_template("add-question.html", question_id=question_id, question=question_dict,
                            tags_list=data_manager.LIST_OF_TAGS)
-
 
 @app.route("/question/<question_id>/new_answer", methods=["POST"])
 def post_an_answer_post(question_id):
@@ -284,7 +267,6 @@ def post_an_answer_post(question_id):
     data_manager.update_answer_list(new_answer)
     return redirect(url_for("display_a_question", question_id=question_id))
 
-
 @app.route("/answer/<answer_id>/delete endpoint")
 def delete_answer(answer_id):
     list_of_dicts = data_manager.LIST_OF_ANSWERS
@@ -293,7 +275,6 @@ def delete_answer(answer_id):
     data_manager.delete_dict(list_of_dicts, answer_to_remove)
 
     return redirect(url_for("display_a_question", question_id=question_id))
-
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
@@ -306,12 +287,10 @@ def delete_question(question_id):
 
     return redirect(url_for("index"))
 
-
 @app.route("/question/<question_id>/edit", methods=["GET"])
 def edit_question_get(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
     return render_template("edit.html", question_id=question_id, question=question_dict[0])
-
 
 @app.route("/question/<question_id>/edit", methods=["POST"])
 def edit_question_post(question_id):
@@ -335,13 +314,11 @@ def edit_question_post(question_id):
 
     return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
 
-
 @app.route("/question/<question_id>/remove_image")
 def delete_image_from_question(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     data_manager.remove_image(question_dict, "question")
     return redirect(url_for("display_a_question", question_id=question_dict["Id"]))
-
 
 @app.route("/<answer_id>/delete-img")
 def delete_answer_img(answer_id):
@@ -350,13 +327,11 @@ def delete_answer_img(answer_id):
 
     return redirect(url_for('display_a_question', question_id=answer_dict['Question Id']))
 
-
 @app.route("/edit/<answer_id>")
 def edit_answer_get(answer_id):
     answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
     img_path = os.path.join(connection.IMAGE_PATH, answer_dict["Image"])
     return render_template('edit.html', answer_id=answer_id, answer=answer_dict, img_path=img_path)
-
 
 @app.route("/edit/<answer_id>", methods=["POST"])
 def edit_answer_post(answer_id):
@@ -383,11 +358,9 @@ def login_get():
 def login_post():
     pass
 
-
 @app.route("/register")
 def register_get():
     return render_template("login_register.html", login_or_register="register")
-
 
 @app.route("/register")
 def register_post():
