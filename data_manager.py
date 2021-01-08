@@ -127,6 +127,7 @@ def next_id(list_of_dicts):
     except:
         ValueError
 
+
 def update_answer_list(new_answer):
     connection.append_to_file(answers_default_filename, [new_answer])
     new_answer = connection.convert_timestamp_to_date_format([new_answer])

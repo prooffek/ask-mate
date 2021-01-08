@@ -242,7 +242,8 @@ def add_question_post():
         "Title": data_from_form["Title"],
         "Message": data_from_form["Message"],
         "Image": request.files["Image"].filename,
-        "Tag": tags_list
+        "Tag": tags_list,
+        "Status": "new"
     }
 
     if new_question["Image"] != '':
