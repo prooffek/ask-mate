@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, redirect, request
 import data_manager, util, connection, os
 import copy
 import data_manager_filter
-from connection import csv_question_headers
+
 
 app = Flask(__name__)
 
@@ -308,7 +308,7 @@ def edit_question_post(question_id):
         elif request.files["Image"].filename != question_to_edit["Image"]:
             image_file = request.files["Image"]
             data_manager.add_image(image_file)
-            data_manager.remove_image(question_to_edit["Image"])
+            data_manager.remove_image(question_to_edit, "question")
             question_to_edit["Image"] = image_file.filename
 
     data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
