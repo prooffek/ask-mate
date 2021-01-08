@@ -233,7 +233,7 @@ def add_question_post():
 
     if new_question["Image"] != '':
         image_file = request.files["Image"]
-        data_manager.add_immage(image_file)
+        data_manager.add_image(image_file)
 
     connection.convert_timestamp_to_date_format([new_question])
     data_manager.LIST_OF_QUESTIONS.append(new_question)
@@ -263,7 +263,7 @@ def post_an_answer_post(question_id):
 
     if "Image" in request.files and request.files["Image"].filename != '':
         image_file = request.files["Image"]
-        data_manager.add_immage(image_file)
+        data_manager.add_image(image_file)
 
     data_manager.update_answer_list(new_answer)
     return redirect(url_for("display_a_question", question_id=question_id))
@@ -303,11 +303,11 @@ def edit_question_post(question_id):
     if "Image" in request.files and request.files["Image"].filename != '':
         if question_to_edit["Image"] == "":
             image_file = request.files["Image"]
-            data_manager.add_immage(image_file)
+            data_manager.add_image(image_file)
             question_to_edit["Image"] = image_file.filename
         elif request.files["Image"].filename != question_to_edit["Image"]:
             image_file = request.files["Image"]
-            data_manager.add_immage(image_file)
+            data_manager.add_image(image_file)
             data_manager.remove_image(question_to_edit["Image"])
             question_to_edit["Image"] = image_file.filename
 
@@ -341,10 +341,10 @@ def edit_answer_post(answer_id):
     current_answer["Message"] = new_answer["Message"]
 
     if "Image" in request.files and request.files["Image"].filename != '':
-        data_manager.remove_image(current_answer["Image"])
+        data_manager.remove_image(current_answer, "answer")
         current_answer["Image"] = request.files["Image"].filename
         image_file = request.files["Image"]
-        data_manager.add_immage(image_file)
+        data_manager.add_image(image_file)
 
     data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
     return redirect(url_for('display_a_question', question_id=current_answer['Question Id']))

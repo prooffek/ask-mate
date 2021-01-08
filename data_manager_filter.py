@@ -1,13 +1,14 @@
-filter_by_date_mode = {"Last month":"Last month", "3 last months":"3 last months","All":"All"}
-filter_by_status_mode = {"Active":"Active", "Unanswered":"Unanswered", "Discussed":"Discussed", "Closed":"Closed", "All":"All"}
-filter_by_search_mode = {"none":"none", "search":""}
+filter_by_date_mode = {"Last month": "Last month", "3 last months": "3 last months", "All": "All"}
+filter_by_status_mode = {"Active": "Active", "Unanswered": "Unanswered", "Discussed": "Discussed", "Closed": "Closed", "All": "All"}
+filter_by_search_mode = {"none": "none", "search": ""}
 
 
-Questions_status = {"closed":"closed", "new":"new", "discussed":"discussed", "all":"all"}
+Questions_status = {"closed": "closed", "new": "new", "discussed": "discussed", "all": "all"}
 
 
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
+
 
 def filter_by_search(list_of_dicts_fo_filter, searched_text) -> list:
     if searched_text == "":
@@ -26,7 +27,6 @@ def filter_by_search(list_of_dicts_fo_filter, searched_text) -> list:
     return  filtered_list
 
 
-
 def filter_by_status(list_to_filter, filter_status) -> list:
     if filter_status == "all":
         return list_to_filter
@@ -38,11 +38,11 @@ def filter_by_status(list_to_filter, filter_status) -> list:
                 filtered_list.append(row)
         return filtered_list
 
-
     for row in list_to_filter:
         if row["Status"] == filter_status:
             filtered_list.append(row)
     return filtered_list
+
 
 def filter_by_date(list_of_dicts_to_filter, this_filter_by_date_mode) -> list:
 
