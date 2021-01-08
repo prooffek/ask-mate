@@ -103,7 +103,6 @@ def write_to_file(filename, list_of_dicts_to_save, csv_separator = ','):
     except IOError:
         print(f"IOError while trying to open {filename} to write.")
 
-
 def image_to_file(image):
     image.save(os.path.join(IMAGE_FOLDER_PATH, image.filename))
 

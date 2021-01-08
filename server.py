@@ -3,7 +3,6 @@ import data_manager, util, connection, os
 import copy
 import data_manager_filter
 
-
 app = Flask(__name__)
 
 class server_state:
@@ -349,11 +348,9 @@ def edit_answer_post(answer_id):
     data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
     return redirect(url_for('display_a_question', question_id=current_answer['Question Id']))
 
-
 @app.route("/login")
 def login_get():
     return render_template("login_register.html", login_or_register="login")
-
 
 @app.route("/login")
 def login_post():
@@ -374,7 +371,6 @@ def login_google():
 @app.route("/login-google", methods=["POST"])
 def login_google_post():
     return ("<h1>google login</h1>")
-
 
 if __name__ == "__main__":
     app.run()
