@@ -34,6 +34,14 @@
             {% else %}
                 <input type="file" name="Image" id="Image" value="No file uploaded yet"><br><br>
             {% endif %}
+            {% for tag in tags_list %}
+                {% if tag["Name"] in question["Tag"] %}
+                    <input type="checkbox" name="{{ tag['Name'] }}" id="{{ tag['Name'] }}" value="{{ tag['Name'] }}" checked>{{ tag['Name'] }}
+                {% else %}
+                    <input type="checkbox" name="{{ tag['Name'] }}" id="{{ tag['Name'] }}" value="{{ tag['Name'] }}">{{ tag['Name'] }}
+                {% endif %}
+            {% endfor %}
+            <br><br>
             <input type="submit" value="Edit question">
         </form>
     {% else %}

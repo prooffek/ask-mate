@@ -50,11 +50,12 @@
             <br><br>
             <input type="file" name="Image" id="Image" value="No file uploaded yet">
             <br><br>
-            <label for="answer_tags">Choose tags:</label><br><br>
-                {% for tag in tags_list %}
-                    <input type="checkbox" name="{{ tag['Name'] }}" id="{{ tag['Name'] }}" value="{{ tag['Name'] }}">{{ tag['Name'] }}
-                {% endfor %}
-            <br><br>
+            <input type="hidden" name="Tag" value="">
+{#            <label for="answer_tags">Choose tags:</label><br><br>#}
+{#                {% for tag in tags_list %}#}
+{#                    <input type="checkbox" name="{{ tag['Name'] }}" id="{{ tag['Name'] }}" value="{{ tag['Name'] }}">{{ tag['Name'] }}#}
+{#                {% endfor %}#}
+{#            <br><br>#}
             <button type="submit">Add answer</button>
         </form>
     {% endif %}

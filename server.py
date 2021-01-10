@@ -290,15 +290,17 @@ def delete_question(question_id):
 @app.route("/question/<question_id>/edit", methods=["GET"])
 def edit_question_get(question_id):
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-    return render_template("edit.html", question_id=question_id, question=question_dict[0])
+    return render_template("edit.html", question_id=question_id, question=question_dict[0], tags_list=data_manager.LIST_OF_TAGS)
 
 @app.route("/question/<question_id>/edit", methods=["POST"])
 def edit_question_post(question_id):
     data_from_form = dict(request.form)
+    tags_list = data_manager.get_tags_list(data_from_form)
     question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
     question_to_edit = question_dict[0]
     question_to_edit["Title"] = data_from_form["Title"]
     question_to_edit["Message"] = data_from_form["Message"]
+    question_to_edit["Tag"] = tags_list
     if "Image" in request.files and request.files["Image"].filename != '':
         if question_to_edit["Image"] == "":
             image_file = request.files["Image"]

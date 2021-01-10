@@ -209,7 +209,7 @@
                         {% elif header == "Title" %}
                             <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">Question</a>
                         {% elif header =="Tag" %}
-                            Tag
+                            Tags
                         {% else %}
                             <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">{{ header }}</a>
                         {% endif %}
@@ -276,9 +276,13 @@
                 {% else %}
                     <td rowspan="2" style="text-align:center">
                     {% if header == "Title" %}
-                    <a href="{{ url_for("display_a_question", question_id=question["Id"])}}">{{ question[header]  | truncate(70)  }}</a>
+                        <a href="{{ url_for("display_a_question", question_id=question["Id"])}}">{{ question[header]  | truncate(70)  }}</a>
+                    {% elif header == "Tag" %}
+                        {% for tag in question["Tag"] %}
+                            {{ tag }};
+                        {% endfor %}
                     {% elif header != "Id" and header != "Image" and header != "Message"   and header != "Submission Time" %}
-                    {{ question[header] }}
+                        {{ question[header] }}
                     {% endif %}
                     </td>
                 {% endif %}
