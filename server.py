@@ -202,13 +202,21 @@ def change_question_status():
 
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
-    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
-    relevant_answers_dicts = data_manager.sort_answers(relevant_answers_dicts)
-    question_dict["View Number"] = int(question_dict.get("View Number")) + 1
-    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-    return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
-                           img_path=connection.IMAGE_PATH)
+    question = data_manager.get_question_by_id(question_id)[0]
+    answers = data_manager.get_answers_by_question_id(question_id)
+    comments = data_manager.get_comments_by_question_id(question_id)
+    question_tags = [data_manager.get_tag_by_id(tag["tag_id"])[0] for tag in data_manager.get_question_tags_by_question_id(question_id)]
+
+    return render_template("display_question.html", question=question, answers=answers, comments=comments,
+                           question_tags=question_tags) #img_path=connection.IMAGE_PATH)
+
+    # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
+    # relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
+    # relevant_answers_dicts = data_manager.sort_answers(relevant_answers_dicts)
+    # question_dict["View Number"] = int(question_dict.get("View Number")) + 1
+    # data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+    # return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
+    #                        img_path=connection.IMAGE_PATH)
 
 @app.route("/add-question", methods=["GET"])
 def add_question_get():

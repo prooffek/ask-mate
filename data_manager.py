@@ -1,4 +1,10 @@
+from typing import List, Dict
+
+from psycopg2 import sql
+from psycopg2.extras import RealDictCursor
+
 import connection
+
 from connection import csv_question_headers, csv_answer_headers
 from data_manager_filter import Questions_status
 
@@ -24,6 +30,62 @@ titles_for_questions_columns = {
     csv_question_headers.image: 'Image',
     csv_question_headers.status: 'Status'
 }
+
+
+@connection.connection_handler
+def get_question_by_id(cursor: RealDictCursor, question_id: int) -> list:
+    query = f"""
+            SELECT *
+            FROM question
+            WHERE id = %(question_id)s"""
+    param = {"question_id": f"{question_id}"}
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_answers_by_question_id(cursor: RealDictCursor, question_id: int) -> list:
+    query = f"""
+                SELECT *
+                FROM answer
+                WHERE question_id = %(question_id)s"""
+    param = {"question_id": f"{question_id}"}
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_comments_by_question_id(cursor: RealDictCursor, question_id: int) -> list:
+    query = f"""
+                SELECT *
+                FROM comment
+                WHERE question_id = %(question_id)s"""
+    param = {"question_id": f"{question_id}"}
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_question_tags_by_question_id(cursor: RealDictCursor, question_id: int) -> list:
+    query = f"""
+                SELECT *
+                FROM question_tag
+                WHERE question_id = %(question_id)s"""
+    param = {"question_id": f"{question_id}"}
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_tag_by_id(cursor: RealDictCursor, tag_id: int) -> list:
+    query = """
+            SELECT name
+            FROM tag
+            WHERE id = %(tag_id)s"""
+    param = {"tag_id": tag_id}
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
 
 def find_by_id(id_to_find, list_of_dicts, mode="for_question"):
     list_to_return = []
