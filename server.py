@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from flask import Flask, render_template, url_for, redirect, request
 import data_manager, util, connection, os
 import copy
@@ -374,17 +373,15 @@ def login_google():
 @app.route("/login-google", methods=["POST"])
 def login_google_post():
     return ("<h1>google login</h1>")
-=======
 from flask import Flask
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+# @app.route("/")
+# def hello():
+#     return "Hello World!"
 
->>>>>>> 30667de222d84297ae25da623680f9c1e94739a2
 
 if __name__ == "__main__":
     app.run()
