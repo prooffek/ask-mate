@@ -222,31 +222,40 @@ def display_a_question(question_id):
 def add_question_get():
     return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
 
+# funkcja przerobiona - ale przekierowanie na stronę główną, będę musiała to poprawić na przekierowanie na to nowo dodane pytanie
 @app.route("/add-question", methods=["POST"])
 def add_question_post():
-    data_from_form = dict(request.form)
-    tags_list = data_manager.get_tags_list(data_from_form)
-    new_question = {
-        "Id": str(data_manager.next_id(data_manager.LIST_OF_QUESTIONS)),
-        "Submission Time": util.todays_date(),
-        "View Number": "0",
-        "Vote Number": "0",
-        "Title": data_from_form["Title"],
-        "Message": data_from_form["Message"],
-        "Image": request.files["Image"].filename,
-        "Tag": tags_list,
-        "Status": "new"
-    }
+    question = dict(request.form)
+    question["submission_time"] = util.current_datetime()
+    data_manager.add_question(question)
+    return redirect(url_for("index"))
+    # question["submission_time"] = util.todays_date()
+    # question["view_number"] = 0
+    # question["vote_number"] = 0
 
-    if new_question["Image"] != '':
-        image_file = request.files["Image"]
-        data_manager.add_image(image_file)
-
-    connection.convert_timestamp_to_date_format([new_question])
-    data_manager.LIST_OF_QUESTIONS.append(new_question)
-    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-
-    return redirect(url_for("display_a_question", question_id=new_question["Id"]))
+    # data_from_form = dict(request.form)
+    # tags_list = data_manager.get_tags_list(data_from_form)
+    # new_question = {
+    #     "Id": str(data_manager.next_id(data_manager.LIST_OF_QUESTIONS)),
+    #     "Submission Time": util.todays_date(),
+    #     "View Number": "0",
+    #     "Vote Number": "0",
+    #     "Title": data_from_form["Title"],
+    #     "Message": data_from_form["Message"],
+    #     "Image": request.files["Image"].filename,
+    #     "Tag": tags_list,
+    #     "Status": "new"
+    # }
+    #
+    # if new_question["Image"] != '':
+    #     image_file = request.files["Image"]
+    #     data_manager.add_image(image_file)
+    #
+    # connection.convert_timestamp_to_date_format([new_question])
+    # data_manager.LIST_OF_QUESTIONS.append(new_question)
+    # data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+    #
+    # return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
 @app.route("/question/<question_id>/new_answer", methods=["GET"])
 def post_an_answer_get(question_id):

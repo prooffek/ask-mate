@@ -86,6 +86,25 @@ def get_tag_by_id(cursor: RealDictCursor, tag_id: int) -> list:
     cursor.execute(query, param)
     return cursor.fetchall()
 
+@connection.connection_handler
+def add_question(cursor: RealDictCursor, question):
+    command = """
+            INSERT INTO question(submission_time, view_number, vote_number, title, message, image) 
+            VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s)"""
+
+    param = {"submission_time": question.get("submission_time"),
+             "view_number": question.get("view_number"),
+             "vote_number": question.get("vote_number"),
+             "title": question.get("title"),
+             "message": question.get("message"),
+             "image": question.get("image")}
+    cursor.execute(command, param)
+
+"""
+_______________________________________________
+            OLD DATA MANAGER
+_______________________________________________
+"""
 
 def find_by_id(id_to_find, list_of_dicts, mode="for_question"):
     list_to_return = []
