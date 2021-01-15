@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>{{ question["Title"] }}</title>
+    <title>{{ question["title"] }}</title>
 </head>
 <body>
     <table>
@@ -26,14 +26,14 @@
                 </form>
             </td>
             <td>
-                <form method = "POST" action="{{ url_for("change_question_status") }}">
-                <input type="hidden" name="question_id" value="{{ question["Id"] }}">
-                    {% if question["Status"] == "closed" %}
-                        <button type="submit" style="border: 0 none; background: none;" name="new_question_status" value="new"><img src="/static/images/open.png" width="44" height="auto"></button>
-                    {% else %}
-                        <button type="submit" style="border: 0 none; background: none;" name="new_question_status" value="close"><img src="/static/images/close.png" width="44" height="auto"></button>
-                    {% endif %}
-                </form>
+{#                <form method = "POST" action="{{ url_for("change_question_status") }}">#}
+{#                <input type="hidden" name="question_id" value="{{ question["id"] }}">#}
+{#                    {% if question["Status"] == "closed" %}#}
+{#                        <button type="submit" style="border: 0 none; background: none;" name="new_question_status" value="new"><img src="/static/images/open.png" width="44" height="auto"></button>#}
+{#                    {% else %}#}
+{#                        <button type="submit" style="border: 0 none; background: none;" name="new_question_status" value="close"><img src="/static/images/close.png" width="44" height="auto"></button>#}
+{#                    {% endif %}#}
+{#                </form>#}
             </td>
             <td></td>
             <td style="text-align: center"></td>
@@ -41,29 +41,29 @@
         <tr>
             <td style="text-align:center" width="30">
             <form method = "POST" action="{{ url_for("vote") }}">
-                <input type="hidden" name="question_id" value="{{ question["Id"] }}">
+                <input type="hidden" name="question_id" value="{{ question["id"] }}">
                 <input type="hidden" name="url_origin" value="display_question">
                 <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
                 <button type="submit" style="border: 0 none; background: none;" name="vote" value="up_vote"><img src="/static/images/up-chevron.png" width="12" height="auto"></button>
             </form>
             <td style="text-align:center" width="30">
-                {% if question["Status"] == "new" %}
-                    <img src="/static/images/question_status_new.png" width="33" height="auto">
-                {% elif question["Status"] == "discussed" %}
-                    <img src="/static/images/question_status_discussed.png" width="33" height="auto">
-                {% elif question["Status"] == "closed" %}
-                    <img src="/static/images/question_status_closed.png" width="33" height="auto">
-                {% endif %}
+{#                {% if question["Status"] == "new" %}#}
+{#                    <img src="/static/images/question_status_new.png" width="33" height="auto">#}
+{#                {% elif question["Status"] == "discussed" %}#}
+{#                    <img src="/static/images/question_status_discussed.png" width="33" height="auto">#}
+{#                {% elif question["Status"] == "closed" %}#}
+{#                    <img src="/static/images/question_status_closed.png" width="33" height="auto">#}
+{#                {% endif %}#}
             </td>
             <td rowspan="1" colspan="2" style="text-align: left; vertical-align: center "  >
-                <big><b>{{ question["Title"] }}</b></big>
-                    <form action="{{ url_for('edit_question_get', question_id=question["Id"])}}" style="display: inline; vertical-align: top">
+                <big><b>{{ question["title"] }}</b></big>
+                    <form action="{{ url_for('edit_question_get', question_id=question["id"])}}" style="display: inline; vertical-align: top">
                     <button type="submit" style="border: 0 none; background: none;" name="edit_question" value="edit_question"><img src="/static/images/edit_question.png" width="22" height="auto"></button>
                     </form>
             </td>
         </tr>
         <tr>
-            <td style="text-align: center">{{ question["Vote Number"] }}</td>
+            <td style="text-align: center">{{ question["vote_number"] }}</td>
             <td>
 
             </td>
@@ -73,7 +73,7 @@
         <tr>
             <td style="text-align:center">
                 <form method = "POST" action="{{ url_for("vote") }}">
-                    <input type="hidden" name="question_id" value="{{ question["Id"] }}">
+                    <input type="hidden" name="question_id" value="{{ question["id"] }}">
                     <input type="hidden" name="url_origin" value="display_question">
                     <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
                     <button type="submit" style="border: 0 none; background: none;" name="vote" value="down_vote"><img src="/static/images/down-chevron.png" width="12" height="auto"></button>
@@ -91,17 +91,17 @@
         </tr>
         <tr>
             <td></td>
-            <td colspan="2" style="text-align: left; vertical-align: top"><big>{{ question["Message"] }}</big></td>
+            <td colspan="2" style="text-align: left; vertical-align: top"><big>{{ question["message"] }}</big></td>
             <td></td>
         </tr>
         <tr>
             <td></td>
             <td colspan="2">
-                {% if question["Image"] != "" %}
-                    <form action="{{ img_path }}/{{ question["Image"] }}" target="_blank">
-                        <button><img src="{{ img_path }}/{{ question["Image"] }}" alt="{{ question["Image"] }}" title="{{ question["Image"] }}" width="100" height="auto"></button>
+                {% if question["image"] %}
+                    <form action="/{{ question["image"] }}" target="_blank">
+                        <button><img src="/{{ question["image"] }}" alt="{{ question["image"] }}" title="{{ question["image"] }}" width="100" height="auto"></button>
                     </form>
-                    <form action="{{ url_for('delete_image_from_question', question_id=question["Id"])}}" style="display: inline; vertical-align: top">
+                    <form action="{{ url_for('delete_image_from_question', question_id=question["id"])}}" style="display: inline; vertical-align: top">
                         <button type="submit" style="border: 0 none; background: none;" name="delete_image" value="delete_image"><img src="/static/images/remove_image.png" width="33" height="auto"></button>
                     </form>
                 {% endif %}
@@ -111,21 +111,19 @@
         <tr>
             <td></td>
             <td style="horiz-align: center" vertical-align: top colspan="2">
-                {% if question["Tag"] != [""] %}
-                    <p><b>Tags:</b>
-                    {% for tag in question["Tag"] %}
-                        {{ tag }};
-                    {% endfor %}
-                </p>
-                {% endif %}
+            <p><b>Tags:</b>
+                {% for tag in question_tags %}
+                    {{ tag["name"] }}
+                {% endfor %}
+            </p>
             </td>
             <td></td>
         </tr>
         <tr>
             <td></td>
             <td style="horiz-align: center" vertical-align: top colspan="2">
-                <small>Viewed {{ question["View Number"] }} times  Question asked {{ question["Submission Time"] }} </small>
-                <form action="{{ url_for('delete_question', question_id=question["Id"])}}" style="display: inline; vertical-align: top">
+                <small>Viewed {{ question["view_number"] }} times  Question asked {{ question["submission_time"] }} </small>
+                <form action="{{ url_for('delete_question', question_id=question["id"])}}" style="display: inline; vertical-align: top">
                     <button type="submit" style="border: 0 none; background: none;" name="delete_question" value="delete_question"><img src="/static/images/delete_question.png" width="22" height="auto"></button>
                 </form>
 
@@ -141,7 +139,7 @@
     <table  border="0" width="50%">
             <tr>
                 <td style="text-align: center" width="35">
-                    <form action="{{ url_for("post_an_answer_get", question_id=question["Id"]) }}">
+                    <form action="{{ url_for("post_an_answer_get", question_id=question["id"]) }}">
                     <button type="submit" style="border: 0 none; background: none;" name="new_answer" value="new_answer"><img src="/static/images/write_new_answer.png" width="33" height="auto"></button>
                     </form>
                 </td>
@@ -152,10 +150,10 @@
             <tr>
                 <td style="text-align:center">
                     <form method = "POST" action="{{ url_for("vote") }}">
-                        <input type="hidden" name="question_id" value="{{ question["Id"] }}">
+                        <input type="hidden" name="question_id" value="{{ question["id"] }}">
                         <input type="hidden" name="url_origin" value="display_question">
                         <input type="hidden" name="vote_for_answer_or_question" value="vote_for_answer">
-                        <input type="hidden" name="answer_id" value="{{ answer["Id"] }}">
+                        <input type="hidden" name="answer_id" value="{{ answer["id"] }}">
                         <button type="submit" style="border: 0 none; background: none;" name="vote" value="up_vote"><img src="/static/images/up-chevron.png" width="12" height="auto"></button>
                     </form>
                 </td>
@@ -164,25 +162,25 @@
             <tr>
                 <td></td>
                 <td rowspan="3" style="text-align: left; vertical-align: top">
-                    <big>{{ answer["Message"] }} </big>
-                    {% if answer["Image"] != "" %}
-                        <form action="{{ img_path }}/{{ answer["Image"] }}" target="_blank">
-                            <button><img src="{{ img_path }}/{{ answer["Image"] }}" alt="{{ answer["Image"] }}" title="{{ answer["Image"] }}" width="100" height="auto"></button>
+                    <big>{{ answer["message"] }} </big>
+                    {% if answer["image"] %}
+                        <form action="{{ img_path }}/{{ answer["image"] }}" target="_blank">
+                            <button><img src="{{ img_path }}/{{ answer["image"] }}" alt="{{ answer["image"] }}" title="{{ answer["image"] }}" width="100" height="auto"></button>
                         </form>
                     {% endif %}
                 </td>
             </tr>
             <tr>
-                <td style="text-align:center">{{ answer["Vote Number"] }}</td>
+                <td style="text-align:center">{{ answer["vote_number"] }}</td>
                 <td></td>
             </tr>
             <tr>
             <td style="text-align:center">
                 <form method = "POST" action="{{ url_for("vote") }}">
-                    <input type="hidden" name="question_id" value="{{ question["Id"] }}">
+                    <input type="hidden" name="question_id" value="{{ question["id"] }}">
                     <input type="hidden" name="url_origin" value="display_question">
                     <input type="hidden" name="vote_for_answer_or_question" value="vote_for_answer">
-                    <input type="hidden" name="answer_id" value="{{ answer["Id"] }}">
+                    <input type="hidden" name="answer_id" value="{{ answer["id"] }}">
                     <button type="submit" style="border: 0 none; background: none;" name="vote" value="down_vote"><img src="/static/images/down-chevron.png" width="12" height="auto"></button>
                 </form>
             </td>
@@ -190,23 +188,16 @@
             <tr>
                 <td></td>
                 <td style="horiz-align: center">
-                    {% if answer["Tag"] != [""] %}
-                        <p><b>Tags:</b>
-                            {% for tag in answer["Tag"] %}
-                                {{ tag }};
-                            {% endfor %}
-                        </p>
-                    {% endif %}
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td style="vertical-align:center">
-                    <small>Answer posted {{ answer["Submission Time"] }}</small>
-                    <form action="{{ url_for('edit_answer_get', answer_id=answer["Id"]) }}" style="display: inline; vertical-align: top">
+                    <small>Answer posted {{ answer["submission_time"] }}</small>
+                    <form action="{{ url_for('edit_answer_get', answer_id=answer["id"]) }}" style="display: inline; vertical-align: top">
                         <button type="submit" style="border: 0 none; background: none;"><img src="/static/images/edit_question.png" width="19" height="auto"></button>
                     </form>
-                    <form action="{{ url_for("delete_answer", answer_id=answer["Id"]) }}" style="display: inline; vertical-align: top">
+                    <form action="{{ url_for("delete_answer", answer_id=answer["id"]) }}" style="display: inline; vertical-align: top">
                         <button type="submit" style="border: 0 none; background: none;" ><img src="/static/images/delete_answer.png" width="22" height="auto"></button>
                     </form>
                 </td>
