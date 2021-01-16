@@ -205,10 +205,12 @@ def change_question_status():
 
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
-    question = data_manager.get_question_by_id(question_id)[0]
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     answers = data_manager.get_answers_by_question_id(question_id)
     comments = data_manager.get_comments_by_question_id(question_id)
-    question_tags = [data_manager.get_tag_by_id(tag["tag_id"])[0] for tag in data_manager.get_question_tags_by_question_id(question_id)]
+
+    question_tags = [util.take_out_of_the_list(data_manager.get_tag_by_id(tag["tag_id"]))
+                     for tag in data_manager.get_question_tags_by_question_id(question_id)]
 
     return render_template("display_question.html", question=question, answers=answers, comments=comments,
                            question_tags=question_tags, img_path=util.IMAGE_PATH) #img_path=connection.IMAGE_PATH)
@@ -262,7 +264,7 @@ def add_question_post():
 
 @app.route("/question/<question_id>/new_answer", methods=["GET"])
 def post_an_answer_get(question_id):
-    question = data_manager.get_question_by_id(question_id)[0]
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     return render_template("add-question.html", question_id=question_id, question=question)
 
     # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
@@ -298,7 +300,7 @@ def post_an_answer_post(question_id):
 
 @app.route("/answer/<answer_id>/delete endpoint")
 def delete_answer(answer_id):
-    answer = data_manager.get_answer_by_answer_id(answer_id)[0]
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
     question_id = answer["question_id"]
     util.delete_image(answer["image"])
     data_manager.delete_answer(answer_id)
@@ -360,7 +362,7 @@ def delete_image_from_question(question_id):
 
 @app.route("/<answer_id>/delete-img")
 def delete_answer_img(answer_id):
-    answer = data_manager.get_answer_by_answer_id(answer_id)[0]
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
     util.delete_image(answer["image"])
     data_manager.del_answer_img_from_db(answer["id"])
     return redirect(url_for('display_a_question', question_id=answer['question_id']))
@@ -371,7 +373,7 @@ def delete_answer_img(answer_id):
 
 @app.route("/edit/<answer_id>")
 def edit_answer_get(answer_id):
-    answer = data_manager.get_answer_by_answer_id(answer_id)[0]
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
     img_path = os.path.join(util.IMAGE_PATH, answer["image"])
     return render_template('edit.html', answer_id=answer_id, answer=answer, img_path=img_path)
 
@@ -382,7 +384,7 @@ def edit_answer_get(answer_id):
 @app.route("/edit/<answer_id>", methods=["POST"])
 def edit_answer_post(answer_id):
     data_from_form = dict(request.form)
-    current_answer = data_manager.get_answer_by_answer_id(answer_id)[0]
+    current_answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
     current_answer["message"] = data_from_form["message"]
 
     if "image" in request.files and request.files["image"].filename != '':

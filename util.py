@@ -26,3 +26,6 @@ def delete_image(image):
         os.remove(path_image)
     except:
         ValueError(f"There's no {image} in the directory")
+
+def take_out_of_the_list(list):
+    return list[0]
