@@ -53,33 +53,11 @@ def get_question_by_id(cursor: RealDictCursor, question_id: int) -> list:
 
 
 @connection.connection_handler
-def get_answers_by_question_id(cursor: RealDictCursor, question_id: int) -> list:
+def get_nonquestion_by_question_id(cursor: RealDictCursor, question_id, table_name: str) -> list:
     query = f"""
-                SELECT *
-                FROM answer
-                WHERE question_id = %(question_id)s"""
-    param = {"question_id": f"{question_id}"}
-    cursor.execute(query, param)
-    return cursor.fetchall()
-
-
-@connection.connection_handler
-def get_comments_by_question_id(cursor: RealDictCursor, question_id: int) -> list:
-    query = f"""
-                SELECT *
-                FROM comment
-                WHERE question_id = %(question_id)s"""
-    param = {"question_id": f"{question_id}"}
-    cursor.execute(query, param)
-    return cursor.fetchall()
-
-
-@connection.connection_handler
-def get_question_tags_by_question_id(cursor: RealDictCursor, question_id: int) -> list:
-    query = f"""
-                SELECT *
-                FROM question_tag
-                WHERE question_id = %(question_id)s"""
+            SELECT *
+            FROM {table_name}
+            WHERE question_id = %(question_id)s"""
     param = {"question_id": f"{question_id}"}
     cursor.execute(query, param)
     return cursor.fetchall()

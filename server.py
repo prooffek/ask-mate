@@ -7,6 +7,10 @@ import data_manager_filter
 app = Flask(__name__)
 
 LIST_OF_TAGS = data_manager.get_tags_names()
+QUESTION_TABLE_NAME = "question"
+ANSWER_TABLE_NAME = "answer"
+COMMENTS_TABLE_NAME = "comment"
+QUESTION_TAG_TABLE_NAME = "question_tag"
 
 class server_state:
     #SORTING
@@ -206,11 +210,14 @@ def change_question_status():
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    answers = data_manager.get_answers_by_question_id(question_id)
-    comments = data_manager.get_comments_by_question_id(question_id)
+    answers = data_manager.get_nonquestion_by_question_id(question_id, ANSWER_TABLE_NAME)
+    comments = data_manager.get_nonquestion_by_question_id(question_id, COMMENTS_TABLE_NAME)
+    tags = data_manager.get_nonquestion_by_question_id(question_id, QUESTION_TAG_TABLE_NAME)
+    # answers = data_manager.get_answers_by_question_id(question_id)
+    # comments = data_manager.get_comments_by_question_id(question_id)
 
     question_tags = [util.take_out_of_the_list(data_manager.get_tag_by_id(tag["tag_id"]))
-                     for tag in data_manager.get_question_tags_by_question_id(question_id)]
+                     for tag in tags]
 
     return render_template("display_question.html", question=question, answers=answers, comments=comments,
                            question_tags=question_tags, img_path=util.IMAGE_PATH) #img_path=connection.IMAGE_PATH)
