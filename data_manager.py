@@ -1,6 +1,7 @@
 from typing import List, Dict
 
 from psycopg2 import sql
+from psycopg2._psycopg import cursor
 from psycopg2.extras import RealDictCursor
 
 import connection
@@ -18,7 +19,7 @@ LIST_OF_QUESTIONS = connection.str_to_list(LIST_OF_QUESTIONS)
 LIST_OF_ANSWERS = connection.convert_timestamp_to_date_format(connection.read_from_file(answers_default_filename))
 LIST_OF_ANSWERS = connection.str_to_list(LIST_OF_ANSWERS)
 
-LIST_OF_TAGS = connection.read_from_file(tags_default_filename)
+
 
 titles_for_questions_columns = {
     csv_question_headers.id: 'Id',
@@ -30,6 +31,14 @@ titles_for_questions_columns = {
     csv_question_headers.image: 'Image',
     csv_question_headers.status: 'Status'
 }
+
+@connection.connection_handler
+def get_tags_names(cursor: RealDictCursor) -> list:
+    query = """
+            SELECT name
+            FROM tag"""
+    cursor.execute(query)
+    return cursor.fetchall()
 
 
 @connection.connection_handler
@@ -86,6 +95,7 @@ def get_tag_by_id(cursor: RealDictCursor, tag_id: int) -> list:
     cursor.execute(query, param)
     return cursor.fetchall()
 
+
 @connection.connection_handler
 def add_question(cursor: RealDictCursor, question):
     command = """
@@ -100,11 +110,85 @@ def add_question(cursor: RealDictCursor, question):
              "image": question.get("image")}
     cursor.execute(command, param)
 
+
+@connection.connection_handler
+def get_answer_by_answer_id(cursor: RealDictCursor, answer_id: int) -> dict:
+    query = """
+            SELECT *
+            FROM answer
+            WHERE id = %(answer_id)s"""
+    param = {"answer_id": f"{answer_id}"}
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def add_answer(cursor: RealDictCursor, answer: dict):
+    command = """
+            INSERT INTO answer(submission_time, vote_number, question_id, message, image)
+            VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s,%(image)s)"""
+    param = {
+            "submission_time": answer["submission_time"],
+            "vote_number": answer["vote_number"],
+            "question_id": answer["question_id"],
+            "message": answer["message"],
+            "image": answer["image"]
+            }
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def get_answer_image(cursor: RealDictCursor, answer_id) -> list:
+    query = """
+            SELECT image
+            FROM answer
+            WHERE id = %(answer_id)s"""
+    param = {"answer_id": f"{answer_id}"}
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def update_answer(cursor: RealDictCursor, answer_id, new_message: str, new_image: str):
+    command = """
+            UPDATE answer
+            SET message = %(new_message)s,
+                image = %(new_image)s
+            WHERE id = %(answer_id)s"""
+    param = {
+        "new_message": f"{new_message}",
+        "new_image": f"{new_image}",
+        "answer_id": f"{answer_id}"
+    }
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def del_answer_img_from_db(cursor: RealDictCursor, answer_id):
+    command = """
+            UPDATE answer 
+            SET image = %(image)s
+            WHERE id = %(answer_id)s"""
+    param = {"image": "",
+             "answer_id": f"{answer_id}"}
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def delete_answer(cursor: RealDictCursor, answer_id):
+    command = """
+            DELETE FROM answer
+            WHERE id = %(answer_id)s"""
+    param = {"answer_id": f"{answer_id}"}
+    cursor.execute(command, param)
+
 """
 _______________________________________________
             OLD DATA MANAGER
 _______________________________________________
 """
+
+#LIST_OF_TAGS = connection.read_from_file(tags_default_filename)
 
 def find_by_id(id_to_find, list_of_dicts, mode="for_question"):
     list_to_return = []
@@ -184,11 +268,11 @@ def update_file(NEW_LIST: list, file_type="question"):
 def next_id(list_of_dicts):
     return max(int(dictionary["Id"]) for dictionary in list_of_dicts) + 1
 
-def update_answer_list(new_answer):
-    connection.append_to_file(answers_default_filename, [new_answer])
-    new_answer = connection.convert_timestamp_to_date_format([new_answer])
-    new_answer = connection.str_to_list(new_answer)
-    LIST_OF_ANSWERS.append(new_answer[0])
+# def update_answer_list(new_answer):
+#     connection.append_to_file(answers_default_filename, [new_answer])
+#     new_answer = connection.convert_timestamp_to_date_format([new_answer])
+#     new_answer = connection.str_to_list(new_answer)
+#     LIST_OF_ANSWERS.append(new_answer[0])
 
 def delete_dict(list_of_dicts, dict_to_remove):
     if list_of_dicts == LIST_OF_QUESTIONS:
@@ -199,17 +283,17 @@ def delete_dict(list_of_dicts, dict_to_remove):
         list_of_dicts.remove(dict_to_remove)
         connection.write_to_file(answers_default_filename, list_of_dicts)
 
-def add_image(image_file):
-    connection.image_to_file(image_file)
+# def add_image(image_file):
+#     connection.image_to_file(image_file)
 
-def remove_image(dict_to_edit, mode):
-    connection.delete_image(dict_to_edit["Image"])
-    dict_to_edit["Image"] = ""
-    if mode == "question":
-        update_file(LIST_OF_QUESTIONS)
-    else:
-        update_file(LIST_OF_ANSWERS, "answer")
+# def remove_image(dict_to_edit, mode):
+#     connection.delete_image(dict_to_edit["image"])
+    # dict_to_edit["image"] = ""
+    # if mode == "question":
+    #     update_file(LIST_OF_QUESTIONS)
+    # else:
+    #     update_file(LIST_OF_ANSWERS, "answer")
 
-def get_tags_list(dictionary):
-    names_list = [dictionary["Name"] for dictionary in LIST_OF_TAGS]
-    return [value for key, value in dictionary.items() if key in names_list]
+# def get_tags_list(dictionary):
+#     names_list = [dictionary["Name"] for dictionary in LIST_OF_TAGS]
+#     return [value for key, value in dictionary.items() if key in names_list]

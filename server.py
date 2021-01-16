@@ -3,7 +3,10 @@ import data_manager, util, connection, os
 import copy
 import data_manager_filter
 
+
 app = Flask(__name__)
+
+LIST_OF_TAGS = data_manager.get_tags_names()
 
 class server_state:
     #SORTING
@@ -208,7 +211,7 @@ def display_a_question(question_id):
     question_tags = [data_manager.get_tag_by_id(tag["tag_id"])[0] for tag in data_manager.get_question_tags_by_question_id(question_id)]
 
     return render_template("display_question.html", question=question, answers=answers, comments=comments,
-                           question_tags=question_tags) #img_path=connection.IMAGE_PATH)
+                           question_tags=question_tags, img_path=util.IMAGE_PATH) #img_path=connection.IMAGE_PATH)
 
     # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
     # relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
@@ -259,39 +262,55 @@ def add_question_post():
 
 @app.route("/question/<question_id>/new_answer", methods=["GET"])
 def post_an_answer_get(question_id):
-    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    return render_template("add-question.html", question_id=question_id, question=question_dict,
-                           tags_list=data_manager.LIST_OF_TAGS)
+    question = data_manager.get_question_by_id(question_id)[0]
+    return render_template("add-question.html", question_id=question_id, question=question)
+
+    # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
+    # return render_template("add-question.html", question_id=question_id, question=question_dict,
+    #                        tags_list=data_manager.LIST_OF_TAGS)
 
 @app.route("/question/<question_id>/new_answer", methods=["POST"])
 def post_an_answer_post(question_id):
-    data_from_form = dict(request.form)
-    tags_list = data_manager.get_tags_list(data_from_form)
-    new_answer = {
-        "Id": str(data_manager.next_id(data_manager.LIST_OF_ANSWERS)),
-        "Submission Time": util.todays_date(),
-        "Vote Number": "0",
-        "Question Id": data_from_form["Question Id"],
-        "Message": data_from_form["Message"],
-        "Image": request.files["Image"].filename,
-        "Tag": tags_list
-    }
+    new_answer = dict(request.form)
+    new_answer["submission_time"] = util.current_datetime()
+    new_answer["image"] = request.files["image"].filename
 
-    if "Image" in request.files and request.files["Image"].filename != '':
-        image_file = request.files["Image"]
-        data_manager.add_image(image_file)
+    if "image" in request.files and request.files["image"].filename != '':
+        image_file = request.files["image"]
+        util.add_image(image_file)
 
-    data_manager.update_answer_list(new_answer)
+    data_manager.add_answer(new_answer)
     return redirect(url_for("display_a_question", question_id=question_id))
+
+    # tags_list = data_manager.get_tags_list(data_from_form)
+    # new_answer = {
+    #     "Id": str(data_manager.next_id(data_manager.LIST_OF_ANSWERS)),
+    #     "Submission Time": util.todays_date(),
+    #     "Vote Number": "0",
+    #     "Question Id": data_from_form["Question Id"],
+    #     "Message": data_from_form["Message"],
+    #     "Image": request.files["Image"].filename,
+    #     "Tag": tags_list
+    # }
+
+    # data_manager.update_answer_list(new_answer)
+    # return redirect(url_for("display_a_question", question_id=question_id))
 
 @app.route("/answer/<answer_id>/delete endpoint")
 def delete_answer(answer_id):
-    list_of_dicts = data_manager.LIST_OF_ANSWERS
-    answer_to_remove = data_manager.find_by_id(answer_id, list_of_dicts, "for_answer")[0]
-    question_id = answer_to_remove["Question Id"]
-    data_manager.delete_dict(list_of_dicts, answer_to_remove)
-
+    answer = data_manager.get_answer_by_answer_id(answer_id)[0]
+    question_id = answer["question_id"]
+    util.delete_image(answer["image"])
+    data_manager.delete_answer(answer_id)
     return redirect(url_for("display_a_question", question_id=question_id))
+
+
+    # list_of_dicts = data_manager.LIST_OF_ANSWERS
+    # answer_to_remove = data_manager.find_by_id(answer_id, list_of_dicts, "for_answer")[0]
+    # question_id = answer_to_remove["Question Id"]
+    # data_manager.delete_dict(list_of_dicts, answer_to_remove)
+
+    # return redirect(url_for("display_a_question", question_id=question_id))
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
@@ -341,31 +360,51 @@ def delete_image_from_question(question_id):
 
 @app.route("/<answer_id>/delete-img")
 def delete_answer_img(answer_id):
-    answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
-    data_manager.remove_image(answer_dict, "answer")
+    answer = data_manager.get_answer_by_answer_id(answer_id)[0]
+    util.delete_image(answer["image"])
+    data_manager.del_answer_img_from_db(answer["id"])
+    return redirect(url_for('display_a_question', question_id=answer['question_id']))
 
-    return redirect(url_for('display_a_question', question_id=answer_dict['Question Id']))
+    # answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
+    # data_manager.remove_image(answer_dict, "answer")
+    # return redirect(url_for('display_a_question', question_id=answer_dict['Question Id']))
 
 @app.route("/edit/<answer_id>")
 def edit_answer_get(answer_id):
-    answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
-    img_path = os.path.join(connection.IMAGE_PATH, answer_dict["Image"])
-    return render_template('edit.html', answer_id=answer_id, answer=answer_dict, img_path=img_path)
+    answer = data_manager.get_answer_by_answer_id(answer_id)[0]
+    img_path = os.path.join(util.IMAGE_PATH, answer["image"])
+    return render_template('edit.html', answer_id=answer_id, answer=answer, img_path=img_path)
+
+    # answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
+    # img_path = os.path.join(connection.IMAGE_PATH, answer_dict["Image"])
+    # return render_template('edit.html', answer_id=answer_id, answer=answer_dict, img_path=img_path)
 
 @app.route("/edit/<answer_id>", methods=["POST"])
 def edit_answer_post(answer_id):
-    current_answer = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
-    new_answer = dict(request.form)
-    current_answer["Message"] = new_answer["Message"]
+    data_from_form = dict(request.form)
+    current_answer = data_manager.get_answer_by_answer_id(answer_id)[0]
+    current_answer["message"] = data_from_form["message"]
 
-    if "Image" in request.files and request.files["Image"].filename != '':
-        data_manager.remove_image(current_answer, "answer")
-        current_answer["Image"] = request.files["Image"].filename
-        image_file = request.files["Image"]
-        data_manager.add_image(image_file)
+    if "image" in request.files and request.files["image"].filename != '':
+        util.delete_image(current_answer["image"])
+        current_answer["image"] = request.files["image"].filename
+        util.add_image(request.files["image"])
 
-    data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
-    return redirect(url_for('display_a_question', question_id=current_answer['Question Id']))
+    data_manager.update_answer(answer_id, current_answer["message"], current_answer["image"])
+    return redirect(url_for('display_a_question', question_id=current_answer['question_id']))
+
+    # current_answer = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
+    # new_answer = dict(request.form)
+    # current_answer["message"] = new_answer["message"]
+    #
+    # if "image" in request.files and request.files["image"].filename != '':
+    #     data_manager.remove_image(current_answer, "answer")
+    #     current_answer["Image"] = request.files["Image"].filename
+    #     image_file = request.files["Image"]
+    #     data_manager.add_image(image_file)
+    #
+    # data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
+    # return redirect(url_for('display_a_question', question_id=current_answer['Question Id']))
 
 @app.route("/login")
 def login_get():
@@ -390,6 +429,8 @@ def login_google():
 @app.route("/login-google", methods=["POST"])
 def login_google_post():
     return ("<h1>google login</h1>")
+
+
 from flask import Flask
 
 # app = Flask(__name__)
