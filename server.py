@@ -245,8 +245,14 @@ def add_question_get():
 def add_question_post():
     question = dict(request.form)
     question["submission_time"] = util.current_datetime()
-    data_manager.add_question(question)
-    return redirect(url_for("index"))
+    file_name = request.files["image"].filename
+    if file_name != "":
+        image_file = request.files["image"]
+        util.add_image(image_file)
+        question["image"] = image_file.filename
+    return_value = data_manager.add_question(question)
+
+    return redirect(url_for("display_a_question", question_id=return_value["id"]))
 
     # question["submission_time"] = util.todays_date()
     # question["view_number"] = 0

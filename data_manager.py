@@ -79,6 +79,7 @@ def add_question(cursor: RealDictCursor, question):
     command = """
             INSERT INTO question(submission_time, view_number, vote_number, title, message, image) 
             VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s)
+            RETURNING id
             """
 
     param = {"submission_time": question.get("submission_time"),
@@ -88,6 +89,7 @@ def add_question(cursor: RealDictCursor, question):
              "message": question.get("message"),
              "image": question.get("image")}
     cursor.execute(command, param)
+    return cursor.fetchone()
 
 
 @connection.connection_handler
