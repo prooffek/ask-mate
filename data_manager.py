@@ -90,7 +90,8 @@ def get_tag_by_id(cursor: RealDictCursor, tag_id: int) -> list:
 def add_question(cursor: RealDictCursor, question):
     command = """
             INSERT INTO question(submission_time, view_number, vote_number, title, message, image) 
-            VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s)"""
+            VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s)
+            """
 
     param = {"submission_time": question.get("submission_time"),
              "view_number": question.get("view_number"),
@@ -99,6 +100,58 @@ def add_question(cursor: RealDictCursor, question):
              "message": question.get("message"),
              "image": question.get("image")}
     cursor.execute(command, param)
+
+
+@connection.connection_handler
+def delete_question(cursor: RealDictCursor, question_id: int):
+    command = """
+            DELETE
+            FROM question
+            WHERE id = %(question_id)s
+    """
+
+    param = {"id": question_id}
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def delete_answers_by_question_id(cursor: RealDictCursor, question_id: int):
+    command = """
+            DELETE
+            FROM answer
+            WHERE question_id = %(question_id)s
+    """
+    param = {"question_id": question_id}
+
+    cursor.execute(command, param)
+
+@connection.connection_handler
+def get_headers_from_table(cursor:RealDictCursor, table_name) -> list:
+    query = """
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name = %(table_name)s
+            """
+    param = {"table_name": table_name}
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_list_questions(cursor: RealDictCursor) -> list:
+    query = """
+            SELECT *
+            FROM question
+            ORDER BY submission_time
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+# @connection.connection_handler
+# def get_id(cursor: RealDictCursor, name_table):
+#     query = """
+#         SELECT CURRVAL(pg_get_serial_sequence('sheet_tbl','sheet_id'))";
+#     """
 
 """
 _______________________________________________

@@ -53,15 +53,19 @@ class server_state:
 
 @app.route('/', methods=["GET"])
 def index():
-    headers = data_manager.LIST_OF_QUESTIONS[0].keys()
-
-    server_state.update_filtered_list_of_questions()
-    questions = server_state.FILTERED_LIST_OF_QUESTIONS
-
-    answers = data_manager.LIST_OF_ANSWERS
-    answers_number_for_questions = data_manager.find_answers_number_for_questions(questions, answers)
-
-    return render_template("index.html", headers=headers, questions=questions, server_state=server_state, answers_number=answers_number_for_questions)
+    headers = data_manager.get_headers_from_table("question")
+    questions = data_manager.get_list_questions()
+    # server_state.update_filtered_list_of_questions()
+    return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
+    # headers = data_manager.LIST_OF_QUESTIONS[0].keys()
+    #
+    # server_state.update_filtered_list_of_questions()
+    # questions = server_state.FILTERED_LIST_OF_QUESTIONS
+    #
+    # answers = data_manager.LIST_OF_ANSWERS
+    # answers_number_for_questions = data_manager.find_answers_number_for_questions(questions, answers)
+    #
+    # return render_template("index.html", headers=headers, questions=questions, server_state=server_state, answers_number=answers_number_for_questions)
 
 @app.route('/', methods=["POST"])
 def index_post():
@@ -222,6 +226,7 @@ def display_a_question(question_id):
 def add_question_get():
     return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
 
+
 # funkcja przerobiona - ale przekierowanie na stronę główną, będę musiała to poprawić na przekierowanie na to nowo dodane pytanie
 @app.route("/add-question", methods=["POST"])
 def add_question_post():
@@ -229,6 +234,7 @@ def add_question_post():
     question["submission_time"] = util.current_datetime()
     data_manager.add_question(question)
     return redirect(url_for("index"))
+
     # question["submission_time"] = util.todays_date()
     # question["view_number"] = 0
     # question["vote_number"] = 0
@@ -295,14 +301,17 @@ def delete_answer(answer_id):
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    answers_to_remove = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
-    question_to_remove = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-    if len(answers_to_remove) != 0:
-        for answer in answers_to_remove:
-            data_manager.delete_dict(data_manager.LIST_OF_ANSWERS, answer)
-    data_manager.delete_dict(data_manager.LIST_OF_QUESTIONS, question_to_remove[0])
-
+    data_manager.delete_question(question_id)
+    data_manager.delete_answers_by_question_id(question_id)
     return redirect(url_for("index"))
+    # answers_to_remove = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
+    # question_to_remove = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+    # if len(answers_to_remove) != 0:
+    #     for answer in answers_to_remove:
+    #         data_manager.delete_dict(data_manager.LIST_OF_ANSWERS, answer)
+    # data_manager.delete_dict(data_manager.LIST_OF_QUESTIONS, question_to_remove[0])
+    #
+    # return redirect(url_for("index"))
 
 @app.route("/question/<question_id>/edit", methods=["GET"])
 def edit_question_get(question_id):

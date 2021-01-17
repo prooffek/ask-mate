@@ -200,89 +200,91 @@
         <thead>
             <tr>
                 {% for header in headers %}
-                    <th scope="col">
-                    {% if header != "Id" and header != "Image" and header != "Message"  and header != "Submission Time"  %}
-                        {% if header == "Vote Number" %}
-                            <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">Votes</a>
-                        {% elif header == "View Number" %}
-                            <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">Views</a>
-                        {% elif header == "Title" %}
-                            <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">Question</a>
-                        {% elif header =="Tag" %}
-                            Tags
-                        {% else %}
-                            <a href="{{ url_for("sort_questions", sort_question_column=header)  }}">{{ header }}</a>
-                        {% endif %}
+                    {% for property in header %}
+                        <th scope="col">
+                            {% if header.get(property) != "id" and header.get(property) != "image" and header.get(property) != "message"  and header.get(property) != "submission_time"  %}
+                            {% if header.get(property) == "vote_number" %}
+                                <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Votes</a>
+                            {% elif header == "view_number" %}
+                                <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Views</a>
+                            {% elif header == "title" %}
+                                <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Question</a>
+                            {% elif header =="tag" %}
+                                Tags
+                            {% else %}
+                                <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">{{ header.get(property) }}</a>
+                            {% endif %}
 
-                        {% if header == server_state.actual_sort_column %}
-                            {% if server_state.actual_sort_direction == 'descending' %}
+                            {% if header.get(property) == server_state.actual_sort_column %}
+                                {% if server_state.actual_sort_direction == 'descending' %}
+                                <img src="static/images/up-arrow-4.png" width="10" height="auto">
+                                {% else %}
+                                <img src="static/images/down-arrow-4.png" width="10" height="auto">
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        </th>
+                        {% if header.get(property) == "vote_number" %}
+                        <th><a href="{{ url_for("sort_questions", sort_question_column="Answers")  }}">Answers</a>
+                        {% if "Answers" == server_state.actual_sort_column %}
+                            {% if server_state.actual_sort_direction == 'ascending' %}
                             <img src="static/images/up-arrow-4.png" width="10" height="auto">
                             {% else %}
                             <img src="static/images/down-arrow-4.png" width="10" height="auto">
                             {% endif %}
                         {% endif %}
-                    {% endif %}
-                    </th>
-                    {% if header == "Vote Number" %}
-                    <th><a href="{{ url_for("sort_questions", sort_question_column="Answers")  }}">Answers</a>
-                    {% if "Answers" == server_state.actual_sort_column %}
-                        {% if server_state.actual_sort_direction == 'ascending' %}
-                        <img src="static/images/up-arrow-4.png" width="10" height="auto">
-                        {% else %}
-                        <img src="static/images/down-arrow-4.png" width="10" height="auto">
+                        </th>
                         {% endif %}
-                    {% endif %}
-                    </th>
-                    {% endif %}
+                    {% endfor %}
                 {% endfor %}
                 <th>
                     <a href="{{ url_for("sort_questions", sort_question_column="Submission Time")  }}">Date Asked
-                    {% if "Submission Time" == server_state.actual_sort_column %}
-                        {% if server_state.actual_sort_direction == 'descending' %}
-                        <img src="static/images/up-arrow-4.png" width="10" height="auto">
-                        {% else %}
-                        <img src="static/images/down-arrow-4.png" width="10" height="auto">
+                        {% if "submission_time" == server_state.actual_sort_column %}
+                            {% if server_state.actual_sort_direction == 'descending' %}
+                                <img src="static/images/up-arrow-4.png" width="10" height="auto">
+                            {% else %}
+                                <img src="static/images/down-arrow-4.png" width="10" height="auto">
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
                 </th>
             </tr>
         </thead>
         <tbody>
             {% for question in questions %}
             <tr>
-                {% for header in headers %}
-                {% if header == "Vote Number" %}
+                {% for property in question %}
+                {% if property == "vote_number" %}
                     <td style="text-align:center">
                     <form method = "POST" action="{{ url_for("vote") }}">
-                        <input type="hidden" name="question_id" value="{{ question["Id"] }}">
+                        <input type="hidden" name="question_id" value="{{ question.get("id") }}">
                         <input type="hidden" name="url_origin" value="index">
                         <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
                         <button type="submit" style="border: 0 none; background: none;" name="vote" value="up_vote"><img src="static/images/up-chevron.png" width="12" height="auto"></button>
                     </form>
                     </td>
-                    <td rowspan="2" style="text-align:center">{{ answers_number[question["Id"]] }}</td>
-                {% elif header == "Status" %}
-                    <td rowspan="2" style="text-align:center">
-                        {% if question["Status"] == "new" %}
-                            <img src="/static/images/question_status_new.png" width="33" height="auto">
-                        {% elif question["Status"] == "discussed" %}
-                            <img src="/static/images/question_status_discussed.png" width="33" height="auto">
-                        {% elif question["Status"] == "closed" %}
-                            <img src="/static/images/question_status_closed.png" width="33" height="auto">
-                        {% endif %}
-                        <br>
-                        {{ question["Status"] }}
-                    </td>
+{#                    <td rowspan="2" style="text-align:center">{{ answers_number=question.get("id") }}</td>#}
+{#                {% elif header == "Status" %}#}
+{#                    <td rowspan="2" style="text-align:center">#}
+{#                        {% if question["Status"] == "new" %}#}
+{#                            <img src="/static/images/question_status_new.png" width="33" height="auto">#}
+{#                        {% elif question["Status"] == "discussed" %}#}
+{#                            <img src="/static/images/question_status_discussed.png" width="33" height="auto">#}
+{#                        {% elif question["Status"] == "closed" %}#}
+{#                            <img src="/static/images/question_status_closed.png" width="33" height="auto">#}
+{#                        {% endif %}#}
+{#                        <br>#}
+{#                        {{ question["Status"] }}#}
+{#                    </td>#}
                 {% else %}
                     <td rowspan="2" style="text-align:center">
-                    {% if header == "Title" %}
-                        <a href="{{ url_for("display_a_question", question_id=question["Id"])}}">{{ question[header]  | truncate(70)  }}</a>
-                    {% elif header == "Tag" %}
-                        {% for tag in question["Tag"] %}
-                            {{ tag }};
-                        {% endfor %}
-                    {% elif header != "Id" and header != "Image" and header != "Message"   and header != "Submission Time" %}
-                        {{ question[header] }}
+                    {% if property == "title" %}
+                        <a href="{{ url_for("display_a_question", question_id=question.get("id"))}}">{{ question.get(property)  | truncate(70)  }}</a>
+{#                    {% elif header == "tag" %}#}
+{#                        {% for tag in question["Tag"] %}#}
+{#                            {{ tag }};#}
+{#                        {% endfor %}#}
+                    {% elif property != "id" and property != "image" and property != "message" and property != "submission_time" %}
+                        {{ question.get(property) }}
                     {% endif %}
                     </td>
                 {% endif %}
@@ -290,8 +292,8 @@
                 <td></td>
             </tr>
             <tr>
-                <td style="text-align:center">{{ question["Vote Number"] }}</td>
-                <td>{{ question["Submission Time"]}}</td>
+                <td style="text-align:center">{{ question.get("vote_number") }}</td>
+                <td>{{ question.get("submission_time") }}</td>
             </tr>
             <tr>
                 <td></td>
@@ -300,7 +302,7 @@
                 <td></td>
                 <td style="text-align:center">
                 <form method = "POST" action="{{ url_for("vote") }}">
-                    <input type="hidden" name="question_id" value="{{ question["Id"] }}">
+                    <input type="hidden" name="question_id" value="{{ question.get("id") }}">
                     <input type="hidden" name="url_origin" value="index">
                     <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
                     <button type="submit" style="border: 0 none; background: none;" name="vote" value="down_vote"><img src="static/images/down-chevron.png" width="12" height="auto"></button>
@@ -308,7 +310,7 @@
                 </td>
                 <td></td>
                 <td rowspan="1" style="text-align:center">
-                {{ question["Message"] | truncate(50) }}
+                {{ question.get("message") | truncate(50) }}
                 </td>
                 <td></td>
                 <td></td>
