@@ -91,7 +91,6 @@ def add_question(cursor: RealDictCursor, question):
 
 
 @connection.connection_handler
-
 def delete_question(cursor: RealDictCursor, question_id: int):
     command = """
             DELETE
@@ -99,7 +98,7 @@ def delete_question(cursor: RealDictCursor, question_id: int):
             WHERE id = %(question_id)s
     """
 
-    param = {"id": question_id}
+    param = {"question_id": question_id}
     cursor.execute(command, param)
 
 
@@ -130,7 +129,8 @@ def get_list_questions(cursor: RealDictCursor) -> list:
     query = """
             SELECT *
             FROM question
-            ORDER BY submission_time
+            ORDER BY submission_time desc
+            LIMIT 5
     """
     cursor.execute(query)
     return cursor.fetchall()
@@ -212,6 +212,20 @@ def delete_answer(cursor: RealDictCursor, answer_id):
     param = {"answer_id": f"{answer_id}"}
     cursor.execute(command, param)
 
+@connection.connection_handler
+def update_question(cursor: RealDictCursor, question, question_id):
+    command = """
+           UPDATE question
+           SET title = %(title)s,
+               message = %(message)s,
+               image = %(image)s 
+           WHERE id = %(question_id)s       
+    """
+    param = {"title": question["title"],
+             "message": question["message"],
+             "image": question["image"],
+             "question_id": question_id}
+    cursor.execute(command, param)
 
 """
 _______________________________________________
