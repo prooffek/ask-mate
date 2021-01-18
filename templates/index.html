@@ -39,7 +39,7 @@
 </table>
 <table border="1" width="60%">
     <tr>
-        <td  style="text-align: right" colspan="1" width="25%">
+        <td  style="text-align: right"  width="25%">
             Active Questions filter :</td>
 
         <td style="text-align: left" width="30" colspan="4">
@@ -254,30 +254,22 @@
             <tr>
                 {% for property in question %}
                 {% if property == "vote_number" %}
-                    <td style="text-align:center">
-                    <form method = "POST" action="{{ url_for("vote") }}">
-                        <input type="hidden" name="question_id" value="{{ question.get("id") }}">
-                        <input type="hidden" name="url_origin" value="index">
-                        <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
-                        <button type="submit" style="border: 0 none; background: none;" name="vote" value="up_vote"><img src="static/images/up-chevron.png" width="12" height="auto"></button>
-                    </form>
-                    </td>
-                    <td> </td>
-{#                    <td rowspan="2" style="text-align:center">{{ answers_number=question.get("id") }}</td>#}
-{#                {% elif header == "Status" %}#}
-{#                    <td rowspan="2" style="text-align:center">#}
-{#                        {% if question["Status"] == "new" %}#}
+                       <td>header.get(property) </td>
+{#                    <td  style="text-align:center">{{ answers_number=question.get("id") }}</td>#}
+{#                {% elif header.get(property) == "status" %}#}
+{#                    <td  style="text-align:center">#}
+{#                        {% if question["status"] == "new" %}#}
 {#                            <img src="/static/images/question_status_new.png" width="33" height="auto">#}
-{#                        {% elif question["Status"] == "discussed" %}#}
+{#                        {% elif question["status"] == "discussed" %}#}
 {#                            <img src="/static/images/question_status_discussed.png" width="33" height="auto">#}
-{#                        {% elif question["Status"] == "closed" %}#}
+{#                        {% elif question["status"] == "closed" %}#}
 {#                            <img src="/static/images/question_status_closed.png" width="33" height="auto">#}
 {#                        {% endif %}#}
 {#                        <br>#}
-{#                        {{ question["Status"] }}#}
+{#                        {{ question["status"] }}#}
 {#                    </td>#}
                 {% else %}
-                    <td rowspan="2" style="text-align:center">
+                    <td  style="text-align:center">
                     {% if property == "title" %}
                         <a href="{{ url_for("display_a_question", question_id=question.get("id"))}}">{{ question.get(property)  | truncate(70)  }}</a>
 {#                    {% elif header == "tag" %}#}
@@ -291,48 +283,14 @@
                 {% endif %}
             {% endfor %}
                 <td></td>
-            </tr>
-            <tr>
-                <td></td>
                 <td style="text-align:center">{{ question.get("vote_number") }}</td>
                 <td>{{ question.get("submission_time") }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-
-                <td></td>
-                <td style="text-align:center">
-                <form method = "POST" action="{{ url_for("vote") }}">
-                    <input type="hidden" name="question_id" value="{{ question.get("id") }}">
-                    <input type="hidden" name="url_origin" value="index">
-                    <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
-                    <button type="submit" style="border: 0 none; background: none;" name="vote" value="down_vote"><img src="static/images/down-chevron.png" width="12" height="auto"></button>
-                </form>
-                </td>
-                <td></td>
-                <td rowspan="1" style="text-align:center">
+                <td  style="text-align:center">
                 {{ question.get("message") | truncate(50) }}
                 </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
             </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+
+
             {% endfor %}
         </tbody>
     </table>
