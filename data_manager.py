@@ -116,7 +116,7 @@ def delete_answers_by_question_id(cursor: RealDictCursor, question_id: int):
     cursor.execute(command, param)
 
 @connection.connection_handler
-def get_headers_from_table(cursor:RealDictCursor, table_name) -> list:
+def get_headers_from_table(cursor: RealDictCursor, table_name) -> list:
     query = """
             SELECT column_name
             FROM information_schema.columns
@@ -144,6 +144,7 @@ def get_list_questions(cursor: RealDictCursor) -> list:
 #         SELECT CURRVAL(pg_get_serial_sequence('sheet_tbl','sheet_id'))";
 #     """
 
+@connection.connection_handler
 def get_answer_by_answer_id(cursor: RealDictCursor, answer_id: int) -> dict:
     query = """
             SELECT *

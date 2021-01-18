@@ -29,7 +29,8 @@
         <form action="{{ url_for("add_comment_to_answer_post", answer_id=answer["id"]) }}" method="post">
             <label for="answer_comment">Comment:</label>
             <textarea name="message" minlength="5" maxlength="1500"></textarea>
-            <input type="hidden" name="edit_count" value="{{ 0 }}">
+            <input type="hidden" name="answer_id" value="{{ answer["id"] }}">
+            <input type="hidden" name="edited_count" value="{{ 0 }}">
             <br><br>
             <button type="submit">Add comment</button>
         </form>
