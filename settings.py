@@ -38,3 +38,23 @@ class question_tag:
 class tag:
     id = "id"
     name = "name"
+
+class sort:
+    ascending = "ascending"
+    descending = "descinding"
+
+class filter:
+    date_last_month = "Last month"
+    date_3_last_months = "3 last months"
+    date_all_time = "all time"
+
+    status_new = "new"
+    status_discussed = "discussed"
+    status_active = "active"
+    status_closed = "closed"
+
+    search = ""
+
+class state:
+    on = bool(1)
+    off = bool(0)

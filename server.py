@@ -1,49 +1,48 @@
 from flask import Flask, render_template, url_for, redirect, request
 import data_manager, util, connection, os
-from database_structure import *
+from settings import *
 
 app = Flask(__name__)
 
 LIST_OF_TAGS = data_manager.get_tags_names()
 
-
 class server_state:
     #SORTING
-    actual_sort_column = 'Submission Time'
-    actual_sort_direction = 'ascending'
+    actual_sort_column = question.submission_time
+    actual_sort_direction = sort.ascending
 
     def toogle_sort_direction():
-        if server_state.actual_sort_direction == 'ascending':
-            server_state.actual_sort_direction = 'descending'
+        if server_state.actual_sort_direction == sort.ascending:
+            server_state.actual_sort_direction = sort.descending
         else:
-            server_state.actual_sort_direction = 'ascending'
+            server_state.actual_sort_direction = sort.ascending
 
     #FILTERING
-    actual_advanced_filter_on_date = "no"
-    actual_advanced_filter_on_status = "no"
-    actual_filter_reset_button_active = "no"
-    filter_reset_active = "no"
+    default_filter_by_date = filter.date_3_last_months
+    default_filter_by_status = filter.status_active
+    default_filter_by_search = filter.search
 
-    default_filter_by_date = "Last month"
-    default_filter_by_status = "active"
-    default_filter_by_search = ""
+    actual_advanced_filter_on_date = state.off
+    actual_advanced_filter_on_status = state.off
+    actual_filter_reset_button_active = state.off
+    filter_reset_active = state.off
 
     #default values for starting page
-    actual_filter_by_date_mode = default_filter_by_date             #valid values: filter_by_date_mode
-    actual_filter_by_status_mode = default_filter_by_status         #valid values: filter_by_status_mode
-    actual_filter_by_search_mode = default_filter_by_search         #valid values: filter_by_search_mode
+    actual_filter_by_date_mode = default_filter_by_date
+    actual_filter_by_status_mode = default_filter_by_status
+    actual_filter_by_search_mode = default_filter_by_search
 
     def toogle_advanced_filter_date():
-        if server_state.actual_advanced_filter_on_date == "no":
-            server_state.actual_advanced_filter_on_date = "yes"
+        if server_state.actual_advanced_filter_on_date == state.off:
+            server_state.actual_advanced_filter_on_date = state.on
         else:
-            server_state.actual_advanced_filter_on_date = "no"
+            server_state.actual_advanced_filter_on_date = state.off
 
     def toogle_advanced_filter_status():
-        if server_state.actual_advanced_filter_on_status == "no":
-            server_state.actual_advanced_filter_on_status = "yes"
+        if server_state.actual_advanced_filter_on_status == state.off:
+            server_state.actual_advanced_filter_on_status = state.on
         else:
-            server_state.actual_advanced_filter_on_status = "no"
+            server_state.actual_advanced_filter_on_status = state.off
 
 @app.route('/', methods=["GET"])
 def index():
@@ -57,12 +56,12 @@ def index():
 def index_post():
     if request.form.get("actual_advanced_filter_date_clicked") == "clicked":
         server_state.toogle_advanced_filter_date()
-        if server_state.actual_advanced_filter_on_status == "yes":
+        if server_state.actual_advanced_filter_on_status == state.on:
             server_state.toogle_advanced_filter_status()
 
     if request.form.get("actual_advanced_filter_status_clicked") == "clicked":
         server_state.toogle_advanced_filter_status()
-        if server_state.actual_advanced_filter_on_date == "yes":
+        if server_state.actual_advanced_filter_on_date == state.on:
             server_state.toogle_advanced_filter_date()
 
     if request.form.get("date_filter_changed") == "true":
@@ -77,16 +76,16 @@ def index_post():
             server_state.actual_filter_by_date_mode = server_state.default_filter_by_date
             server_state.actual_filter_by_status_mode = server_state.default_filter_by_status
             server_state.actual_filter_by_search_mode = server_state.default_filter_by_search
-            server_state.filter_reset_active = "no"
+            server_state.filter_reset_active = state.off
 
     if not (server_state.actual_filter_by_date_mode == server_state.default_filter_by_date and \
         server_state.actual_filter_by_status_mode == server_state.default_filter_by_status and \
         server_state.actual_filter_by_search_mode == server_state.default_filter_by_search):
-            server_state.filter_reset_active = "yes"
+            server_state.filter_reset_active = state.on
 
     if request.form.get("filter_search_clicked") == "yes":
         server_state.actual_filter_by_search_mode = request.form.get("searched_text")
-        server_state.filter_reset_active = "yes"
+        server_state.filter_reset_active = state.on
 
     return redirect(url_for("index"))
 
