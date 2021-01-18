@@ -229,6 +229,22 @@ def update_question(cursor: RealDictCursor, question, question_id):
              "question_id": question_id}
     cursor.execute(command, param)
 
+
+@connection.connection_handler
+def add_comment_to_question(cursor: RealDictCursor, comment):
+    command = """
+            INSERT INTO comment(question_id, message, submission_time, edited_count)
+            VALUES (%(question_id)s, %(message)s, %(submission_time)s, %(edited_count)s)
+    """
+
+    param = {
+        "question_id": comment["question_id"],
+        "message": comment["message"],
+        "submission_time": comment["submission_time"],
+        "edited_count": comment["edited_count"]
+            }
+    cursor.execute(command, param)
+
 """
 _______________________________________________
             OLD DATA MANAGER

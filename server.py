@@ -452,6 +452,21 @@ def edit_answer_post(answer_id):
     #
     # data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
     # return redirect(url_for('display_a_question', question_id=current_answer['Question Id']))
+@app.route("/question/<question_id>/new-comment", methods=["GET"])
+def add_comment_to_question_get(question_id):
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    return render_template("add-comment.html", question=question, mode="question")
+
+@app.route("/question/<question_id>/new-comment", methods=["POST"])
+def add_comment_to_question_post(question_id):
+    comment = dict(request.form)
+    comment["submission_time"] = util.current_datetime()
+    data_manager.add_comment_to_question(comment)
+    return redirect(url_for("display_a_question", question_id=question_id))
+
+
+
+
 
 @app.route("/login")
 def login_get():

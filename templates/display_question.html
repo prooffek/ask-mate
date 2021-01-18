@@ -126,6 +126,10 @@
                 <form action="{{ url_for('delete_question', question_id=question["id"])}}" style="display: inline; vertical-align: top">
                     <button type="submit" style="border: 0 none; background: none;" name="delete_question" value="delete_question"><img src="/static/images/delete_question.png" width="22" height="auto"></button>
                 </form>
+                <form action="{{ url_for("add_comment_to_question_get", question_id=question["id"]) }}">
+                    <button type="submit" name="add_comment" value="add_comment"><img src="/static/images/add_comment.png" width="30" height="auto"></button>
+
+                </form>
 
             </td>
             <td>

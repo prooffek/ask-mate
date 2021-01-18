@@ -238,7 +238,7 @@
                     {% endfor %}
                 {% endfor %}
                 <th>
-                    <a href="{{ url_for("sort_questions", sort_question_column="Submission Time")  }}">Date Asked
+                    <a href="{{ url_for("sort_questions", sort_question_column="submission_time")  }}">Date Asked
                         {% if "submission_time" == server_state.actual_sort_column %}
                             {% if server_state.actual_sort_direction == 'descending' %}
                                 <img src="static/images/up-arrow-4.png" width="10" height="auto">
