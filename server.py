@@ -62,7 +62,7 @@ class server_state:
 def index():
     headers = data_manager.get_headers_from_table("question")
     questions = data_manager.get_list_questions()
-    # server_state.update_filtered_list_of_questions()
+    server_state.update_filtered_list_of_questions()
     return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
     # headers = data_manager.LIST_OF_QUESTIONS[0].keys()
     #
@@ -215,7 +215,7 @@ def change_question_status():
 def display_a_question(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     answers = data_manager.get_nonquestion_by_question_id(question_id, ANSWER_TABLE_NAME)
-    comments = data_manager.get_nonquestion_by_question_id(question_id, COMMENTS_TABLE_NAME)
+    comments = data_manager.get_all_comments()
     tags = data_manager.get_nonquestion_by_question_id(question_id, QUESTION_TAG_TABLE_NAME)
     # answers = data_manager.get_answers_by_question_id(question_id)
     # comments = data_manager.get_comments_by_question_id(question_id)
@@ -236,7 +236,8 @@ def display_a_question(question_id):
 
 @app.route("/add-question", methods=["GET"])
 def add_question_get():
-    return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
+    return render_template("add-question.html")
+    # return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
 
 
 # funkcja przerobiona - ale przekierowanie na stronę główną, będę musiała to poprawić na przekierowanie na to nowo dodane pytanie
@@ -244,8 +245,14 @@ def add_question_get():
 def add_question_post():
     question = dict(request.form)
     question["submission_time"] = util.current_datetime()
-    data_manager.add_question(question)
-    return redirect(url_for("index"))
+    file_name = request.files["image"].filename
+    if file_name != "":
+        image_file = request.files["image"]
+        util.add_image(image_file)
+        question["image"] = image_file.filename
+    return_value = data_manager.add_question(question)
+
+    return redirect(url_for("display_a_question", question_id=return_value["id"]))
 
     # question["submission_time"] = util.todays_date()
     # question["view_number"] = 0
@@ -343,38 +350,60 @@ def delete_question(question_id):
 
 @app.route("/question/<question_id>/edit", methods=["GET"])
 def edit_question_get(question_id):
-    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-    return render_template("edit.html", question_id=question_id, question=question_dict[0], tags_list=data_manager.LIST_OF_TAGS)
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    return render_template("edit.html", question_id=question_id, question=question)
+    # question_dict = data_manager.get_question_by_id(question_id)
+    # return render_template("edit.html", question_id=question_id, question=question_dict[0], tags_list=data_manager.LIST_OF_TAGS)
 
 @app.route("/question/<question_id>/edit", methods=["POST"])
 def edit_question_post(question_id):
     data_from_form = dict(request.form)
-    tags_list = data_manager.get_tags_list(data_from_form)
-    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-    question_to_edit = question_dict[0]
-    question_to_edit["Title"] = data_from_form["Title"]
-    question_to_edit["Message"] = data_from_form["Message"]
-    question_to_edit["Tag"] = tags_list
-    if "Image" in request.files and request.files["Image"].filename != '':
-        if question_to_edit["Image"] == "":
-            image_file = request.files["Image"]
-            data_manager.add_image(image_file)
-            question_to_edit["Image"] = image_file.filename
-        elif request.files["Image"].filename != question_to_edit["Image"]:
-            image_file = request.files["Image"]
-            data_manager.add_image(image_file)
-            data_manager.remove_image(question_to_edit, "question")
-            question_to_edit["Image"] = image_file.filename
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    if "image" in request.files and request.files["image"].filename != '':
+        if question["image"] == "":
+            image_file = request.files["image"]
+            util.add_image(image_file)
+            question["image"] = image_file.filename
+        elif request.files["image"].filename != question["image"]:
+            image_file = request.files["image"]
+            util.add_image(image_file)
+            util.delete_image(question["image"])
+            question["image"] = image_file.filename
 
-    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+    question["title"] = data_from_form["title"]
+    question["message"] = data_from_form["message"]
+    data_manager.update_question(question, question["id"])
+    return redirect(url_for("display_a_question", question_id=question["id"]))
 
-    return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
+    # data_from_form = dict(request.form)
+    # tags_list = data_manager.get_tags_list(data_from_form)
+    # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
+    # question_to_edit = question_dict[0]
+    # question_to_edit["Title"] = data_from_form["Title"]
+    # question_to_edit["Message"] = data_from_form["Message"]
+    # question_to_edit["Tag"] = tags_list
+    # if "Image" in request.files and request.files["Image"].filename != '':
+    #     if question_to_edit["Image"] == "":
+    #         image_file = request.files["Image"]
+    #         data_manager.add_image(image_file)
+    #         question_to_edit["Image"] = image_file.filename
+    #     elif request.files["Image"].filename != question_to_edit["Image"]:
+    #         image_file = request.files["Image"]
+    #         data_manager.add_image(image_file)
+    #         data_manager.remove_image(question_to_edit, "question")
+    #         question_to_edit["Image"] = image_file.filename
+    #
+    # data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
+    #
+    # return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
 
 @app.route("/question/<question_id>/remove_image")
 def delete_image_from_question(question_id):
-    question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    data_manager.remove_image(question_dict, "question")
-    return redirect(url_for("display_a_question", question_id=question_dict["Id"]))
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    util.delete_image(question["image"])
+    question["image"] = ""
+    data_manager.update_question(question, question_id)
+    return redirect(url_for("display_a_question", question_id=question_id))
 
 @app.route("/<answer_id>/delete-img")
 def delete_answer_img(answer_id):
@@ -423,6 +452,34 @@ def edit_answer_post(answer_id):
     #
     # data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
     # return redirect(url_for('display_a_question', question_id=current_answer['Question Id']))
+@app.route("/question/<question_id>/new-comment", methods=["GET"])
+def add_comment_to_question_get(question_id):
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    return render_template("add-comment.html", question=question, mode="question")
+
+@app.route("/question/<question_id>/new-comment", methods=["POST"])
+def add_comment_to_question_post(question_id):
+    comment = dict(request.form)
+    comment["submission_time"] = util.current_datetime()
+    data_manager.add_comment_to_question(comment)
+    return redirect(url_for("display_a_question", question_id=question_id))
+
+
+@app.route('/answer/<answer_id>/new-comment')
+def add_comment_to_answer_get(answer_id):
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(answer["question_id"]))
+    return render_template("add-comment.html", answer=answer, question=question, mode="answer")
+
+
+@app.route('/answer/<answer_id>/new-comment', methods=["POST"])
+def add_comment_to_answer_post(answer_id):
+    comment = dict(request.form)
+    comment["submission_time"] = util.current_datetime()
+    data_manager.add_comment_to_answer(comment)
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+    return redirect(url_for("display_a_question", question_id=answer["question_id"]))
+
 
 @app.route("/login")
 def login_get():

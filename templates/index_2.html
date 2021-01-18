@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lab Stacoverflow</title>
+    <title>LAB Stacoverflow</title>
 </head>
 <body>
+<header>
+<nav>
+        <a href="{{ url_for("index") }}">
+            <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
+        </a>
+
+
+        <form action="{{ url_for('add_question_get')}}">
+            <button type="submit" style="border: 0 none; background: none;" name="ask_a_question" value="ask_a_question"><img src="/static/images/ask_a_question.png" width="200" height="auto"></button>
+        </form>
+</nav>
+</header>
+
+
     <table>
         <thead>
             {% for header in headers %}

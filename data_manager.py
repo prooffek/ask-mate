@@ -79,6 +79,7 @@ def add_question(cursor: RealDictCursor, question):
     command = """
             INSERT INTO question(submission_time, view_number, vote_number, title, message, image) 
             VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s)
+            RETURNING id
             """
 
     param = {"submission_time": question.get("submission_time"),
@@ -88,10 +89,10 @@ def add_question(cursor: RealDictCursor, question):
              "message": question.get("message"),
              "image": question.get("image")}
     cursor.execute(command, param)
+    return cursor.fetchone()
 
 
 @connection.connection_handler
-
 def delete_question(cursor: RealDictCursor, question_id: int):
     command = """
             DELETE
@@ -99,7 +100,7 @@ def delete_question(cursor: RealDictCursor, question_id: int):
             WHERE id = %(question_id)s
     """
 
-    param = {"id": question_id}
+    param = {"question_id": question_id}
     cursor.execute(command, param)
 
 
@@ -130,7 +131,8 @@ def get_list_questions(cursor: RealDictCursor) -> list:
     query = """
             SELECT *
             FROM question
-            ORDER BY submission_time
+            ORDER BY submission_time desc
+            LIMIT 5
     """
     cursor.execute(query)
     return cursor.fetchall()
@@ -211,6 +213,60 @@ def delete_answer(cursor: RealDictCursor, answer_id):
             WHERE id = %(answer_id)s"""
     param = {"answer_id": f"{answer_id}"}
     cursor.execute(command, param)
+
+@connection.connection_handler
+def update_question(cursor: RealDictCursor, question, question_id):
+    command = """
+           UPDATE question
+           SET title = %(title)s,
+               message = %(message)s,
+               image = %(image)s 
+           WHERE id = %(question_id)s       
+    """
+    param = {"title": question["title"],
+             "message": question["message"],
+             "image": question["image"],
+             "question_id": question_id}
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def add_comment_to_question(cursor: RealDictCursor, comment):
+    command = """
+            INSERT INTO comment(question_id, message, submission_time, edited_count)
+            VALUES (%(question_id)s, %(message)s, %(submission_time)s, %(edited_count)s)
+    """
+
+    param = {
+        "question_id": comment["question_id"],
+        "message": comment["message"],
+        "submission_time": comment["submission_time"],
+        "edited_count": comment["edited_count"]
+            }
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def add_comment_to_answer(cursor: RealDictCursor, comment: dict):
+    query = """
+            INSERT INTO comment(answer_id, message, submission_time, edited_count)
+            VALUES (%(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s)"""
+    param = {
+        "answer_id": f"{comment['answer_id']}",
+        "message": f"{comment['message']}",
+        "submission_time": f"{comment['submission_time']}",
+        "edited_count": f"{comment['edited_count']}"
+    }
+    cursor.execute(query, param)
+
+
+@connection.connection_handler
+def get_all_comments(cursor: RealDictCursor) -> RealDictCursor:
+    query = """
+            SELECT *
+            FROM comment"""
+    cursor.execute(query)
+    return cursor.fetchall()
 
 
 """
