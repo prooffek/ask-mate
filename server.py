@@ -1,14 +1,11 @@
 from flask import Flask, render_template, url_for, redirect, request
 import data_manager, util, connection, os
-import copy
+from database_structure import *
 
 app = Flask(__name__)
 
 LIST_OF_TAGS = data_manager.get_tags_names()
-QUESTION_TABLE_NAME = "question"
-ANSWER_TABLE_NAME = "answer"
-COMMENTS_TABLE_NAME = "comment"
-QUESTION_TAG_TABLE_NAME = "question_tag"
+
 
 class server_state:
     #SORTING

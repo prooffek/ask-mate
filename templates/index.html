@@ -37,8 +37,7 @@
 
     </tr>
 </table>
-<br>
-<table border="0" width="60%">
+<table border="1" width="60%">
     <tr>
         <td  style="text-align: right" colspan="1" width="25%">
             Active Questions filter :</td>
@@ -195,21 +194,24 @@
 
 
 </table>
-<table border="0" width="60%">
-
+<table border="1" width="60%">
         <thead>
             <tr>
                 {% for header in headers %}
                     {% for property in header %}
                         <th scope="col">
-                            {% if header.get(property) != "id" and header.get(property) != "image" and header.get(property) != "message"  and header.get(property) != "submission_time"  %}
+                            {% if header.get(property) != "id"
+                            and header.get(property) != "image"
+                            and header.get(property) != "message"
+                            and header.get(property) != "submission_time"  %}
+
                             {% if header.get(property) == "vote_number" %}
                                 <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Votes</a>
-                            {% elif header == "view_number" %}
+                            {% elif header.get(property) == "view_number" %}
                                 <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Views</a>
-                            {% elif header == "title" %}
+                            {% elif header.get(property) == "title" %}
                                 <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Question</a>
-                            {% elif header =="tag" %}
+                            {% elif header.get(property) =="tag" %}
                                 Tags
                             {% else %}
                                 <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">{{ header.get(property) }}</a>
@@ -334,6 +336,5 @@
             {% endfor %}
         </tbody>
     </table>
-
 </body>
 </html>
