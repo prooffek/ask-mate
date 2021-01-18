@@ -11,8 +11,7 @@ class answer:
     question_id = "question_id"
     message = "message"
     image = "image"
-    status = "status"
-    answers_number = "answers_number"
+
 
 class question:
     id = "id"
@@ -22,6 +21,8 @@ class question:
     title = "title"
     message = "message"
     image = "image"
+    status = "status"
+    answers_number = "answers_number"
 
 class comments:
     id = "id"

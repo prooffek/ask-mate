@@ -207,6 +207,15 @@
 
                             {% if header.get(property) == "vote_number" %}
                                 <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Votes</a>
+                                 <th><a href="{{ url_for("index_post", sort_question_column="Answers")  }}">Answers</a>
+                                {% if "Answers" == server_state.actual_sort_column %}
+                                    {% if server_state.actual_sort_direction == 'ascending' %}
+                                    <img src="static/images/up-arrow-4.png" width="10" height="auto">
+                                    {% else %}
+                                    <img src="static/images/down-arrow-4.png" width="10" height="auto">
+                                    {% endif %}
+                                {% endif %}
+                                </th>
                             {% elif header.get(property) == "view_number" %}
                                 <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Views</a>
                             {% elif header.get(property) == "title" %}
@@ -226,17 +235,6 @@
                             {% endif %}
                         {% endif %}
                         </th>
-                        {% if header.get(property) == "vote_number" %}
-                        <th><a href="{{ url_for("index_post", sort_question_column="Answers")  }}">Answers</a>
-                        {% if "Answers" == server_state.actual_sort_column %}
-                            {% if server_state.actual_sort_direction == 'ascending' %}
-                            <img src="static/images/up-arrow-4.png" width="10" height="auto">
-                            {% else %}
-                            <img src="static/images/down-arrow-4.png" width="10" height="auto">
-                            {% endif %}
-                        {% endif %}
-                        </th>
-                        {% endif %}
                     {% endfor %}
                 {% endfor %}
                 <th>
@@ -264,6 +262,7 @@
                         <button type="submit" style="border: 0 none; background: none;" name="vote" value="up_vote"><img src="static/images/up-chevron.png" width="12" height="auto"></button>
                     </form>
                     </td>
+                    <td> </td>
 {#                    <td rowspan="2" style="text-align:center">{{ answers_number=question.get("id") }}</td>#}
 {#                {% elif header == "Status" %}#}
 {#                    <td rowspan="2" style="text-align:center">#}
@@ -294,6 +293,7 @@
                 <td></td>
             </tr>
             <tr>
+                <td></td>
                 <td style="text-align:center">{{ question.get("vote_number") }}</td>
                 <td>{{ question.get("submission_time") }}</td>
             </tr>
