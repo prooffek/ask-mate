@@ -28,4 +28,7 @@ def delete_image(image):
         ValueError(f"There's no {image} in the directory")
 
 def take_out_of_the_list(list):
-    return list[0]
+    try:
+        return list[0]
+    except:
+        pass

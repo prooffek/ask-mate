@@ -20,7 +20,19 @@
         <button type="submit">Add comment</button>
         </form>
     {% else %}
-
+        <h1>{{ question["title"] }}</h1>
+        <br>
+        <p>{{ question["message"] }}</p>
+        <br>
+        <h2>{{ answer["message"] }}</h2>
+        <br><br>
+        <form action="{{ url_for("add_comment_to_answer_post", answer_id=answer["id"]) }}" method="post">
+            <label for="answer_comment">Comment:</label>
+            <textarea name="message" minlength="5" maxlength="1500"></textarea>
+            <input type="hidden" name="edit_count" value="{{ 0 }}">
+            <br><br>
+            <button type="submit">Add comment</button>
+        </form>
     {% endif %}
 
 

@@ -245,6 +245,30 @@ def add_comment_to_question(cursor: RealDictCursor, comment):
             }
     cursor.execute(command, param)
 
+
+@connection.connection_handler
+def add_comment_to_answer(cursor: RealDictCursor, comment: dict):
+    query = """
+            INSERT INTO comment(answer_id, message, submission_time, edited_count)
+            VALUES (%(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s)"""
+    param = {
+        "answer_id": f"{comment['answer_id']}",
+        "message": f"{comment['message']}",
+        "submission_time": f"{comment['submission_time']}",
+        "edited_count": f"{comment['edited_count']}"
+    }
+    cursor.execute(query, param)
+
+
+@connection.connection_handler
+def get_all_comments(cursor: RealDictCursor) -> RealDictCursor:
+    query = """
+            SELECT *
+            FROM comment"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 """
 _______________________________________________
             OLD DATA MANAGER

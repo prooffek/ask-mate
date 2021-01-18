@@ -215,7 +215,7 @@ def change_question_status():
 def display_a_question(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     answers = data_manager.get_nonquestion_by_question_id(question_id, ANSWER_TABLE_NAME)
-    comments = data_manager.get_nonquestion_by_question_id(question_id, COMMENTS_TABLE_NAME)
+    comments = data_manager.get_all_comments()
     tags = data_manager.get_nonquestion_by_question_id(question_id, QUESTION_TAG_TABLE_NAME)
     # answers = data_manager.get_answers_by_question_id(question_id)
     # comments = data_manager.get_comments_by_question_id(question_id)
@@ -465,7 +465,20 @@ def add_comment_to_question_post(question_id):
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
+@app.route('/answer/<answer_id>/new-comment')
+def add_comment_to_answer_get(answer_id):
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(answer["question_id"]))
+    return render_template("add-comment.html", answer=answer, question=question, mode="answer")
 
+
+@app.route('/answer/<answer_id>/new-comment', methods=["POST"])
+def add_comment_to_answer_post(answer_id):
+    comment = dict(request.form)
+    comment["submission_time"] = util.current_datetime()
+    data_manager.add_comment_to_answer(comment)
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+    return redirect(url_for("display_a_question", question_id=answer["question_id"]))
 
 
 @app.route("/login")
