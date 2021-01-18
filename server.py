@@ -1,89 +1,67 @@
 from flask import Flask, render_template, url_for, redirect, request
 import data_manager, util, connection, os
-import copy
-import data_manager_filter
-
+from settings import *
 
 app = Flask(__name__)
 
 LIST_OF_TAGS = data_manager.get_tags_names()
-QUESTION_TABLE_NAME = "question"
-ANSWER_TABLE_NAME = "answer"
-COMMENTS_TABLE_NAME = "comment"
-QUESTION_TAG_TABLE_NAME = "question_tag"
 
 class server_state:
     #SORTING
-    actual_sort_column = 'Submission Time'
-    actual_sort_direction = 'ascending'
+    actual_sort_column = question.submission_time
+    actual_sort_direction = sort.ascending
 
     def toogle_sort_direction():
-        if server_state.actual_sort_direction == 'ascending':
-            server_state.actual_sort_direction = 'descending'
+        if server_state.actual_sort_direction == sort.ascending:
+            server_state.actual_sort_direction = sort.descending
         else:
-            server_state.actual_sort_direction = 'ascending'
+            server_state.actual_sort_direction = sort.ascending
 
     #FILTERING
-    actual_advanced_filter_on_date = "no"
-    actual_advanced_filter_on_status = "no"
-    actual_filter_reset_button_active = "no"
-    filter_reset_active = "no"
+    default_filter_by_date = filter.date_3_last_months
+    default_filter_by_status = filter.status_active
+    default_filter_by_search = filter.search
 
-    default_filter_by_date = "Last month"
-    default_filter_by_status = "active"
-    default_filter_by_search = ""
+    actual_advanced_filter_on_date = state.off
+    actual_advanced_filter_on_status = state.off
+    actual_filter_reset_button_active = state.off
+    filter_reset_active = state.off
 
     #default values for starting page
-    actual_filter_by_date_mode = default_filter_by_date             #valid values: filter_by_date_mode
-    actual_filter_by_status_mode = default_filter_by_status         #valid values: filter_by_status_mode
-    actual_filter_by_search_mode = default_filter_by_search         #valid values: filter_by_search_mode
-
-    FILTERED_LIST_OF_QUESTIONS = []
-
-    def update_filtered_list_of_questions():
-        data_manager.update_questions_statuses(data_manager.LIST_OF_QUESTIONS, data_manager.LIST_OF_ANSWERS)
-        data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-        server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
-        filter_question()
+    actual_filter_by_date_mode = default_filter_by_date
+    actual_filter_by_status_mode = default_filter_by_status
+    actual_filter_by_search_mode = default_filter_by_search
 
     def toogle_advanced_filter_date():
-        if server_state.actual_advanced_filter_on_date == "no":
-            server_state.actual_advanced_filter_on_date = "yes"
+        if server_state.actual_advanced_filter_on_date == state.off:
+            server_state.actual_advanced_filter_on_date = state.on
         else:
-            server_state.actual_advanced_filter_on_date = "no"
+            server_state.actual_advanced_filter_on_date = state.off
 
     def toogle_advanced_filter_status():
-        if server_state.actual_advanced_filter_on_status == "no":
-            server_state.actual_advanced_filter_on_status = "yes"
+        if server_state.actual_advanced_filter_on_status == state.off:
+            server_state.actual_advanced_filter_on_status = state.on
         else:
-            server_state.actual_advanced_filter_on_status = "no"
+            server_state.actual_advanced_filter_on_status = state.off
 
 @app.route('/', methods=["GET"])
 def index():
     headers = data_manager.get_headers_from_table("question")
     questions = data_manager.get_list_questions()
-    server_state.update_filtered_list_of_questions()
+
     return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
-    # headers = data_manager.LIST_OF_QUESTIONS[0].keys()
-    #
-    # server_state.update_filtered_list_of_questions()
-    # questions = server_state.FILTERED_LIST_OF_QUESTIONS
-    #
-    # answers = data_manager.LIST_OF_ANSWERS
-    # answers_number_for_questions = data_manager.find_answers_number_for_questions(questions, answers)
-    #
-    # return render_template("index.html", headers=headers, questions=questions, server_state=server_state, answers_number=answers_number_for_questions)
+
 
 @app.route('/', methods=["POST"])
 def index_post():
     if request.form.get("actual_advanced_filter_date_clicked") == "clicked":
         server_state.toogle_advanced_filter_date()
-        if server_state.actual_advanced_filter_on_status == "yes":
+        if server_state.actual_advanced_filter_on_status == state.on:
             server_state.toogle_advanced_filter_status()
 
     if request.form.get("actual_advanced_filter_status_clicked") == "clicked":
         server_state.toogle_advanced_filter_status()
-        if server_state.actual_advanced_filter_on_date == "yes":
+        if server_state.actual_advanced_filter_on_date == state.on:
             server_state.toogle_advanced_filter_date()
 
     if request.form.get("date_filter_changed") == "true":
@@ -98,66 +76,19 @@ def index_post():
             server_state.actual_filter_by_date_mode = server_state.default_filter_by_date
             server_state.actual_filter_by_status_mode = server_state.default_filter_by_status
             server_state.actual_filter_by_search_mode = server_state.default_filter_by_search
-            server_state.filter_reset_active = "no"
+            server_state.filter_reset_active = state.off
 
     if not (server_state.actual_filter_by_date_mode == server_state.default_filter_by_date and \
         server_state.actual_filter_by_status_mode == server_state.default_filter_by_status and \
         server_state.actual_filter_by_search_mode == server_state.default_filter_by_search):
-            server_state.filter_reset_active = "yes"
+            server_state.filter_reset_active = state.on
 
     if request.form.get("filter_search_clicked") == "yes":
         server_state.actual_filter_by_search_mode = request.form.get("searched_text")
-        server_state.filter_reset_active = "yes"
-
-    return redirect(url_for("filter_question"))
-
-@app.route("/filter")
-def filter_question() -> list:
-    NEW_FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(data_manager.LIST_OF_QUESTIONS)
-
-    # Three filters apply to list of questions
-    #1th filtering by date
-    NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_date(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_date_mode)
-    #2nd filtering by status
-    NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_status(NEW_FILTERED_LIST_OF_QUESTIONS, server_state.actual_filter_by_status_mode)
-    #3th filtering by search
-    NEW_FILTERED_LIST_OF_QUESTIONS = data_manager_filter.filter_by_search(NEW_FILTERED_LIST_OF_QUESTIONS,\
-                                                                          server_state.actual_filter_by_search_mode)
-    server_state.FILTERED_LIST_OF_QUESTIONS = copy.deepcopy(NEW_FILTERED_LIST_OF_QUESTIONS)
+        server_state.filter_reset_active = state.on
 
     return redirect(url_for("index"))
 
-@app.route("/sort")
-def sort_questions():
-    sort_question_column = request.args.get('sort_question_column')
-
-    if sort_question_column == None:
-        sort_question_column = 'Submission Time'
-
-    if not sort_question_column =="Answers":
-        if server_state.actual_sort_column == list(data_manager.titles_for_questions_columns.keys())[
-            list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]:
-            server_state.toogle_sort_direction()
-        else:
-            server_state.actual_sort_direction = 'ascending'
-
-        # get key for value in dictionary i.e. for "Time" -> "submission_time"
-        server_state.actual_sort_column = list(data_manager.titles_for_questions_columns.keys())[
-            list(data_manager.titles_for_questions_columns.values()).index(sort_question_column)]
-
-
-        data_manager.LIST_OF_QUESTIONS = data_manager.sort_question(list_of_dicts=data_manager.LIST_OF_QUESTIONS, sort_column=server_state.actual_sort_column,
-                                         mode=server_state.actual_sort_direction)
-    else:
-        if server_state.actual_sort_column == "Answers":
-            server_state.toogle_sort_direction()
-        else:
-            server_state.actual_sort_direction = 'descending'
-        server_state.actual_sort_column = "Answers"
-        answers_number_for_questions = data_manager.find_answers_number_for_questions(data_manager.LIST_OF_QUESTIONS,
-                                                                                      data_manager.LIST_OF_ANSWERS)
-        data_manager.LIST_OF_QUESTIONS = data_manager.sort_question_by_answers_number(data_manager.LIST_OF_QUESTIONS, answers_number_for_questions, mode=server_state.actual_sort_direction)
-    return redirect(url_for("index"))
 
 @app.route("/vote", methods=["POST"])
 def vote():
@@ -211,14 +142,13 @@ def change_question_status():
     data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
     return redirect(url_for("index"))
 
+
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     answers = data_manager.get_nonquestion_by_question_id(question_id, ANSWER_TABLE_NAME)
     comments = data_manager.get_all_comments()
     tags = data_manager.get_nonquestion_by_question_id(question_id, QUESTION_TAG_TABLE_NAME)
-    # answers = data_manager.get_answers_by_question_id(question_id)
-    # comments = data_manager.get_comments_by_question_id(question_id)
 
     question_tags = [util.take_out_of_the_list(data_manager.get_tag_by_id(tag["tag_id"]))
                      for tag in tags]
@@ -226,18 +156,10 @@ def display_a_question(question_id):
     return render_template("display_question.html", question=question, answers=answers, comments=comments,
                            question_tags=question_tags, img_path=util.IMAGE_PATH) #img_path=connection.IMAGE_PATH)
 
-    # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    # relevant_answers_dicts = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
-    # relevant_answers_dicts = data_manager.sort_answers(relevant_answers_dicts)
-    # question_dict["View Number"] = int(question_dict.get("View Number")) + 1
-    # data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-    # return render_template("display_question.html", question=question_dict, answers=relevant_answers_dicts,
-    #                        img_path=connection.IMAGE_PATH)
 
 @app.route("/add-question", methods=["GET"])
 def add_question_get():
     return render_template("add-question.html")
-    # return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
 
 
 # funkcja przerobiona - ale przekierowanie na stronę główną, będę musiała to poprawić na przekierowanie na to nowo dodane pytanie
@@ -254,42 +176,12 @@ def add_question_post():
 
     return redirect(url_for("display_a_question", question_id=return_value["id"]))
 
-    # question["submission_time"] = util.todays_date()
-    # question["view_number"] = 0
-    # question["vote_number"] = 0
-
-    # data_from_form = dict(request.form)
-    # tags_list = data_manager.get_tags_list(data_from_form)
-    # new_question = {
-    #     "Id": str(data_manager.next_id(data_manager.LIST_OF_QUESTIONS)),
-    #     "Submission Time": util.todays_date(),
-    #     "View Number": "0",
-    #     "Vote Number": "0",
-    #     "Title": data_from_form["Title"],
-    #     "Message": data_from_form["Message"],
-    #     "Image": request.files["Image"].filename,
-    #     "Tag": tags_list,
-    #     "Status": "new"
-    # }
-    #
-    # if new_question["Image"] != '':
-    #     image_file = request.files["Image"]
-    #     data_manager.add_image(image_file)
-    #
-    # connection.convert_timestamp_to_date_format([new_question])
-    # data_manager.LIST_OF_QUESTIONS.append(new_question)
-    # data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-    #
-    # return redirect(url_for("display_a_question", question_id=new_question["Id"]))
 
 @app.route("/question/<question_id>/new_answer", methods=["GET"])
 def post_an_answer_get(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     return render_template("add-question.html", question_id=question_id, question=question)
 
-    # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    # return render_template("add-question.html", question_id=question_id, question=question_dict,
-    #                        tags_list=data_manager.LIST_OF_TAGS)
 
 @app.route("/question/<question_id>/new_answer", methods=["POST"])
 def post_an_answer_post(question_id):
@@ -304,19 +196,6 @@ def post_an_answer_post(question_id):
     data_manager.add_answer(new_answer)
     return redirect(url_for("display_a_question", question_id=question_id))
 
-    # tags_list = data_manager.get_tags_list(data_from_form)
-    # new_answer = {
-    #     "Id": str(data_manager.next_id(data_manager.LIST_OF_ANSWERS)),
-    #     "Submission Time": util.todays_date(),
-    #     "Vote Number": "0",
-    #     "Question Id": data_from_form["Question Id"],
-    #     "Message": data_from_form["Message"],
-    #     "Image": request.files["Image"].filename,
-    #     "Tag": tags_list
-    # }
-
-    # data_manager.update_answer_list(new_answer)
-    # return redirect(url_for("display_a_question", question_id=question_id))
 
 @app.route("/answer/<answer_id>/delete endpoint")
 def delete_answer(answer_id):
@@ -327,33 +206,17 @@ def delete_answer(answer_id):
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
-    # list_of_dicts = data_manager.LIST_OF_ANSWERS
-    # answer_to_remove = data_manager.find_by_id(answer_id, list_of_dicts, "for_answer")[0]
-    # question_id = answer_to_remove["Question Id"]
-    # data_manager.delete_dict(list_of_dicts, answer_to_remove)
-
-    # return redirect(url_for("display_a_question", question_id=question_id))
-
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
     data_manager.delete_question(question_id)
     data_manager.delete_answers_by_question_id(question_id)
     return redirect(url_for("index"))
-    # answers_to_remove = data_manager.find_by_id(question_id, data_manager.LIST_OF_ANSWERS)
-    # question_to_remove = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-    # if len(answers_to_remove) != 0:
-    #     for answer in answers_to_remove:
-    #         data_manager.delete_dict(data_manager.LIST_OF_ANSWERS, answer)
-    # data_manager.delete_dict(data_manager.LIST_OF_QUESTIONS, question_to_remove[0])
-    #
-    # return redirect(url_for("index"))
+
 
 @app.route("/question/<question_id>/edit", methods=["GET"])
 def edit_question_get(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     return render_template("edit.html", question_id=question_id, question=question)
-    # question_dict = data_manager.get_question_by_id(question_id)
-    # return render_template("edit.html", question_id=question_id, question=question_dict[0], tags_list=data_manager.LIST_OF_TAGS)
 
 @app.route("/question/<question_id>/edit", methods=["POST"])
 def edit_question_post(question_id):
@@ -375,27 +238,6 @@ def edit_question_post(question_id):
     data_manager.update_question(question, question["id"])
     return redirect(url_for("display_a_question", question_id=question["id"]))
 
-    # data_from_form = dict(request.form)
-    # tags_list = data_manager.get_tags_list(data_from_form)
-    # question_dict = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-    # question_to_edit = question_dict[0]
-    # question_to_edit["Title"] = data_from_form["Title"]
-    # question_to_edit["Message"] = data_from_form["Message"]
-    # question_to_edit["Tag"] = tags_list
-    # if "Image" in request.files and request.files["Image"].filename != '':
-    #     if question_to_edit["Image"] == "":
-    #         image_file = request.files["Image"]
-    #         data_manager.add_image(image_file)
-    #         question_to_edit["Image"] = image_file.filename
-    #     elif request.files["Image"].filename != question_to_edit["Image"]:
-    #         image_file = request.files["Image"]
-    #         data_manager.add_image(image_file)
-    #         data_manager.remove_image(question_to_edit, "question")
-    #         question_to_edit["Image"] = image_file.filename
-    #
-    # data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-    #
-    # return redirect(url_for("display_a_question", question_id=question_to_edit["Id"]))
 
 @app.route("/question/<question_id>/remove_image")
 def delete_image_from_question(question_id):
@@ -412,19 +254,11 @@ def delete_answer_img(answer_id):
     data_manager.del_answer_img_from_db(answer["id"])
     return redirect(url_for('display_a_question', question_id=answer['question_id']))
 
-    # answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
-    # data_manager.remove_image(answer_dict, "answer")
-    # return redirect(url_for('display_a_question', question_id=answer_dict['Question Id']))
-
 @app.route("/edit/<answer_id>")
 def edit_answer_get(answer_id):
     answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
     img_path = os.path.join(util.IMAGE_PATH, answer["image"])
     return render_template('edit.html', answer_id=answer_id, answer=answer, img_path=img_path)
-
-    # answer_dict = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
-    # img_path = os.path.join(connection.IMAGE_PATH, answer_dict["Image"])
-    # return render_template('edit.html', answer_id=answer_id, answer=answer_dict, img_path=img_path)
 
 @app.route("/edit/<answer_id>", methods=["POST"])
 def edit_answer_post(answer_id):
@@ -440,18 +274,6 @@ def edit_answer_post(answer_id):
     data_manager.update_answer(answer_id, current_answer["message"], current_answer["image"])
     return redirect(url_for('display_a_question', question_id=current_answer['question_id']))
 
-    # current_answer = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")[0]
-    # new_answer = dict(request.form)
-    # current_answer["message"] = new_answer["message"]
-    #
-    # if "image" in request.files and request.files["image"].filename != '':
-    #     data_manager.remove_image(current_answer, "answer")
-    #     current_answer["Image"] = request.files["Image"].filename
-    #     image_file = request.files["Image"]
-    #     data_manager.add_image(image_file)
-    #
-    # data_manager.update_file(data_manager.LIST_OF_ANSWERS, "answer")
-    # return redirect(url_for('display_a_question', question_id=current_answer['Question Id']))
 @app.route("/question/<question_id>/new-comment", methods=["GET"])
 def add_comment_to_question_get(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
@@ -504,16 +326,6 @@ def login_google():
 @app.route("/login-google", methods=["POST"])
 def login_google_post():
     return ("<h1>google login</h1>")
-
-
-from flask import Flask
-
-# app = Flask(__name__)
-
-
-# @app.route("/")
-# def hello():
-#     return "Hello World!"
 
 
 if __name__ == "__main__":
