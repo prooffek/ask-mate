@@ -204,15 +204,15 @@
                         <th scope="col">
                             {% if header.get(property) != "id" and header.get(property) != "image" and header.get(property) != "message"  and header.get(property) != "submission_time"  %}
                             {% if header.get(property) == "vote_number" %}
-                                <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Votes</a>
+                                <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Votes</a>
                             {% elif header == "view_number" %}
-                                <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Views</a>
+                                <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Views</a>
                             {% elif header == "title" %}
-                                <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Question</a>
+                                <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Question</a>
                             {% elif header =="tag" %}
                                 Tags
                             {% else %}
-                                <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">{{ header.get(property) }}</a>
+                                <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">{{ header.get(property) }}</a>
                             {% endif %}
 
                             {% if header.get(property) == server_state.actual_sort_column %}
@@ -225,7 +225,7 @@
                         {% endif %}
                         </th>
                         {% if header.get(property) == "vote_number" %}
-                        <th><a href="{{ url_for("sort_questions", sort_question_column="Answers")  }}">Answers</a>
+                        <th><a href="{{ url_for("index_post", sort_question_column="Answers")  }}">Answers</a>
                         {% if "Answers" == server_state.actual_sort_column %}
                             {% if server_state.actual_sort_direction == 'ascending' %}
                             <img src="static/images/up-arrow-4.png" width="10" height="auto">
@@ -238,7 +238,7 @@
                     {% endfor %}
                 {% endfor %}
                 <th>
-                    <a href="{{ url_for("sort_questions", sort_question_column="submission_time")  }}">Date Asked
+                    <a href="{{ url_for("index_post", sort_question_column="submission_time")  }}">Date Asked
                         {% if "submission_time" == server_state.actual_sort_column %}
                             {% if server_state.actual_sort_direction == 'descending' %}
                                 <img src="static/images/up-arrow-4.png" width="10" height="auto">
