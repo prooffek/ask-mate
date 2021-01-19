@@ -55,8 +55,8 @@ def get_tag_by_id(cursor: RealDictCursor, tag_id: int) -> list:
 @connection.connection_handler
 def add_question(cursor: RealDictCursor, question):
     command = """
-            INSERT INTO question(submission_time, view_number, vote_number, title, message, image) 
-            VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s)
+            INSERT INTO question(submission_time, view_number, vote_number, title, message, image, status, answers_number) 
+            VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s, %(status)s, %(answers_number)s)
             RETURNING id
             """
 
@@ -65,7 +65,9 @@ def add_question(cursor: RealDictCursor, question):
              "vote_number": question.get("vote_number"),
              "title": question.get("title"),
              "message": question.get("message"),
-             "image": question.get("image")}
+             "image": question.get("image"),
+             "status": question.get("status"),
+             "answers_number": question.get("answers_number")}
     cursor.execute(command, param)
     return cursor.fetchone()
 
