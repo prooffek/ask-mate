@@ -42,7 +42,7 @@ class tag:
 
 class sort:
     ascending = "ascending"
-    descending = "descinding"
+    descending = "descending"
 
 class filter:
     date_last_month = "Last month"

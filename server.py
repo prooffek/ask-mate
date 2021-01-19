@@ -100,6 +100,21 @@ def index_post():
 
     return redirect(url_for("index"))
 
+@app.route("/sort")
+def sort_questions():
+    ## SORTING FEATURE
+
+    sort_question_column = request.args.get('sort_question_column')
+    if sort_question_column:
+        server_state.actual_sort_column = sort_question_column
+
+    if sort_question_column  == server_state.actual_sort_column:
+        server_state.toogle_sort_direction()
+    else:
+        server_state.actual_sort_direction = sort.ascending
+
+    return redirect(url_for("index"))
+
 
 @app.route("/vote", methods=["POST"])
 def vote():
