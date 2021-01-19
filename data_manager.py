@@ -254,12 +254,14 @@ def update_question(cursor: RealDictCursor, question, question_id):
            UPDATE question
            SET title = %(title)s,
                message = %(message)s,
-               image = %(image)s 
+               image = %(image)s, 
+               view_number = %(view_number)s
            WHERE id = %(question_id)s       
     """
     param = {"title": question["title"],
              "message": question["message"],
              "image": question["image"],
+             "view_number": question["view_number"],
              "question_id": question_id}
     cursor.execute(command, param)
 
@@ -333,4 +335,14 @@ def update_comment(cursor: RealDictCursor, comment):
              "comment_id": comment["id"]
              }
     cursor.execute(command, param)
+
+
+@connection.connection_handler
+def delete_comment(cursor: RealDictCursor, comment_id):
+    command = """
+                DELETE FROM comment
+                WHERE id = %(comment_id)s"""
+    param = {"comment_id": f"{comment_id}"}
+    cursor.execute(command, param)
+
 
