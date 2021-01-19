@@ -3,6 +3,10 @@ from typing import List, Dict
 from psycopg2 import sql
 from psycopg2._psycopg import cursor
 from psycopg2.extras import RealDictCursor
+from settings import *
+
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
 
 import connection
 
@@ -98,18 +102,73 @@ def get_headers_from_table(cursor: RealDictCursor, table_name) -> list:
             """
     param = {"table_name": table_name}
     cursor.execute(query, param)
-    return cursor.fetchall()
+    headers = cursor.fetchall()
+
+    # set proper columns order for listing questions on index.html page
+    column = {question.vote_number:3, question.view_number:2, question.answers_number:8, question.title:4, question.status:7, question.submission_time:1, question.id:0, question.message:5, question.image:6}
+    new_headers = [\
+            headers[column[question.vote_number]],\
+                      headers[column[question.view_number]],\
+                      headers[column[question.answers_number]],\
+                      headers[column[question.title]],\
+                      headers[column[question.status]],\
+                      headers[column[question.submission_time]],\
+                      headers[column[question.id]],\
+                      headers[column[question.message]],\
+                      headers[column[question.image]]\
+                      ]
+    return new_headers
 
 @connection.connection_handler
-def get_list_questions(cursor: RealDictCursor) -> list:
-    query = """
-            SELECT *
-            FROM question
-            ORDER BY submission_time desc
-            LIMIT 5
-    """
-    cursor.execute(query)
-    return cursor.fetchall()
+def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode:list) -> list:
+
+    actual_filter_by_date_mode = actual_filters[0]
+    actual_filter_by_status_mode = actual_filters[1]
+    actual_filter_by_search_mode = actual_filters[2]
+
+    query_part_by_date = ""
+    if actual_filter_by_date_mode == filter.date_last_month:
+        query_part_by_date = (datetime.now() + relativedelta(months=-1)).strftime("%Y-%m-%d")
+    elif actual_filter_by_date_mode == filter.date_3_last_months:
+        query_part_by_date = (datetime.now() + relativedelta(months=-3)).strftime("%Y-%m-%d")
+    elif actual_filter_by_date_mode == filter.date_all_time:
+        query_part_by_date = filter.date_starting_point_for_all_time_question
+
+    query_part_by_status = ""
+    if actual_filter_by_status_mode == filter.status_new:
+        query_part_by_status = "status = 'new'"
+    elif actual_filter_by_status_mode == filter.status_discussed:
+        query_part_by_status = "status = 'discussed'"
+    elif actual_filter_by_status_mode == filter.status_active:
+        query_part_by_status = "status IN ('new', 'discussed')"
+    elif actual_filter_by_status_mode == filter.status_closed:
+        query_part_by_status = "status = 'closed'"
+    elif actual_filter_by_status_mode == filter.status_all:
+        query_part_by_status = "status IN ('new', 'discussed', 'closed')"
+
+
+    sorting_column = sorting_mode[0]
+    sorting_direction = "DESC" if sorting_mode[1] == sort.descending else "ASC"
+
+    full_query = f" \
+            SELECT vote_number, view_number, answers_number, title, status, submission_time, id, message, image \
+            FROM question \
+            WHERE  submission_time >= '{query_part_by_date}' \
+            AND {query_part_by_status} \
+            AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+            )\
+            ORDER BY {sorting_column} {sorting_direction}\
+            LIMIT 5 \
+    "
+
+    param = {
+        "sorting_column" : sorting_column,
+        "sorting_direction" : f"{sorting_direction}"
+    }
+    cursor.execute(full_query, param)
+    questions = cursor.fetchall()
+    return questions
 
 
 # @connection.connection_handler

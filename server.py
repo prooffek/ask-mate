@@ -7,9 +7,10 @@ app = Flask(__name__)
 LIST_OF_TAGS = data_manager.get_tags_names()
 
 class server_state:
+
     #SORTING
     actual_sort_column = question.submission_time
-    actual_sort_direction = sort.ascending
+    actual_sort_direction = sort.descending
 
     def toogle_sort_direction():
         if server_state.actual_sort_direction == sort.ascending:
@@ -18,9 +19,9 @@ class server_state:
             server_state.actual_sort_direction = sort.ascending
 
     #FILTERING
-    default_filter_by_date = filter.date_3_last_months
-    default_filter_by_status = filter.status_active
-    default_filter_by_search = filter.search
+    default_filter_by_date = filter.date_all_time
+    default_filter_by_status = filter.status_all
+    default_filter_by_search = filter.search_empty
 
     actual_advanced_filter_on_date = state.off
     actual_advanced_filter_on_status = state.off
@@ -31,6 +32,7 @@ class server_state:
     actual_filter_by_date_mode = default_filter_by_date
     actual_filter_by_status_mode = default_filter_by_status
     actual_filter_by_search_mode = default_filter_by_search
+
 
     def toogle_advanced_filter_date():
         if server_state.actual_advanced_filter_on_date == state.off:
@@ -47,13 +49,22 @@ class server_state:
 @app.route('/', methods=["GET"])
 def index():
     headers = data_manager.get_headers_from_table("question")
-    questions = data_manager.get_list_questions()
+    server_state.actual_filter_by_status_mode
+    server_state.actual_filter_by_date_mode
 
+    actual_filters=[server_state.actual_filter_by_date_mode, \
+                    server_state.actual_filter_by_status_mode, \
+                    server_state.actual_filter_by_search_mode]
+    sorting_mode = [server_state.actual_sort_column, \
+                    server_state.actual_sort_direction]
+
+    questions = data_manager.get_list_questions(actual_filters, sorting_mode)
     return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
-
 
 @app.route('/', methods=["POST"])
 def index_post():
+
+    # FILTERING FEATURE
     if request.form.get("actual_advanced_filter_date_clicked") == "clicked":
         server_state.toogle_advanced_filter_date()
         if server_state.actual_advanced_filter_on_status == state.on:
@@ -86,6 +97,21 @@ def index_post():
     if request.form.get("filter_search_clicked") == "yes":
         server_state.actual_filter_by_search_mode = request.form.get("searched_text")
         server_state.filter_reset_active = state.on
+
+    return redirect(url_for("index"))
+
+@app.route("/sort")
+def sort_questions():
+    ## SORTING FEATURE
+
+    sort_question_column = request.args.get('sort_question_column')
+    if sort_question_column:
+        server_state.actual_sort_column = sort_question_column
+
+    if sort_question_column  == server_state.actual_sort_column:
+        server_state.toogle_sort_direction()
+    else:
+        server_state.actual_sort_direction = sort.ascending
 
     return redirect(url_for("index"))
 

@@ -42,20 +42,22 @@ class tag:
 
 class sort:
     ascending = "ascending"
-    descending = "descinding"
+    descending = "descending"
 
 class filter:
     date_last_month = "Last month"
     date_3_last_months = "3 last months"
-    date_all_time = "all time"
+    date_all_time = "All time"
+    date_starting_point_for_all_time_question = '0001-01-01'
 
     status_new = "new"
     status_discussed = "discussed"
     status_active = "active"
     status_closed = "closed"
+    status_all = "All status"
 
-    search = ""
+    search_empty = ""
 
 class state:
-    on = bool(1)
-    off = bool(0)
+    on = "yes"
+    off = "no"
