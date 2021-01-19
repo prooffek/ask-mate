@@ -98,12 +98,27 @@ def get_headers_from_table(cursor:RealDictCursor, table_name) -> list:
             """
     param = {"table_name": table_name}
     cursor.execute(query, param)
-    return cursor.fetchall()
+    headers = cursor.fetchall()
+
+    # set proper columns order for listing questions on index.html page
+    column = {"vote_number":3, "view_number":2, "answers_number":8, "title":4, "status":7, "submission_time":1, "id":0, "message":5, "image":6}
+    new_headers = [\
+            headers[column["vote_number"]],\
+                      headers[column["view_number"]],\
+                      headers[column["answers_number"]],\
+                      headers[column["title"]],\
+                      headers[column["status"]],\
+                      headers[column["submission_time"]],\
+                      headers[column["id"]],\
+                      headers[column["message"]],\
+                      headers[column["image"]]\
+                      ]
+    return new_headers
 
 @connection.connection_handler
 def get_list_questions(cursor: RealDictCursor) -> list:
     query = """
-            SELECT *
+            SELECT vote_number, view_number, answers_number, title, status, submission_time, id, message, image
             FROM question
             ORDER BY submission_time desc
             LIMIT 5

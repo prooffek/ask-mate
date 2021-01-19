@@ -199,31 +199,19 @@
             <tr>
                 {% for header in headers %}
                     {% for property in header %}
-                        <th scope="col">
-                            {% if header.get(property) != "id"
-                            and header.get(property) != "image"
-                            and header.get(property) != "message"
-                            and header.get(property) != "submission_time"  %}
-
+                        <th>
                             {% if header.get(property) == "vote_number" %}
-                                <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Votes</a>
-                                 <th><a href="{{ url_for("index_post", sort_question_column="Answers")  }}">Answers</a>
-                                {% if "Answers" == server_state.actual_sort_column %}
-                                    {% if server_state.actual_sort_direction == 'ascending' %}
-                                    <img src="static/images/up-arrow-4.png" width="10" height="auto">
-                                    {% else %}
-                                    <img src="static/images/down-arrow-4.png" width="10" height="auto">
-                                    {% endif %}
-                                {% endif %}
-                                </th>
-                            {% elif header.get(property) == "view_number" %}
-                                <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Views</a>
+                            <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Votes</a>
+                             {% elif header.get(property) == "view_number" %}
+                            <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Views</a>
+                            {% elif header.get(property) == "answers_number" %}
+                                <a href="{{ url_for("index_post", sort_question_column="answers_number")  }}">Answers</a>
                             {% elif header.get(property) == "title" %}
-                                <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Question</a>
-                            {% elif header.get(property) =="tag" %}
-                                Tags
-                            {% else %}
-                                <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">{{ header.get(property) }}</a>
+                            <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Question</a>
+                            {% elif header.get(property) == "status" %}
+                            <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Status</a>
+                            {% elif header.get(property) == "submission_time" %}
+                            <a href="{{ url_for("index_post", sort_question_column=header.get(property))  }}">Date Asked</a>
                             {% endif %}
 
                             {% if header.get(property) == server_state.actual_sort_column %}
@@ -233,66 +221,44 @@
                                 <img src="static/images/down-arrow-4.png" width="10" height="auto">
                                 {% endif %}
                             {% endif %}
-                        {% endif %}
                         </th>
                     {% endfor %}
                 {% endfor %}
-                <th>
-                    <a href="{{ url_for("index_post", sort_question_column="submission_time")  }}">Date Asked
-                        {% if "submission_time" == server_state.actual_sort_column %}
-                            {% if server_state.actual_sort_direction == 'descending' %}
-                                <img src="static/images/up-arrow-4.png" width="10" height="auto">
-                            {% else %}
-                                <img src="static/images/down-arrow-4.png" width="10" height="auto">
-                            {% endif %}
-                        {% endif %}
-                </th>
-            </tr>
+             </tr>
         </thead>
         <tbody>
             {% for question in questions %}
             <tr>
                 {% for property in question %}
-                {% if property == "vote_number" %}
-                       <td>header.get(property) </td>
-{#                    <td  style="text-align:center">{{ answers_number=question.get("id") }}</td>#}
-{#                {% elif header.get(property) == "status" %}#}
-{#                    <td  style="text-align:center">#}
-{#                        {% if question["status"] == "new" %}#}
-{#                            <img src="/static/images/question_status_new.png" width="33" height="auto">#}
-{#                        {% elif question["status"] == "discussed" %}#}
-{#                            <img src="/static/images/question_status_discussed.png" width="33" height="auto">#}
-{#                        {% elif question["status"] == "closed" %}#}
-{#                            <img src="/static/images/question_status_closed.png" width="33" height="auto">#}
-{#                        {% endif %}#}
-{#                        <br>#}
-{#                        {{ question["status"] }}#}
-{#                    </td>#}
-                {% else %}
-                    <td  style="text-align:center">
-                    {% if property == "title" %}
-                        <a href="{{ url_for("display_a_question", question_id=question.get("id"))}}">{{ question.get(property)  | truncate(70)  }}</a>
-{#                    {% elif header == "tag" %}#}
-{#                        {% for tag in question["Tag"] %}#}
-{#                            {{ tag }};#}
-{#                        {% endfor %}#}
-                    {% elif property != "id" and property != "image" and property != "message" and property != "submission_time" %}
-                        {{ question.get(property) }}
+                    {% if question.get(property) == "status" %}
+                        <td>
+                            {% if question["status"] == "new" %}
+                                <img src="/static/images/question_status_new.png" width="33" height="auto">
+                            {% elif question["status"] == "discussed" %}
+                                <img src="/static/images/question_status_discussed.png" width="33" height="auto">
+                            {% elif question["status"] == "closed" %}
+                                <img src="/static/images/question_status_closed.png" width="33" height="auto">
+                            {% endif %}
+                            <br>
+                            {{ question["status"] }}
+                        </td>
+                    {% elif question.get(property) == "title" %}
+                        <td>
+                            <a href="{{ url_for("display_a_question", question_id=question.get("id"))}}">{{ question.get(property)  | truncate(70)  }}</a>
+                        </td>
+                    {% else %}
+                        <td>
+                            {% if property != "id" and property != "image" and property != "message" %}
+                            {{ question.get(property) }}
+                            {% endif %}
+                        </td>
                     {% endif %}
-                    </td>
-                {% endif %}
-            {% endfor %}
-                <td></td>
-                <td style="text-align:center">{{ question.get("vote_number") }}</td>
-                <td>{{ question.get("submission_time") }}</td>
-                <td  style="text-align:center">
-                {{ question.get("message") | truncate(50) }}
-                </td>
+                {% endfor %}
+
             </tr>
-
-
             {% endfor %}
         </tbody>
     </table>
+
 </body>
 </html>
