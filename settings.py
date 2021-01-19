@@ -57,5 +57,5 @@ class filter:
     search = ""
 
 class state:
-    on = bool(1)
-    off = bool(0)
+    on = "yes"
+    off = "no"
