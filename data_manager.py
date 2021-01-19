@@ -134,7 +134,7 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
     elif actual_filter_by_date_mode == filter.date_all_time:
         query_part_by_date = filter.date_starting_point_for_all_time_question
 
-    query_part_by_status = "status = 'closed'"
+    query_part_by_status = ""
     if actual_filter_by_status_mode == filter.status_new:
         query_part_by_status = "status = 'new'"
     elif actual_filter_by_status_mode == filter.status_discussed:
@@ -146,13 +146,6 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
     elif actual_filter_by_status_mode == filter.status_all:
         query_part_by_status = "status IN ('new', 'discussed', 'closed')"
 
-    query_part_by_search = ""
-    if actual_filter_by_search_mode == filter.search_empty:
-        query_part_by_search = ""
-    else:
-        query_part_by_search = ""
-
-    query_part_by_search = '%make%'
 
     sorting_column = sorting_mode[0]
     sorting_direction = "DESC" if sorting_mode[1] == sort.descending else "ASC"
@@ -162,7 +155,9 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
             FROM question \
             WHERE  submission_time >= '{query_part_by_date}' \
             AND {query_part_by_status} \
-            AND title LIKE '%%{actual_filter_by_search_mode}%%'\
+            AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+            )\
             ORDER BY {sorting_column} {sorting_direction}\
             LIMIT 5 \
     "
@@ -172,7 +167,8 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
         "sorting_direction" : f"{sorting_direction}"
     }
     cursor.execute(full_query, param)
-    return cursor.fetchall()
+    questions = cursor.fetchall()
+    return questions
 
 
 # @connection.connection_handler

@@ -101,8 +101,8 @@
                 {% endif %}
             </button>
 
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="All">
-                {% if server_state.actual_filter_by_date_mode == "All" %}
+            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="All time">
+                {% if server_state.actual_filter_by_date_mode == "All time" %}
                 <img src="/static/images/filter_date_on.png" width="22" height="auto">
                 All time
                 {% else %}
@@ -164,13 +164,13 @@
                 {% endif %}
             </button>
 
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="all">
-                {% if server_state.actual_filter_by_status_mode == "all" %}
+            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="All status">
+                {% if server_state.actual_filter_by_status_mode == "All status" %}
                 <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                all
+                All status
                 {% else %}
                 <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                All
+                All status
                 {% endif %}
             </button>
 
