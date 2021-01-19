@@ -222,6 +222,13 @@ def post_an_answer_post(question_id):
         util.add_image(image_file)
 
     data_manager.add_answer(new_answer)
+
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    question["answers_number"] += 1
+    if question["status"] != "discussed":
+        question["status"] = "discussed"
+    data_manager.update_question(question, question_id)
+
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
@@ -231,6 +238,13 @@ def delete_answer(answer_id):
     question_id = answer["question_id"]
     util.delete_image(answer["image"])
     data_manager.delete_answer(answer_id)
+
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    question["answers_number"] -= 1
+    if question["answers_number"] == 0:
+        question["status"] = "new"
+    data_manager.update_question(question, question_id)
+
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
