@@ -3,6 +3,7 @@ from typing import List, Dict
 from psycopg2 import sql
 from psycopg2._psycopg import cursor
 from psycopg2.extras import RealDictCursor
+from settings import *
 
 import connection
 
@@ -101,17 +102,17 @@ def get_headers_from_table(cursor: RealDictCursor, table_name) -> list:
     headers = cursor.fetchall()
 
     # set proper columns order for listing questions on index.html page
-    column = {"vote_number":3, "view_number":2, "answers_number":8, "title":4, "status":7, "submission_time":1, "id":0, "message":5, "image":6}
+    column = {question.vote_number:3, question.view_number:2, question.answers_number:8, question.title:4, question.status:7, question.submission_time:1, question.id:0, question.message:5, question.image:6}
     new_headers = [\
-            headers[column["vote_number"]],\
-                      headers[column["view_number"]],\
-                      headers[column["answers_number"]],\
-                      headers[column["title"]],\
-                      headers[column["status"]],\
-                      headers[column["submission_time"]],\
-                      headers[column["id"]],\
-                      headers[column["message"]],\
-                      headers[column["image"]]\
+            headers[column[question.vote_number]],\
+                      headers[column[question.view_number]],\
+                      headers[column[question.answers_number]],\
+                      headers[column[question.title]],\
+                      headers[column[question.status]],\
+                      headers[column[question.submission_time]],\
+                      headers[column[question.id]],\
+                      headers[column[question.message]],\
+                      headers[column[question.image]]\
                       ]
     return new_headers
 
