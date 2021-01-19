@@ -128,12 +128,36 @@
                 </form>
                 <form action="{{ url_for("add_comment_to_question_get", question_id=question["id"]) }}">
                     <button type="submit" name="add_comment" value="add_comment"><img src="/static/images/add_comment.png" width="30" height="auto"></button>
-
                 </form>
-
             </td>
             <td>
             </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+
+                {% for comment in comments %}
+                    {% if question["id"] == comment["question_id"] %}
+                        <h4>Question comments</h4>
+                        <p>{{ comment["message"] }}</p>
+                        <p style="font-size: smaller">
+                                    Added: {{ comment["submission_time"] }}.
+                                    {% if comment["edited_count"] %}
+                                        Edited: {{ comment["edited_count"] }}
+                                    {% else %}
+                                        Edited: 0
+                                    {% endif %}
+                                </p>
+                         <form action="{{ url_for("edit_comment_get", comment_id = comment["id"]) }}">
+                            <button type="submit" name="edit_comment" value="edit_comment"><img src="/static/images/edit_comment.png" width="30" height="auto"></button>
+                        </form>
+
+                    {% endif %}
+
+                {% endfor %}
+            </td>
+
         </tr>
     </table>
 
