@@ -208,15 +208,15 @@ def update_question(cursor: RealDictCursor, question, question_id):
 @connection.connection_handler
 def add_comment_to_question(cursor: RealDictCursor, comment):
     command = """
-            INSERT INTO comment(question_id, message, submission_time, edited_count)
-            VALUES (%(question_id)s, %(message)s, %(submission_time)s, %(edited_count)s)
+            INSERT INTO comment(question_id, message, submission_time)
+            VALUES (%(question_id)s, %(message)s, %(submission_time)s)
     """
 
     param = {
         "question_id": comment["question_id"],
         "message": comment["message"],
         "submission_time": comment["submission_time"],
-        "edited_count": comment["edited_count"]
+
             }
     cursor.execute(command, param)
 
@@ -242,4 +242,36 @@ def get_all_comments(cursor: RealDictCursor) -> RealDictCursor:
             FROM comment"""
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_comment_by_comment_id(cursor: RealDictCursor, comment_id):
+    query = """
+        SELECT *
+        FROM comment
+        WHERE id = %(comment_id)s
+    """
+    param = {
+        "comment_id": comment_id
+    }
+
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def update_comment(cursor: RealDictCursor, comment):
+    command = """
+               UPDATE comment
+               SET message = %(message)s,
+                   submission_time = %(submission_time)s,
+                   edited_count = %(edited_count)s 
+               WHERE id = %(comment_id)s       
+        """
+    param = {"message": comment["message"],
+             "submission_time": comment["submission_time"],
+             "edited_count": comment["edited_count"],
+             "comment_id": comment["id"]
+             }
+    cursor.execute(command, param)
 

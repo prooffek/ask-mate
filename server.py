@@ -303,6 +303,37 @@ def add_comment_to_answer_post(answer_id):
     return redirect(url_for("display_a_question", question_id=answer["question_id"]))
 
 
+@app.route('/comment/<comment_id>/edit', methods=["GET"])
+def edit_comment_get(comment_id):
+    comment = util.take_out_of_the_list(data_manager.get_comment_by_comment_id(comment_id))
+    return render_template("edit_comment.html", comment=comment)
+
+
+@app.route('/comment/<comment_id>/edit', methods=["POST"])
+def edit_comment_post(comment_id):
+    data_from_form = dict(request.form)
+    current_comment = util.take_out_of_the_list(data_manager.get_comment_by_comment_id(comment_id))
+    current_comment["message"] = data_from_form["message"]
+    current_comment["submission_time"] = util.current_datetime()
+    if current_comment["edited_count"] is not None:
+        current_comment["edited_count"] = current_comment["edited_count"] + 1
+    else:
+        current_comment["edited_count"] = 1
+    data_manager.update_comment(current_comment)
+    if current_comment["question_id"] is not None:
+        question_id = current_comment["question_id"]
+    else:
+        answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(current_comment["answer_id"]))
+        question_id = answer["question_id"]
+    return redirect(url_for("display_a_question", question_id=question_id))
+
+
+@app.route('/comments/<comment_id>/delete')
+def delete_comment(comment_id):
+    pass
+
+
+
 @app.route("/login")
 def login_get():
     return render_template("login_register.html", login_or_register="login")
