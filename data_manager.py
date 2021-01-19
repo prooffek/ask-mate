@@ -29,16 +29,33 @@ def get_question_by_id(cursor: RealDictCursor, question_id: int) -> list:
     cursor.execute(query, param)
     return cursor.fetchall()
 
-
 @connection.connection_handler
 def get_nonquestion_by_question_id(cursor: RealDictCursor, question_id, table_name: str) -> list:
-    query = f"""
-            SELECT *
-            FROM {table_name}
-            WHERE question_id = %(question_id)s"""
-    param = {"question_id": f"{question_id}"}
-    cursor.execute(query, param)
-    return cursor.fetchall()
+    if table_name == ANSWER_TABLE_NAME:
+        query = f"SELECT * \
+                FROM {table_name} \
+                WHERE question_id = {question_id} \
+                ORDER BY vote_number DESC\
+                "
+        cursor.execute(query)
+        return cursor.fetchall()
+
+    elif table_name == COMMENTS_TABLE_NAME:
+        query = f"SELECT * \
+                FROM {table_name}\
+                WHERE question_id = {question_id} \
+                ORDER BY submission_time DESC \
+                "
+        cursor.execute(query)
+        return cursor.fetchall()
+
+    else:
+        query = f"SELECT * \
+                FROM {table_name}\
+                WHERE question_id = {question_id} \
+                "
+        cursor.execute(query)
+        return cursor.fetchall()
 
 
 @connection.connection_handler
@@ -186,6 +203,21 @@ def get_answer_by_answer_id(cursor: RealDictCursor, answer_id: int) -> dict:
     cursor.execute(query, param)
     return cursor.fetchall()
 
+@connection.connection_handler
+def vote_for_question(cursor: RealDictCursor, question_id: int, vote_up_or_down="up") -> None:
+    operant = '+' if vote_up_or_down == "up" else '-'
+    query = f"UPDATE question \
+    SET vote_number = vote_number {operant} 1 \
+    WHERE id = {question_id}"
+    cursor.execute(query)
+
+@connection.connection_handler
+def vote_for_answer(cursor: RealDictCursor, answer_id: int, vote_up_or_down="up") -> None:
+    operant = '+' if vote_up_or_down == "up" else '-'
+    query = f"UPDATE answer \
+    SET vote_number = vote_number {operant} 1 \
+    WHERE id = {answer_id}"
+    cursor.execute(query)
 
 @connection.connection_handler
 def add_answer(cursor: RealDictCursor, answer: dict):
