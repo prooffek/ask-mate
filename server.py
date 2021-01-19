@@ -157,6 +157,8 @@ def display_a_question(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     answers = data_manager.get_nonquestion_by_question_id(question_id, ANSWER_TABLE_NAME)
     comments = data_manager.get_all_comments()
+    question["view_number"] += 1
+    data_manager.update_question(question, question_id)
     tags = data_manager.get_nonquestion_by_question_id(question_id, QUESTION_TAG_TABLE_NAME)
 
     question_tags = [util.take_out_of_the_list(data_manager.get_tag_by_id(tag["tag_id"]))
@@ -203,6 +205,13 @@ def post_an_answer_post(question_id):
         util.add_image(image_file)
 
     data_manager.add_answer(new_answer)
+
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    question["answers_number"] += 1
+    if question["status"] != "discussed":
+        question["status"] = "discussed"
+    data_manager.update_question(question, question_id)
+
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
@@ -212,6 +221,13 @@ def delete_answer(answer_id):
     question_id = answer["question_id"]
     util.delete_image(answer["image"])
     data_manager.delete_answer(answer_id)
+
+    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+    question["answers_number"] -= 1
+    if question["answers_number"] == 0:
+        question["status"] = "new"
+    data_manager.update_question(question, question_id)
+
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
@@ -339,7 +355,16 @@ def edit_comment_post(comment_id):
 
 @app.route('/comments/<comment_id>/delete')
 def delete_comment(comment_id):
-    pass
+    comment = util.take_out_of_the_list(data_manager.get_comment_by_comment_id(comment_id))
+    if comment["question_id"] is not None:
+        question_id = comment["question_id"]
+    else:
+        answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(comment["answer_id"]))
+        question_id = answer["question_id"]
+
+    data_manager.delete_comment(comment_id)
+    return redirect(url_for("display_a_question", question_id=question_id))
+
 
 
 

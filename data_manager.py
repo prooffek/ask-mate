@@ -72,8 +72,8 @@ def get_tag_by_id(cursor: RealDictCursor, tag_id: int) -> list:
 @connection.connection_handler
 def add_question(cursor: RealDictCursor, question):
     command = """
-            INSERT INTO question(submission_time, view_number, vote_number, title, message, image) 
-            VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s)
+            INSERT INTO question(submission_time, view_number, vote_number, title, message, image, status, answers_number) 
+            VALUES (%(submission_time)s,%(view_number)s,%(vote_number)s,%(title)s,%(message)s,%(image)s, %(status)s, %(answers_number)s)
             RETURNING id
             """
 
@@ -82,7 +82,9 @@ def add_question(cursor: RealDictCursor, question):
              "vote_number": question.get("vote_number"),
              "title": question.get("title"),
              "message": question.get("message"),
-             "image": question.get("image")}
+             "image": question.get("image"),
+             "status": question.get("status"),
+             "answers_number": question.get("answers_number")}
     cursor.execute(command, param)
     return cursor.fetchone()
 
@@ -285,13 +287,20 @@ def update_question(cursor: RealDictCursor, question, question_id):
            UPDATE question
            SET title = %(title)s,
                message = %(message)s,
-               image = %(image)s 
+               image = %(image)s, 
+               view_number = %(view_number)s,
+               status = %(status)s,
+               answers_number = %(answers_number)s
            WHERE id = %(question_id)s       
     """
     param = {"title": question["title"],
              "message": question["message"],
              "image": question["image"],
-             "question_id": question_id}
+             "view_number": question["view_number"],
+             "status": question["status"],
+             "answers_number": question["answers_number"],
+             "question_id": question_id
+             }
     cursor.execute(command, param)
 
 
@@ -364,4 +373,14 @@ def update_comment(cursor: RealDictCursor, comment):
              "comment_id": comment["id"]
              }
     cursor.execute(command, param)
+
+
+@connection.connection_handler
+def delete_comment(cursor: RealDictCursor, comment_id):
+    command = """
+                DELETE FROM comment
+                WHERE id = %(comment_id)s"""
+    param = {"comment_id": f"{comment_id}"}
+    cursor.execute(command, param)
+
 
