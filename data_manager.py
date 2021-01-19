@@ -5,6 +5,9 @@ from psycopg2._psycopg import cursor
 from psycopg2.extras import RealDictCursor
 from settings import *
 
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
+
 import connection
 
 
@@ -117,14 +120,58 @@ def get_headers_from_table(cursor: RealDictCursor, table_name) -> list:
     return new_headers
 
 @connection.connection_handler
-def get_list_questions(cursor: RealDictCursor) -> list:
-    query = """
-            SELECT vote_number, view_number, answers_number, title, status, submission_time, id, message, image
-            FROM question
-            ORDER BY submission_time desc
-            LIMIT 5
-    """
-    cursor.execute(query)
+def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode:list) -> list:
+
+    actual_filter_by_date_mode = actual_filters[0]
+    actual_filter_by_status_mode = actual_filters[1]
+    actual_filter_by_search_mode = actual_filters[2]
+
+    query_part_by_date = ""
+    if actual_filter_by_date_mode == filter.date_last_month:
+        query_part_by_date = (datetime.now() + relativedelta(months=-1)).strftime("%Y-%m-%d")
+    elif actual_filter_by_date_mode == filter.date_3_last_months:
+        query_part_by_date = (datetime.now() + relativedelta(months=-3)).strftime("%Y-%m-%d")
+    elif actual_filter_by_date_mode == filter.date_all_time:
+        query_part_by_date = filter.date_starting_point_for_all_time_question
+
+    query_part_by_status = "status = 'closed'"
+    if actual_filter_by_status_mode == filter.status_new:
+        query_part_by_status = "status = 'new'"
+    elif actual_filter_by_status_mode == filter.status_discussed:
+        query_part_by_status = "status = 'discussed'"
+    elif actual_filter_by_status_mode == filter.status_active:
+        query_part_by_status = "status IN ('new', 'discussed')"
+    elif actual_filter_by_status_mode == filter.status_closed:
+        query_part_by_status = "status = 'closed'"
+    elif actual_filter_by_status_mode == filter.status_all:
+        query_part_by_status = "status IN ('new', 'discussed', 'closed')"
+
+    query_part_by_search = ""
+    if actual_filter_by_search_mode == filter.search_empty:
+        query_part_by_search = ""
+    else:
+        query_part_by_search = ""
+
+    query_part_by_search = '%make%'
+
+    sorting_column = sorting_mode[0]
+    sorting_direction = "DESC" if sorting_mode[1] == sort.descending else "ASC"
+
+    full_query = f" \
+            SELECT vote_number, view_number, answers_number, title, status, submission_time, id, message, image \
+            FROM question \
+            WHERE  submission_time >= '{query_part_by_date}' \
+            AND {query_part_by_status} \
+            AND title LIKE '%%{actual_filter_by_search_mode}%%'\
+            ORDER BY {sorting_column} {sorting_direction}\
+            LIMIT 5 \
+    "
+
+    param = {
+        "sorting_column" : sorting_column,
+        "sorting_direction" : f"{sorting_direction}"
+    }
+    cursor.execute(full_query, param)
     return cursor.fetchall()
 
 

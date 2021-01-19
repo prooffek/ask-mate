@@ -48,13 +48,15 @@ class filter:
     date_last_month = "Last month"
     date_3_last_months = "3 last months"
     date_all_time = "all time"
+    date_starting_point_for_all_time_question = '0001-01-01'
 
     status_new = "new"
     status_discussed = "discussed"
     status_active = "active"
     status_closed = "closed"
+    status_all = "all_status"
 
-    search = ""
+    search_empty = ""
 
 class state:
     on = "yes"
