@@ -159,7 +159,6 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                 OR message LIKE '%%{actual_filter_by_search_mode}%%' \
             )\
             ORDER BY {sorting_column} {sorting_direction}\
-            LIMIT 5 \
     "
 
     param = {
