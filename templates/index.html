@@ -230,7 +230,7 @@
             {% for question in questions %}
             <tr>
                 {% for property in question %}
-                    {% if question.get(property) == "status" %}
+                    {% if property == "status" %}
                         <td>
                             {% if question["status"] == "new" %}
                                 <img src="/static/images/question_status_new.png" width="33" height="auto">
@@ -242,7 +242,7 @@
                             <br>
                             {{ question["status"] }}
                         </td>
-                    {% elif question.get(property) == "title" %}
+                    {% elif property == "title" %}
                         <td>
                             <a href="{{ url_for("display_a_question", question_id=question.get("id"))}}">{{ question.get(property)  | truncate(70)  }}</a>
                         </td>
