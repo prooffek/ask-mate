@@ -120,40 +120,23 @@ def sort_questions():
 def vote():
     question_id = request.form.get("question_id")
     vote_type = request.form.get("vote") # vote_up or vote_down
-    url_origin = request.form.get("url_origin")
     vote_for_answer_or_question = request.form.get("vote_for_answer_or_question") # vote_for_answer or vote_for_question
 
     if vote_for_answer_or_question == "vote_for_question":
-        question = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)
-        question_index = data_manager.LIST_OF_QUESTIONS.index(question[0])
-
         if vote_type == "up_vote":
-            data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) + 1
+            data_manager.vote_for_question(question_id=question_id, vote_up_or_down="up")
         else:
-            data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"] = int(data_manager.LIST_OF_QUESTIONS[question_index]["Vote Number"]) - 1
+            data_manager.vote_for_question(question_id=question_id, vote_up_or_down="down")
+        return redirect(url_for("display_a_question", question_id = question_id))
 
-        data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-
-        if url_origin == "index":
-            return redirect(url_for("index"))
-        elif url_origin == "display_question":
-            return redirect(url_for("display_a_question", question_id = question_id))
     else: # vote_for_answer
         answer_id = request.form.get("answer_id")
-        answer = data_manager.find_by_id(answer_id, data_manager.LIST_OF_ANSWERS, mode="for_answer")
-        answer_index = data_manager.LIST_OF_ANSWERS.index(answer[0])
-
         if vote_type == "up_vote":
-            data_manager.LIST_OF_ANSWERS[answer_index]["Vote Number"] = int(data_manager.LIST_OF_ANSWERS[answer_index]["Vote Number"]) + 1
+            data_manager.vote_for_answer(answer_id=answer_id, vote_up_or_down="up")
         else:
-            data_manager.LIST_OF_ANSWERS[answer_index]["Vote Number"] = int(data_manager.LIST_OF_ANSWERS[answer_index]["Vote Number"]) + 1
+            data_manager.vote_for_answer(answer_id=answer_id, vote_up_or_down="down")
+        return redirect(url_for("display_a_question", question_id = question_id))
 
-        data_manager.update_file(data_manager.LIST_OF_ANSWERS, file_type="answer")
-
-        if url_origin == "index":
-            return redirect(url_for("index"))
-        elif url_origin == "display_question":
-            return redirect(url_for("display_a_question", question_id = question_id))
 
 @app.route("/change-question-status", methods=["POST"])
 def change_question_status():
