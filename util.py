@@ -1,6 +1,7 @@
 import calendar, time, os
 from pathlib import Path
 from datetime import datetime
+import data_manager
 
 
 path = f"{Path(__name__).parent}/sample_data"
@@ -32,3 +33,27 @@ def take_out_of_the_list(list):
         return list[0]
     except:
         pass
+
+def question_tags_names(question_id) -> "RealDictCursor":
+    tags = data_manager.get_nonquestion_by_question_id(question_id, data_manager.QUESTION_TAG_TABLE_NAME)
+    return [take_out_of_the_list(data_manager.get_tag_by_id(tag["tag_id"]))
+                     for tag in tags]
+
+def get_tags_from_dict(dictionary):
+    not_tags_keys = ["name", "title", "message", "id", "submission_time", "vote_number", "view_number", "image"]
+    return [value for key, value in dictionary.items() if key not in not_tags_keys]
+
+def add_new_tags_to_db(tags_list):
+    current_tags_list = [tag["name"] for tag in data_manager.LIST_OF_TAGS]
+    [data_manager.add_tag(tag) for tag in tags_list if tag not in current_tags_list]
+
+def add_question_tag_to_db(question_id, data_from_form):
+    tags_selected = get_tags_from_dict(data_from_form)
+    add_new_tags_to_db(tags_selected)
+    tags_with_id = data_manager.get_tags_with_ids()
+
+    [data_manager.add_question_tag(question_id, tag["id"]) for tag in tags_with_id if tag["name"] in tags_selected]
+
+def update_question_tags(question_id, data_from_form):
+    data_manager.del_question_tag(question_id)
+    add_question_tag_to_db(question_id, data_from_form)

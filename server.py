@@ -4,8 +4,6 @@ from settings import *
 
 app = Flask(__name__)
 
-LIST_OF_TAGS = data_manager.get_tags_names()
-
 class server_state:
 
     #SORTING
@@ -170,7 +168,7 @@ def display_a_question(question_id):
 
 @app.route("/add-question", methods=["GET"])
 def add_question_get():
-    return render_template("add-question.html")
+    return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
 
 
 # funkcja przerobiona - ale przekierowanie na stronę główną, będę musiała to poprawić na przekierowanie na to nowo dodane pytanie
@@ -185,6 +183,7 @@ def add_question_post():
         question["image"] = image_file.filename
     return_value = data_manager.add_question(question)
 
+    util.add_question_tag_to_db(return_value["id"], question)
     return redirect(url_for("display_a_question", question_id=return_value["id"]))
 
 
@@ -207,7 +206,7 @@ def post_an_answer_post(question_id):
     data_manager.add_answer(new_answer)
 
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    question["answers_number"] += 1
+    question["answers_number"] = int(question["answers_number"]) + 1
     if question["status"] != "discussed":
         question["status"] = "discussed"
     data_manager.update_question(question, question_id)
@@ -233,6 +232,7 @@ def delete_answer(answer_id):
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
+    data_manager.del_question_tag(question_id)
     data_manager.delete_question(question_id)
     data_manager.delete_answers_by_question_id(question_id)
     return redirect(url_for("index"))
@@ -241,7 +241,9 @@ def delete_question(question_id):
 @app.route("/question/<question_id>/edit", methods=["GET"])
 def edit_question_get(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    return render_template("edit.html", question_id=question_id, question=question)
+    question_tags = util.question_tags_names(question_id)
+    return render_template("edit.html", question_id=question_id, question=question, tags_list=data_manager.LIST_OF_TAGS,
+                           tags_selected=question_tags)
 
 @app.route("/question/<question_id>/edit", methods=["POST"])
 def edit_question_post(question_id):
@@ -261,6 +263,7 @@ def edit_question_post(question_id):
     question["title"] = data_from_form["title"]
     question["message"] = data_from_form["message"]
     data_manager.update_question(question, question["id"])
+    util.update_question_tags(question_id, data_from_form)
     return redirect(url_for("display_a_question", question_id=question["id"]))
 
 

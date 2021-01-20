@@ -23,13 +23,16 @@
             {% else %}
                 <input type="file" name="image" id="image" value="No file uploaded yet"><br><br>
             {% endif %}
-{#            {% for tag in tags_list %}#}
-{#                {% if tag["Name"] in question["Tag"] %}#}
-{#                    <input type="checkbox" name="{{ tag['Name'] }}" id="{{ tag['Name'] }}" value="{{ tag['Name'] }}" checked>{{ tag['Name'] }}#}
-{#                {% else %}#}
-{#                    <input type="checkbox" name="{{ tag['Name'] }}" id="{{ tag['Name'] }}" value="{{ tag['Name'] }}">{{ tag['Name'] }}#}
-{#                {% endif %}#}
-{#            {% endfor %}#}
+            {% if tags_list != [] %}
+                <label for="tags">Tags:</label><br>
+                {% for tag in tags_list %}
+                    {% if tag in tags_selected %}
+                        <input type="checkbox" name="{{ tag['name'] }}" id="{{ tag['name'] }}" value="{{ tag['name'] }}" checked>{{ tag['name'] }}
+                    {% else %}
+                        <input type="checkbox" name="{{ tag['name'] }}" id="{{ tag['name'] }}" value="{{ tag['name'] }}">{{ tag['name'] }}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             <br><br>
             <input type="submit" value="Edit question">
         </form>

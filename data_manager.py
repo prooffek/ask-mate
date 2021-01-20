@@ -19,6 +19,9 @@ def get_tags_names(cursor: RealDictCursor) -> list:
     cursor.execute(query)
     return cursor.fetchall()
 
+LIST_OF_TAGS = get_tags_names()
+
+
 @connection.connection_handler
 def get_question_by_id(cursor: RealDictCursor, question_id: int) -> list:
     query = f"""
@@ -384,3 +387,40 @@ def delete_comment(cursor: RealDictCursor, comment_id):
     cursor.execute(command, param)
 
 
+@connection.connection_handler
+def get_tags_with_ids(cursor: RealDictCursor) -> list:
+    query = """
+            SELECT *
+            FROM tag"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def add_tag(cursor: RealDictCursor, tag_name: str):
+    command = """
+            INSERT INTO tag("name")
+            VALUES (%(tag_name)s)"""
+    param = {"tag_name": f"{tag_name}"}
+    cursor.execute(command, param)
+
+@connection.connection_handler
+def add_question_tag(cursor: RealDictCursor, question_id, tag_id):
+    command = """
+                INSERT INTO question_tag(question_id, tag_id)
+                VALUES (%(question_id)s, %(tag_id)s)"""
+    param = {
+            "question_id": f"{question_id}",
+            "tag_id": f"{tag_id}"
+    }
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def del_question_tag(cursor: RealDictCursor, question_id):
+    command = f"""
+            DELETE
+            FROM question_tag
+            WHERE question_id = %(question_id)s"""
+    param = {"question_id": f"{question_id}"}
+    cursor.execute(command, param)
