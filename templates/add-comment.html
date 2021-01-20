@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>LAB Stacoverflow</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
+
     <h1>Add new comment</h1>
     {% if mode == "question" %}
         <h1>{{ question["title"] }}</h1>
@@ -35,6 +31,4 @@
         </form>
     {% endif %}
 
-
-</body>
-</html>
+{% endblock %}

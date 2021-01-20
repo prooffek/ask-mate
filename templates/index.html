@@ -1,42 +1,6 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>LAB Stackoverflow</title>
-</head>
-<body bgcolor="#fefefe">
-<table>
-    <tr>
-        <td>
-            <a href="{{ url_for("index") }}">
-            <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
-            </a>
-        </td>
-        <td>
-            <form action="{{ url_for('add_question_get')}}">
-                <button type="submit" style="border: 0 none; background: none;" name="ask_a_question" value="ask_a_question"><img src="/static/images/ask_a_question.png" width="200" height="auto"></button>
-            </form>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>
-            <form action="{{ url_for('login_get')}}">
-                <button type="submit" style="border: 0 none; background: none;" name="login" value="login"><img src="/static/images/user.png" width="35" height="35"></button>
-            </form>
-        </td>
-        <td>
-            <form action="{{ url_for('register_get')}}">
-                <button type="submit" style="border: 0 none; background: none;" name="register" value="register"><img src="/static/images/new_user.png" width="35" height="35"></button>
-            </form>
-        </td>
+{% extends "layout.html" %}
 
-    </tr>
-</table>
+{% block content %}
 <table border="3" width="60%">
     <tr>
         <td  style="text-align: right"  width="25%">
@@ -260,5 +224,4 @@
         </tbody>
     </table>
 
-</body>
-</html>
+{% endblock %}

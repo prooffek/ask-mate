@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% if login_or_register == "login" %}
-        <title>Sing in</title>
-    {% else %}
-        <title>Sign up</title>
-    {% endif %}
-</head>
-<body>
-    <a href="{{ url_for("index") }}">
-        <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
-    </a>
+{% extends "layout.html" %}
+
+{% block content %}
+
     {% if login_or_register == "login" %}
         <table border="0" width="50%">
             <tr>
@@ -63,5 +53,5 @@
             <input type="submit" value="Sign up">
         </form>
     {% endif %}
-</body>
-</html>
+
+{% endblock %}

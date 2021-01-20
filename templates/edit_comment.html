@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>LAB Stacoverflow</title>
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block content %}
     <h1>Edit comment</h1>
 
     <form action="{{ url_for("edit_comment_post", comment_id=comment["id"]) }}" method="post">
@@ -13,5 +9,4 @@
         <input type="submit" value="Edit comment">
     </form>
 
-</body>
-</html>
+{% endblock %}

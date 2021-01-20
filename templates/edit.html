@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    {% if question_id %}
-        <title>Edit question</title>
-    {% else %}
-        <title>Edit answer</title>
-    {% endif %}
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block content %}
     <table>
         <tr>
             <td>
-                <a href="{{ url_for("index") }}">
-                <img src="/static/images/stack_lab_askmate.png" width = "600" height="auto">
-                </a></td>
             <td>
                 <img src="/static/images/discussion.png" width = "100" height="auto">
             </td>
@@ -67,5 +56,5 @@
             </form>
         {% endif %}
     {% endif %}
-</body>
-</html>
+
+{% endblock %}
