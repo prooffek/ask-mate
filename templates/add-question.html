@@ -25,6 +25,9 @@
                     <input type="checkbox" name="{{ tag['name'] }}" id="{{ tag['name'] }}" value="{{ tag['name'] }}">{{ tag['name'] }}
                 {% endfor %}
             <br><br>
+            <label for="add_new_tag">Add a new tag:</label><br>
+            <input type="text" name="tag" id="tag" minlength="3" maxlength="15">
+            <br><br>
             <input name="view_number" id="view_number" type="hidden" value="{{ 0 }}">
             <input name="vote_number" id="vote_number" type="hidden" value="{{ 0 }}">
             <input name="answers_number" id="answers_number" type="hidden" value="{{ 0 }}">

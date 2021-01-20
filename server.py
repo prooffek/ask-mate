@@ -168,7 +168,8 @@ def display_a_question(question_id):
 
 @app.route("/add-question", methods=["GET"])
 def add_question_get():
-    return render_template("add-question.html", tags_list=data_manager.LIST_OF_TAGS)
+    list_of_tags = data_manager.get_tags_names()
+    return render_template("add-question.html", tags_list=list_of_tags)
 
 
 # funkcja przerobiona - ale przekierowanie na stronę główną, będę musiała to poprawić na przekierowanie na to nowo dodane pytanie
@@ -242,7 +243,8 @@ def delete_question(question_id):
 def edit_question_get(question_id):
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     question_tags = util.question_tags_names(question_id)
-    return render_template("edit.html", question_id=question_id, question=question, tags_list=data_manager.LIST_OF_TAGS,
+    all_tags = data_manager.get_tags_names()
+    return render_template("edit.html", question_id=question_id, question=question, tags_list=all_tags,
                            tags_selected=question_tags)
 
 @app.route("/question/<question_id>/edit", methods=["POST"])

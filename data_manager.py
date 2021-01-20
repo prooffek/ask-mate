@@ -19,8 +19,6 @@ def get_tags_names(cursor: RealDictCursor) -> list:
     cursor.execute(query)
     return cursor.fetchall()
 
-LIST_OF_TAGS = get_tags_names()
-
 
 @connection.connection_handler
 def get_question_by_id(cursor: RealDictCursor, question_id: int) -> list:
