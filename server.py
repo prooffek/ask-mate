@@ -31,6 +31,9 @@ class server_state:
     actual_filter_by_status_mode = default_filter_by_status
     actual_filter_by_search_mode = default_filter_by_search
 
+    #TAGS (filtering)
+    actual_tag = tag.all_tags
+
 
     def toogle_advanced_filter_date():
         if server_state.actual_advanced_filter_on_date == state.off:
@@ -47,17 +50,19 @@ class server_state:
 @app.route('/', methods=["GET"])
 def index():
     headers = data_manager.get_headers_from_table("question")
-    server_state.actual_filter_by_status_mode
-    server_state.actual_filter_by_date_mode
 
+    # FILTERS AND SORTING
     actual_filters=[server_state.actual_filter_by_date_mode, \
                     server_state.actual_filter_by_status_mode, \
                     server_state.actual_filter_by_search_mode]
     sorting_mode = [server_state.actual_sort_column, \
                     server_state.actual_sort_direction]
 
-    questions = data_manager.get_list_questions(actual_filters, sorting_mode)
-    return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
+    # TAGS CLOUD
+    tags_cloud = data_manager.list_tags_with_counts()
+
+    questions = data_manager.get_list_questions(actual_filters, sorting_mode, server_state.actual_tag)
+    return render_template("index.html", headers=headers, questions=questions, server_state=server_state, tags_cloud=tags_cloud)
 
 @app.route('/', methods=["POST"])
 def index_post():
@@ -96,6 +101,12 @@ def index_post():
         server_state.actual_filter_by_search_mode = request.form.get("searched_text")
         server_state.filter_reset_active = state.on
 
+    return redirect(url_for("index"))
+
+@app.route("/select_tag")
+def select_tag():
+    selected_tag = request.args.get('selected_tag')
+    server_state.actual_tag = selected_tag
     return redirect(url_for("index"))
 
 @app.route("/sort")

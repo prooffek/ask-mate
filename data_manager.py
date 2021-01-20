@@ -142,7 +142,7 @@ def get_headers_from_table(cursor: RealDictCursor, table_name) -> list:
     return new_headers
 
 @connection.connection_handler
-def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode:list) -> list:
+def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode:list, selected_tag: str) -> list:
 
     actual_filter_by_date_mode = actual_filters[0]
     actual_filter_by_status_mode = actual_filters[1]
@@ -168,24 +168,60 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
     elif actual_filter_by_status_mode == filter.status_all:
         query_part_by_status = "status IN ('new', 'discussed', 'closed')"
 
+    query_part_by_tag = ""
+    if selected_tag == tag.all_tags:
+        query_part_by_tag
+
+
 
     sorting_column = sorting_mode[0]
     sorting_direction = "DESC" if sorting_mode[1] == sort.descending else "ASC"
 
-    full_query = f" \
-            SELECT vote_number, view_number, answers_number, title, status, submission_time, id, message, image \
-            FROM question \
-            WHERE  submission_time >= '{query_part_by_date}' \
-            AND {query_part_by_status} \
-            AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
-                OR message LIKE '%%{actual_filter_by_search_mode}%%' \
-            )\
-            ORDER BY {sorting_column} {sorting_direction}\
-    "
 
-    param = {
-        "sorting_column" : sorting_column,
-        "sorting_direction" : f"{sorting_direction}"
+    if selected_tag == tag.all_tags:
+        full_query = f" \
+                    SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
+                    FROM question_tag \
+                    INNER JOIN question q on q.id = question_tag.question_id \
+                    INNER JOIN tag on question_tag.tag_id = tag.id \
+                    WHERE  submission_time >= '{query_part_by_date}' \
+                    AND {query_part_by_status} \
+                    AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                        OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+                    )\
+                    ORDER BY {sorting_column} {sorting_direction}\
+            "
+    else:
+        full_query = f" \
+                    SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
+                    FROM question_tag \
+                    INNER JOIN question q on q.id = question_tag.question_id \
+                    INNER JOIN tag on question_tag.tag_id = tag.id \
+                    WHERE  submission_time >= '{query_part_by_date}' \
+                    AND {query_part_by_status} \
+                    AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                        OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+                    )\
+                    AND tag.name = '{selected_tag}'\
+                    ORDER BY {sorting_column} {sorting_direction}\
+            "
+
+
+# previous version of full_query (without tags)
+# full_query = f" \
+#             SELECT vote_number, view_number, answers_number, title, status, submission_time, id, message, image \
+#             FROM question \
+#             WHERE  submission_time >= '{query_part_by_date}' \
+#             AND {query_part_by_status} \
+#             AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+#                 OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+#             )\
+#             ORDER BY {sorting_column} {sorting_direction}\
+#     "
+
+    param = {\
+        "sorting_column" : sorting_column,\
+        "sorting_direction" : f"{sorting_direction}"\
     }
     cursor.execute(full_query, param)
     questions = cursor.fetchall()
@@ -445,3 +481,12 @@ def del_question_tag(cursor: RealDictCursor, question_id):
             WHERE question_id = %(question_id)s"""
     param = {"question_id": f"{question_id}"}
     cursor.execute(command, param)
+
+@connection.connection_handler
+def list_tags_with_counts(cursor: RealDictCursor) -> list:
+    query = """SELECT  tag.name, count(*)
+            FROM question_tag
+            INNER JOIN tag on question_tag.tag_id = tag.id
+            GROUP BY tag.name"""
+    cursor.execute(query)
+    return cursor.fetchall()
