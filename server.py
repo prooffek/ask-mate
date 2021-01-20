@@ -31,6 +31,9 @@ class server_state:
     actual_filter_by_status_mode = default_filter_by_status
     actual_filter_by_search_mode = default_filter_by_search
 
+    #TAGS (filtering)
+    actual_tag = tag.all_tags
+
 
     def toogle_advanced_filter_date():
         if server_state.actual_advanced_filter_on_date == state.off:
@@ -47,17 +50,19 @@ class server_state:
 @app.route('/', methods=["GET"])
 def index():
     headers = data_manager.get_headers_from_table("question")
-    server_state.actual_filter_by_status_mode
-    server_state.actual_filter_by_date_mode
 
+    # FILTERS AND SORTING
     actual_filters=[server_state.actual_filter_by_date_mode, \
                     server_state.actual_filter_by_status_mode, \
                     server_state.actual_filter_by_search_mode]
     sorting_mode = [server_state.actual_sort_column, \
                     server_state.actual_sort_direction]
 
-    questions = data_manager.get_list_questions(actual_filters, sorting_mode)
-    return render_template("index.html", headers=headers, questions=questions, server_state=server_state)
+    # TAGS CLOUD
+    tags_cloud = data_manager.list_tags_with_counts()
+
+    questions = data_manager.get_list_questions(actual_filters, sorting_mode, server_state.actual_tag)
+    return render_template("index.html", headers=headers, questions=questions, server_state=server_state, tags_cloud=tags_cloud)
 
 @app.route('/', methods=["POST"])
 def index_post():
@@ -98,6 +103,12 @@ def index_post():
 
     return redirect(url_for("index"))
 
+@app.route("/select_tag")
+def select_tag():
+    selected_tag = request.args.get('selected_tag')
+    server_state.actual_tag = selected_tag
+    return redirect(url_for("index"))
+
 @app.route("/sort")
 def sort_questions():
     ## SORTING FEATURE
@@ -136,19 +147,6 @@ def vote():
         return redirect(url_for("display_a_question", question_id = question_id))
 
 
-@app.route("/change-question-status", methods=["POST"])
-def change_question_status():
-    new_question_status = request.form.get("new_question_status")
-    question_id = request.form.get("question_id")
-    question = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    question_index = data_manager.LIST_OF_QUESTIONS.index(question)
-    if new_question_status == "close":
-        data_manager.LIST_OF_QUESTIONS[question_index]["Status"] = "closed"
-    elif new_question_status == "new":
-        data_manager.LIST_OF_QUESTIONS[question_index]["Status"] = "new"
-    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-    return redirect(url_for("index"))
-
 
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
@@ -164,6 +162,18 @@ def display_a_question(question_id):
 
     return render_template("display_question.html", question=question, answers=answers, comments=comments,
                            question_tags=question_tags, img_path=util.IMAGE_PATH) #img_path=connection.IMAGE_PATH)
+
+
+@app.route("/change-question-status", methods=["POST"])
+def change_question_status():
+    new_question_status = request.form.get("new_question_status")
+    question_id = request.form.get("question_id")
+
+    if new_question_status == "close":
+        data_manager.change_question_status(question_id,"close")
+    elif new_question_status == "open":
+        data_manager.change_question_status(question_id,"open")
+    return redirect(url_for("index"))
 
 
 @app.route("/add-question", methods=["GET"])

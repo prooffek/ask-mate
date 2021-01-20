@@ -2,7 +2,7 @@
 {% set main_page = True %}
 
 {% block content %}
-<table border="3" width="60%">
+<table border="3" width="90%">
     <tr>
         <td  style="text-align: right"  width="25%">
             Active Questions filter :</td>
@@ -159,7 +159,29 @@
 
 
 </table>
-<table border="1" width="60%">
+<table width = "90%">
+    <tr>
+        <td>
+        {% if server_state.actual_tag != 'all_tags' %}
+            <a href="{{ url_for("select_tag", selected_tag='all_tags')}}">
+            <u>all tags</u></a>
+        {% else %}
+            <a href="{{ url_for("select_tag", selected_tag='all_tags')}}">
+            <b><u>all tags</u></b></a>
+        {% endif %}
+        {% for tag in tags_cloud %}
+            {% if server_state.actual_tag != tag['name'] %}
+                <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}">
+                <u> {{ tag['name']}} ({{ tag['count']  }}) </u></a>
+            {% else %}
+                <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}">
+                <b><u> {{ tag['name']}} ({{ tag['count']  }}) </u></b></a>
+            {% endif %}
+        {% endfor %}
+        </td>
+    </tr>
+</table>
+<table border="1" width="90%">
         <thead>
             <tr>
                 {% for header in headers %}
@@ -177,6 +199,8 @@
                             <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Status</a>
                             {% elif header.get(property) == "submission_time" %}
                             <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Date Asked</a>
+                            {% elif header.get(property) == "name" %}
+                                Tag
                             {% endif %}
 
                             {% if header.get(property) == server_state.actual_sort_column %}

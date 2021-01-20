@@ -40,6 +40,8 @@ class tag:
     id = "id"
     name = "name"
 
+    all_tags = "all_tags"
+
 class sort:
     ascending = "ascending"
     descending = "descending"
