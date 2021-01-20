@@ -136,19 +136,6 @@ def vote():
         return redirect(url_for("display_a_question", question_id = question_id))
 
 
-@app.route("/change-question-status", methods=["POST"])
-def change_question_status():
-    new_question_status = request.form.get("new_question_status")
-    question_id = request.form.get("question_id")
-    question = data_manager.find_by_id(question_id, data_manager.LIST_OF_QUESTIONS)[0]
-    question_index = data_manager.LIST_OF_QUESTIONS.index(question)
-    if new_question_status == "close":
-        data_manager.LIST_OF_QUESTIONS[question_index]["Status"] = "closed"
-    elif new_question_status == "new":
-        data_manager.LIST_OF_QUESTIONS[question_index]["Status"] = "new"
-    data_manager.update_file(data_manager.LIST_OF_QUESTIONS)
-    return redirect(url_for("index"))
-
 
 @app.route("/question/<question_id>")
 def display_a_question(question_id):
@@ -164,6 +151,18 @@ def display_a_question(question_id):
 
     return render_template("display_question.html", question=question, answers=answers, comments=comments,
                            question_tags=question_tags, img_path=util.IMAGE_PATH) #img_path=connection.IMAGE_PATH)
+
+
+@app.route("/change-question-status", methods=["POST"])
+def change_question_status():
+    new_question_status = request.form.get("new_question_status")
+    question_id = request.form.get("question_id")
+
+    if new_question_status == "close":
+        data_manager.change_question_status(question_id,"close")
+    elif new_question_status == "open":
+        data_manager.change_question_status(question_id,"open")
+    return redirect(url_for("index"))
 
 
 @app.route("/add-question", methods=["GET"])

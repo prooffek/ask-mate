@@ -20,6 +20,8 @@ def get_tags_names(cursor: RealDictCursor) -> list:
     return cursor.fetchall()
 
 
+
+
 @connection.connection_handler
 def get_question_by_id(cursor: RealDictCursor, question_id: int) -> list:
     query = f"""
@@ -213,6 +215,27 @@ def vote_for_question(cursor: RealDictCursor, question_id: int, vote_up_or_down=
     SET vote_number = vote_number {operant} 1 \
     WHERE id = {question_id}"
     cursor.execute(query)
+
+
+@connection.connection_handler
+def change_question_status(cursor: RealDictCursor, question_id: int, open_or_close="open") -> None:
+    query_for_number_of_answers = f"SELECT answers_number FROM question WHERE id = '{question_id}'"
+    cursor.execute(query_for_number_of_answers)
+    answers_number = cursor.fetchall()
+    answers_number = answers_number[0]['answers_number']
+    new_status = "new" if answers_number == 0 else "discussed"
+
+    if open_or_close == "open":
+        query = f"UPDATE question \
+        SET status = '{new_status}' \
+                WHERE id = {question_id}"
+        cursor.execute(query)
+    else:
+        query = f"UPDATE question \
+        SET status = 'closed'\
+                WHERE id = {question_id}"
+        cursor.execute(query)
+
 
 @connection.connection_handler
 def vote_for_answer(cursor: RealDictCursor, answer_id: int, vote_up_or_down="up") -> None:
