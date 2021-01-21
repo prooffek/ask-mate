@@ -159,30 +159,41 @@
 
 
 </table>
-<table width = "90%">
+<table class="table">
     <tr>
         <td>
+
+        <ul class = "nav nav-pills" id=""ex1" role="tablist">
         {% if server_state.actual_tag != 'all_tags' %}
-            <a href="{{ url_for("select_tag", selected_tag='all_tags')}}">
-            <u>all tags</u></a>
+            <a href="{{ url_for("select_tag", selected_tag='all_tags')}}"
+               class="nav-link" id="all_tags" data-mdb-toggle="pill" role="tab" aria-controls="ex1-pills-2" aria-selected="false">
+            all tags</a>
         {% else %}
-            <a href="{{ url_for("select_tag", selected_tag='all_tags')}}">
-            <b><u>all tags</u></b></a>
+            <a href="{{ url_for("select_tag", selected_tag='all_tags')}}"
+               class="nav-link" id="all_tags" data-mdb-toggle="pill" role="tab" aria-controls="ex1-pills-2" aria-selected="true">
+            all tags</a>
         {% endif %}
+
         {% for tag in tags_cloud %}
+            <li class="nav-item" role=""presentation">
             {% if server_state.actual_tag != tag['name'] %}
-                <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}">
+                <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}" class="link-dark" >
                 <u> {{ tag['name']}} ({{ tag['count']  }}) </u></a>
             {% else %}
-                <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}">
+                <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}"  class="link-success">
                 <b><u> {{ tag['name']}} ({{ tag['count']  }}) </u></b></a>
             {% endif %}
+            </li>
         {% endfor %}
+
+        </ul>
+
+
         </td>
     </tr>
 </table>
-<table border="3" width="90%">
-        <thead>
+<table class="table table-hover align-middle">
+        <thead class = "table-light">
             <tr>
                 {% for header in headers %}
                     {% for property in header %}
@@ -216,9 +227,15 @@
              </tr>
         </thead>
         <tbody>
-            {% for question in questions %}
-            <tr>
-                {% for property in question %}
+        {% for question in questions %}
+            {% if question["status"] == 'closed' %}
+                <tr>
+            {% elif question["status"] == 'new' %}
+               <tr class="table-success">
+            {% else %}
+                <tr>
+            {% endif %}
+            {% for property in question %}
                     {% if property == "status" %}
                         <td>
                             {% if question["status"] == "new" %}
@@ -233,7 +250,7 @@
                         </td>
                     {% elif property == "title" %}
                         <td>
-                            <a href="{{ url_for("display_a_question", question_id=question.get("id"))}}">{{ question.get(property)  | truncate(70)  }}</a>
+                            <a href="{{ url_for("display_a_question", question_id=question.get("id"))}}" class="link-primary">{{ question.get(property)  | truncate(70)  }}</a>
                         </td>
                     {% elif property == "tags_names" %}
                         <td>
@@ -247,12 +264,13 @@
                             {{ question.get(property) }}
                             {% endif %}
                         </td>
-                    {% endif %}
-                {% endfor %}
-
-            </tr>
-            {% endfor %}
+            {% endif %}
+         {% endfor %}
+        </tr>
+        {% endfor %}
         </tbody>
+        <tfoot></tfoot>
+
     </table>
 
 {% endblock %}
