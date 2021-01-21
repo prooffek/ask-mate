@@ -191,11 +191,11 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                         AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
                             OR message LIKE '%%{actual_filter_by_search_mode}%%' \
                         )\
-                        ORDER BY {sorting_column} {sorting_direction}\
                     )\
                     SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time,  string_agg(l.name, ', '), l.id, l.message, l.image\
                     FROM listed_questions l \
                     GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, l.id, l.message, l.image\
+                    ORDER BY l.{sorting_column} {sorting_direction}\
             "
 
 
@@ -213,7 +213,6 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                         AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
                             OR message LIKE '%%{actual_filter_by_search_mode}%%' \
                         )\
-                        ORDER BY {sorting_column} {sorting_direction}\
                     ),\
                     questions_before_tag_filtering AS \
                     (\
@@ -222,6 +221,7 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                         GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, l.id, l.message, l.image\
                     )\
                     SELECT qq.* FROM questions_before_tag_filtering qq WHERE  qq.tags_names LIKE '%%{selected_tag}%%' \
+                    ORDER BY qq.{sorting_column} {sorting_direction}\
             "
 
 
