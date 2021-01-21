@@ -3,36 +3,144 @@
 
 {% block content %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Active questions filter: </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-            
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#"><img src="/static/images/filter_date_on.png" width="22" height="auto">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
+
+      <table>
+          <tr>
+            <td>&emsp;Filters:&emsp;</td>
+            <td>
+                <form method = "POST" action="{{ url_for("index_post") }}">
+                    <button type="submit" style="border: 0 none; background: none;" name="actual_advanced_filter_date_clicked" value="clicked">
+                        {% if server_state.actual_advanced_filter_on_date == "no" %}
+                        <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                        {{ server_state.actual_filter_by_date_mode }}
+                        {% else %}
+                        <img src="/static/images/up-chevron-2.png"  width="16" height="auto">
+                        {% endif %}
+                    </button>
+
+                    <button type="submit" style="border: 0 none; background: none;" name="actual_advanced_filter_status_clicked" value="clicked">
+                        {% if server_state.actual_advanced_filter_on_status == "no" %}
+                        <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                        {{ server_state.actual_filter_by_status_mode }}
+                        {% else %}
+                        <img src="/static/images/up-chevron-2.png"  width="16" height="auto">
+                        {% endif %}
+                    </button>
+
+                    <button type="submit" style="border: 0 none; background: none;" name="filter_reset_button_clicked" value="clicked">
+                        {% if server_state.filter_reset_active == "no" %}
+                        {% else %}
+                        <img src="/static/images/clear_filter.png"  width="22" height="auto">
+                            Reset All Filters
+                        {% endif %}
+                    </button>
+                </form>
+            </td>
+    </tr>
+    {% if server_state.actual_advanced_filter_on_date == "yes" %}
+    <tr>
+        <td style="text-align: right" >Status: </td>
+        <td style="text-align: left" colspan="4">
+            <form method = "POST" action="{{ url_for("index_post") }}">
+                <input type="hidden" name="date_filter_changed" value="true">
+                <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="Last month">
+                    {% if server_state.actual_filter_by_date_mode == "Last month" %}
+                    <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                    Last month
+                    {% else %}
+                    <img src="/static/images/filter_date_off.png"  width="22" height="auto">
+                    Last month
+                    {% endif %}
+                </button>
+
+                <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="3 last months">
+                    {% if server_state.actual_filter_by_date_mode == "3 last months" %}
+                    <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                    3 last months
+                    {% else %}
+                    <img src="/static/images/filter_date_off.png"  width="22" height="auto">
+                    3 last months
+                    {% endif %}
+                </button>
+
+                <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="All time">
+                    {% if server_state.actual_filter_by_date_mode == "All time" %}
+                    <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                    All time
+                    {% else %}
+                    <img src="/static/images/filter_date_off.png"  width="22" height="auto">
+                    All time
+                    {% endif %}
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endif %}
+
+    {% if server_state.actual_advanced_filter_on_status == "yes" %}
+    <tr>
+        <td style="text-align: right" >Status: </td>
+        <td>
+            <form method = "POST" action="{{ url_for("index_post") }}">
+                <input type="hidden" name="status_filter_changed" value="true">
+                <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="active">
+                    {% if server_state.actual_filter_by_status_mode == "active" %}
+                    <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                    active
+                    {% else %}
+                    <img src="/static/images/filter_date_off.png"  width="22" height="auto">
+                    active
+                    {% endif %}
+                </button>
+
+                <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="new">
+                    {% if server_state.actual_filter_by_status_mode == "new" %}
+                    <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                    new
+                    {% else %}
+                    <img src="/static/images/filter_date_off.png"  width="22" height="auto">
+                    new
+                    {% endif %}
+                </button>
+
+                <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="discussed">
+                    {% if server_state.actual_filter_by_status_mode == "discussed" %}
+                    <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                    discussed
+                    {% else %}
+                    <img src="/static/images/filter_date_off.png"  width="22" height="auto">
+                    discussed
+                    {% endif %}
+                </button>
+
+                <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="closed">
+                    {% if server_state.actual_filter_by_status_mode == "closed" %}
+                    <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                    closed
+                    {% else %}
+                    <img src="/static/images/filter_date_off.png"  width="22" height="auto">
+                    closed
+                    {% endif %}
+                </button>
+
+                <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="All status">
+                    {% if server_state.actual_filter_by_status_mode == "All status" %}
+                    <img src="/static/images/filter_date_on.png" width="22" height="auto">
+                    All status
+                    {% else %}
+                    <img src="/static/images/filter_date_off.png"  width="22" height="auto">
+                    All status
+                    {% endif %}
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endif %}
+    </table>
+    </ul>
         <form method = "POST" action="{{ url_for("index_post") }}" class="d-flex">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched_text" type="text"  value="{{ server_state.actual_filter_by_search_mode }}">
             <button type="submit" style="border: 0 none; background: none;" name="filter_search_clicked" value="yes"  class="btn btn-outline-success" ><img src="/static/images/search.png" width="26" height="auto">Search</button>
@@ -42,149 +150,6 @@
 </nav>
 
 
-<table border="3" width="90%">
-    <tr>
-        <td  style="text-align: right"  width="25%">
-            Active Questions filter :</td>
-
-        <td style="text-align: left" width="30" colspan="4">
-
-        <form method = "POST" action="{{ url_for("index_post") }}">
-            <button type="submit" style="border: 0 none; background: none;" name="actual_advanced_filter_date_clicked" value="clicked">
-                {% if server_state.actual_advanced_filter_on_date == "no" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                {{ server_state.actual_filter_by_date_mode }}
-                {% else %}
-                <img src="/static/images/up-chevron-2.png"  width="16" height="auto">
-                {% endif %}
-            </button>
-
-            <button type="submit" style="border: 0 none; background: none;" name="actual_advanced_filter_status_clicked" value="clicked">
-                {% if server_state.actual_advanced_filter_on_status == "no" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                {{ server_state.actual_filter_by_status_mode }}
-                {% else %}
-                <img src="/static/images/up-chevron-2.png"  width="16" height="auto">
-                {% endif %}
-            </button>
-
-            <button type="submit" style="border: 0 none; background: none;" name="filter_reset_button_clicked" value="clicked">
-                {% if server_state.filter_reset_active == "no" %}
-                {% else %}
-                <img src="/static/images/clear_filter.png"  width="22" height="auto">
-                    Reset All Filters
-                {% endif %}
-            </button>
-
-        </form>
-    </tr>
-    {% if server_state.actual_advanced_filter_on_date == "yes" %}
-    <tr>
-        <td style="text-align: right" >Status: </td>
-
-        <td style="text-align: left" colspan="4">
-
-        <form method = "POST" action="{{ url_for("index_post") }}">
-            <input type="hidden" name="date_filter_changed" value="true">
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="Last month">
-                {% if server_state.actual_filter_by_date_mode == "Last month" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                Last month
-                {% else %}
-                <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                Last month
-                {% endif %}
-            </button>
-
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="3 last months">
-                {% if server_state.actual_filter_by_date_mode == "3 last months" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                3 last months
-                {% else %}
-                <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                3 last months
-                {% endif %}
-            </button>
-
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="date_filter" value="All time">
-                {% if server_state.actual_filter_by_date_mode == "All time" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                All time
-                {% else %}
-                <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                All time
-                {% endif %}
-            </button>
-
-        </form>
-        </td>
-    </tr>
-    {% endif %}
-
-    {% if server_state.actual_advanced_filter_on_status == "yes" %}
-    <tr>
-        <td style="text-align: right" >Status: </td>
-
-        <td style="text-align: left" colspan="4">
-
-        <form method = "POST" action="{{ url_for("index_post") }}">
-            <input type="hidden" name="status_filter_changed" value="true">
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="active">
-                {% if server_state.actual_filter_by_status_mode == "active" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                active
-                {% else %}
-                <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                active
-                {% endif %}
-            </button>
-
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="new">
-                {% if server_state.actual_filter_by_status_mode == "new" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                new
-                {% else %}
-                <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                new
-                {% endif %}
-            </button>
-
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="discussed">
-                {% if server_state.actual_filter_by_status_mode == "discussed" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                discussed
-                {% else %}
-                <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                discussed
-                {% endif %}
-            </button>
-
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="closed">
-                {% if server_state.actual_filter_by_status_mode == "closed" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                closed
-                {% else %}
-                <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                closed
-                {% endif %}
-            </button>
-
-            <button type="submit" style="border: 0 none; background: none;" data-inline="true" name="status_filter" value="All status">
-                {% if server_state.actual_filter_by_status_mode == "All status" %}
-                <img src="/static/images/filter_date_on.png" width="22" height="auto">
-                All status
-                {% else %}
-                <img src="/static/images/filter_date_off.png"  width="22" height="auto">
-                All status
-                {% endif %}
-            </button>
-
-        </form>
-        </td>
-    </tr>
-    {% endif %}
-
-</table>
 
 <table class="table">
     <tr>
