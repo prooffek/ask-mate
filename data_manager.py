@@ -182,8 +182,8 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
         full_query = f" \
                     SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
                     FROM question_tag \
-                    INNER JOIN question q on q.id = question_tag.question_id \
-                    INNER JOIN tag on question_tag.tag_id = tag.id \
+                    RIGHT JOIN question q on q.id = question_tag.question_id \
+                    LEFT JOIN tag on question_tag.tag_id = tag.id \
                     WHERE  submission_time >= '{query_part_by_date}' \
                     AND {query_part_by_status} \
                     AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
@@ -191,12 +191,14 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                     )\
                     ORDER BY {sorting_column} {sorting_direction}\
             "
+
+
     else:
         full_query = f" \
                     SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
                     FROM question_tag \
-                    INNER JOIN question q on q.id = question_tag.question_id \
-                    INNER JOIN tag on question_tag.tag_id = tag.id \
+                    RIGHT JOIN question q on q.id = question_tag.question_id \
+                    LEFT JOIN tag on question_tag.tag_id = tag.id \
                     WHERE  submission_time >= '{query_part_by_date}' \
                     AND {query_part_by_status} \
                     AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
