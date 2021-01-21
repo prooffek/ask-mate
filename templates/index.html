@@ -2,6 +2,9 @@
 {% set main_page = True %}
 
 {% block content %}
+
+
+
 <table border="3" width="90%">
     <tr>
         <td  style="text-align: right"  width="25%">
@@ -162,33 +165,42 @@
 <table class="table">
     <tr>
         <td>
-
-        <ul class = "nav nav-pills" id=""ex1" role="tablist">
-        {% if server_state.actual_tag != 'all_tags' %}
-            <a href="{{ url_for("select_tag", selected_tag='all_tags')}}"
-               class="nav-link" id="all_tags" data-mdb-toggle="pill" role="tab" aria-controls="ex1-pills-2" aria-selected="false">
-            all tags</a>
-        {% else %}
-            <a href="{{ url_for("select_tag", selected_tag='all_tags')}}"
-               class="nav-link" id="all_tags" data-mdb-toggle="pill" role="tab" aria-controls="ex1-pills-2" aria-selected="true">
-            all tags</a>
-        {% endif %}
-
-        {% for tag in tags_cloud %}
-            <li class="nav-item" role=""presentation">
-            {% if server_state.actual_tag != tag['name'] %}
-                <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}" class="link-dark" >
-                <u> {{ tag['name']}} ({{ tag['count']  }}) </u></a>
-            {% else %}
-                <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}"  class="link-success">
-                <b><u> {{ tag['name']}} ({{ tag['count']  }}) </u></b></a>
+            <ul class="nav nav-pills mb-3" id="ex1" role="tablist">
+                <a href="{{ url_for("select_tag", selected_tag='all_tags')}}"
+           {% if server_state.actual_tag == 'all_tags' %}
+                  class="nav-link active"
+           {% else %}
+                   class="nav-link"
             {% endif %}
-            </li>
-        {% endfor %}
+                  id="ex1-tab-1"
+                  data-mdb-toggle="pill"
+                  role="tab"
+                  aria-controls="ex1-pills-1"
+                  aria-selected="true"
+                >all tags</a
+                >
+                </li>
 
-        </ul>
+            {% for tag in tags_cloud %}
+                <li class="nav-item" role="presentation">
+                    <a href="{{ url_for("select_tag", selected_tag=tag['name']) }}"
+                      {% if server_state.actual_tag == tag['name'] %}
+                         class="nav-link active"
+                       {% else %}
+                               class="nav-link"
+                        {% endif %}
 
-
+                     class="nav-link "
+                      id="ex1-tab-{{ tag['name'] }}"
+                      data-mdb-toggle="pill"
+                      role="tab"
+                      aria-controls="ex1-pills-{{ tag['name'] }}"
+                      aria-selected="false"
+                    >{{ tag['name']}} ({{ tag['count']  }})</a
+                    >
+                </li>
+            {% endfor %}
+            </ul>
         </td>
     </tr>
 </table>
