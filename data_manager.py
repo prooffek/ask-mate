@@ -180,46 +180,50 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
 
     if selected_tag == tag.all_tags:
         full_query = f" \
-                    SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
-                    FROM question_tag \
-                    RIGHT JOIN question q on q.id = question_tag.question_id \
-                    LEFT JOIN tag on question_tag.tag_id = tag.id \
-                    WHERE  submission_time >= '{query_part_by_date}' \
-                    AND {query_part_by_status} \
-                    AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
-                        OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+                    WITH listed_questions AS \
+                    (\
+                        SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
+                        FROM question_tag \
+                        RIGHT JOIN question q on q.id = question_tag.question_id \
+                        LEFT JOIN tag on question_tag.tag_id = tag.id \
+                        WHERE  submission_time >= '{query_part_by_date}' \
+                        AND {query_part_by_status} \
+                        AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                            OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+                        )\
+                        ORDER BY {sorting_column} {sorting_direction}\
                     )\
-                    ORDER BY {sorting_column} {sorting_direction}\
+                    SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time,  string_agg(l.name, ', '), l.id, l.message, l.image\
+                    FROM listed_questions l \
+                    GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, l.id, l.message, l.image\
             "
 
 
     else:
+
         full_query = f" \
-                    SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
-                    FROM question_tag \
-                    RIGHT JOIN question q on q.id = question_tag.question_id \
-                    LEFT JOIN tag on question_tag.tag_id = tag.id \
-                    WHERE  submission_time >= '{query_part_by_date}' \
-                    AND {query_part_by_status} \
-                    AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
-                        OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+                    WITH listed_questions AS \
+                    (\
+                        SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
+                        FROM question_tag \
+                        RIGHT JOIN question q on q.id = question_tag.question_id \
+                        LEFT JOIN tag on question_tag.tag_id = tag.id \
+                        WHERE  submission_time >= '{query_part_by_date}' \
+                        AND {query_part_by_status} \
+                        AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                            OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+                        )\
+                        ORDER BY {sorting_column} {sorting_direction}\
+                    ),\
+                    questions_before_tag_filtering AS \
+                    (\
+                        SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time,  string_agg(l.name, ', ') as tags_names , l.id, l.message, l.image\
+                        FROM listed_questions l \
+                        GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, l.id, l.message, l.image\
                     )\
-                    AND tag.name = '{selected_tag}'\
-                    ORDER BY {sorting_column} {sorting_direction}\
+                    SELECT qq.* FROM questions_before_tag_filtering qq WHERE  qq.tags_names LIKE '%%{selected_tag}%%' \
             "
 
-
-# previous version of full_query (without tags)
-# full_query = f" \
-#             SELECT vote_number, view_number, answers_number, title, status, submission_time, id, message, image \
-#             FROM question \
-#             WHERE  submission_time >= '{query_part_by_date}' \
-#             AND {query_part_by_status} \
-#             AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
-#                 OR message LIKE '%%{actual_filter_by_search_mode}%%' \
-#             )\
-#             ORDER BY {sorting_column} {sorting_direction}\
-#     "
 
     param = {\
         "sorting_column" : sorting_column,\
