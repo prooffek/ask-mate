@@ -116,18 +116,19 @@ def delete_answers_by_question_id(cursor: RealDictCursor, question_id: int):
     cursor.execute(command, param)
 
 @connection.connection_handler
-def get_headers_from_table(cursor: RealDictCursor, table_name) -> list:
-    query = """
-            SELECT column_name
-            FROM information_schema.columns
-            WHERE table_name = %(table_name)s
-            """
-    param = {"table_name": table_name}
-    cursor.execute(query, param)
+def get_headers_from_table_for_main_page(cursor: RealDictCursor) -> list:
+    query = f"\
+            SELECT column_name \
+            FROM information_schema.columns \
+            WHERE table_name = '{QUESTION_TABLE_NAME}' or table_name = '{QUESTION_TAG_TABLE_NAME}'  \
+            AND column_name != 'question_id'\
+            "
+
+    cursor.execute(query)
     headers = cursor.fetchall()
 
     # set proper columns order for listing questions on index.html page
-    column = {question.vote_number:3, question.view_number:2, question.answers_number:8, question.title:4, question.status:7, question.submission_time:1, question.id:0, question.message:5, question.image:6}
+    column = {question.vote_number:3, question.view_number:2, question.answers_number:8, question.title:4, question.status:7, question.submission_time:1, question.id:0, question.message:5, question.image:6, 'tag_id':9}
     new_headers = [\
             headers[column[question.vote_number]],\
                       headers[column[question.view_number]],\
@@ -135,6 +136,7 @@ def get_headers_from_table(cursor: RealDictCursor, table_name) -> list:
                       headers[column[question.title]],\
                       headers[column[question.status]],\
                       headers[column[question.submission_time]],\
+                      headers[column['tag_id']],\
                       headers[column[question.id]],\
                       headers[column[question.message]],\
                       headers[column[question.image]]\
@@ -192,7 +194,7 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                             OR message LIKE '%%{actual_filter_by_search_mode}%%' \
                         )\
                     )\
-                    SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time,  string_agg(l.name, ', '), l.id, l.message, l.image\
+                    SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, string_agg(l.name, ', ') as tags_names, l.id, l.message, l.image\
                     FROM listed_questions l \
                     GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, l.id, l.message, l.image\
                     ORDER BY l.{sorting_column} {sorting_direction}\
