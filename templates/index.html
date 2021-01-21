@@ -181,7 +181,7 @@
         </td>
     </tr>
 </table>
-<table border="1" width="90%">
+<table border="3" width="90%">
         <thead>
             <tr>
                 {% for header in headers %}
@@ -199,8 +199,8 @@
                             <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Status</a>
                             {% elif header.get(property) == "submission_time" %}
                             <a href="{{ url_for("sort_questions", sort_question_column=header.get(property))  }}">Date Asked</a>
-                            {% elif header.get(property) == "name" %}
-                                Tag
+                            {% elif header.get(property) == "tag_id" %}
+                                Tags
                             {% endif %}
 
                             {% if header.get(property) == server_state.actual_sort_column %}
@@ -234,6 +234,12 @@
                     {% elif property == "title" %}
                         <td>
                             <a href="{{ url_for("display_a_question", question_id=question.get("id"))}}">{{ question.get(property)  | truncate(70)  }}</a>
+                        </td>
+                    {% elif property == "tags_names" %}
+                        <td>
+                            {% if question["tags_names"] %}
+                                {{ question["tags_names"] }}
+                            {% endif %}
                         </td>
                     {% else %}
                         <td>

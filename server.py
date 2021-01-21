@@ -49,7 +49,7 @@ class server_state:
 
 @app.route('/', methods=["GET"])
 def index():
-    headers = data_manager.get_headers_from_table("question")
+    headers = data_manager.get_headers_from_table_for_main_page()
 
     # FILTERS AND SORTING
     actual_filters=[server_state.actual_filter_by_date_mode, \
