@@ -1,4 +1,8 @@
 {% extends "layout.html" %}
+{% set go_display = "display_a_question" %}
+{%  set id = comment["question_id"] %}
+{% set back_icon = "back_to_index.png" %}
+{% set left_icon = "edit_comment.png" %}
 
 {% block content %}
     <h1>Edit comment</h1>

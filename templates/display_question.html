@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% set go_back = "index" %}
+{% set go_index = "index" %}
 {% set back_icon = "back_to_index.png" %}
 {% set button_icon = "discussion.png" %}
 {% set go_to = "edit_question_get" %}
@@ -160,6 +160,7 @@
                         </form>
                     </div>
                 </div>
+
 {#            ANSWER MESSAGE AND PUBLICATION DATA#}
                 <div class="answer-content">
                     <article>{{ answer["message"] }}</article>
@@ -174,7 +175,7 @@
                 </div>
             </div>
 
-    {#            ADD COMMENT, EDIT AND DELETE BUTTONS#}
+{#            ADD COMMENT, EDIT AND DELETE BUTTONS#}
             <div class="answer-buttons">
                 <form action="{{ url_for("delete_answer", answer_id=answer["id"]) }}">
                     <button type="submit"><img src="/static/images/delete_answer.png"></button>
@@ -210,7 +211,6 @@
                 </div>
             {% endif %}
         {% endfor %}
-{#        END OF COMMENTS TO ANSWER#}
 
     {% endfor %}
 {#    END OF ANSWERS#}

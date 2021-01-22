@@ -16,8 +16,10 @@
 <body>
      <div class="header">
         <div class="header-back">
-            {% if go_back %}
-                <a href="{{ url_for(go_back) }}"><img src="/static/images/{{ back_icon }}"></a>
+            {% if go_index %}
+                <a href="{{ url_for(go_index) }}"><img src="/static/images/{{ back_icon }}"></a>
+            {% elif go_display %}
+                <a href="{{ url_for(go_display, question_id=id) }}"><img src="/static/images/{{ back_icon }}"></a>
             {% endif %}
         </div>
         <div class="header-logo">
@@ -26,10 +28,8 @@
         <div class="header-button">
             {% if button_icon %}
                 <a href="{{ url_for(go_to, question_id=question_id) }}"><img src="/static/images/{{ button_icon }}"></a>
-            {% elif edit_icon %}
-                <img src="/static/images/discussion.png">
-            {% elif add_icon %}
-                <img src="/static/images/ask_a_question.png">
+            {% elif left_icon %}
+                <img src="/static/images/{{ left_icon }}">
             {% endif %}
         </div>
         <div class="header-logging">
