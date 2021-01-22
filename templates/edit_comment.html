@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% set go_display = "display_a_question" %}
-{%  set question_id = comment["question_id"] %}
+{% if answer == None %}
+    {% set id = comment["question_id"] %}
+{% else %}
+    {% set id = answer["question_id"] %}
+{% endif %}
 {% set back_icon = "back_to_index.png" %}
 {% set left_icon = "edit_comment.png" %}
 

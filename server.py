@@ -378,7 +378,8 @@ def add_comment_to_answer_post(answer_id):
 @app.route('/comment/<comment_id>/edit', methods=["GET"])
 def edit_comment_get(comment_id):
     comment = util.take_out_of_the_list(data_manager.get_comment_by_comment_id(comment_id))
-    return render_template("edit_comment.html", comment=comment)
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(comment["answer_id"])) if comment["question_id"] is None else None
+    return render_template("edit_comment.html", comment=comment, answer=answer)
 
 
 @app.route('/comment/<comment_id>/edit', methods=["POST"])
