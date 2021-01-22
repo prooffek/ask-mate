@@ -1,5 +1,12 @@
 {% extends "layout.html" %}
-{% set add_icon = True %}
+{% if question_id %}
+    {%set go_display = "display_a_question" %}
+    {%  set id = question_id %}
+{% else %}
+    {% set go_index = "index" %}
+{% endif %}
+{% set back_icon = "back_to_index.png" %}
+{% set left_icon = "ask_question.png" %}
 
 {% block content %}
     {% if not question_id %}

@@ -1,5 +1,13 @@
 {% extends "layout.html" %}
-{% set edit_icon = True %}
+{% set go_display = "display_a_question" %}
+{% if answer %}
+    {%  set id = answer["question_id"] %}
+    {% set left_icon = "chatting%20(1).png" %}
+{% else %}
+    {%  set id = question_id %}
+    {% set left_icon = "discussion.png" %}
+{% endif %}
+{% set back_icon = "back_to_index.png" %}
 
 {% block content %}
     <table>
