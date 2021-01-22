@@ -14,57 +14,82 @@
             <div class="form-header">
                 <h2>Add new question</h2>
             </div>
-            <div class="user-box">
-                <form action="{{ url_for('add_question_post') }}" method="post" enctype="multipart/form-data">
-                    <label for="title">Title question:</label><br>
-                    <input class="input-field" name="title" id="title" type="text" minlength="5" maxlength="100" value=""><br>
-                    <label for="message">Message question:</label><br>
-                    <textarea class="textarea-field" name="message" id="message" minlength="5" maxlength="1500"></textarea><br>
-                    <label for="image">Image:</label><br>
-                    <input type="file" name="image" id="image" value="No file uploaded yet">
-                    <label for="question_tags">Choose tags:</label><br>
+                <form action="{{ url_for("add_question_post") }}" method="post" enctype="multipart/form-data">
+
+                    <div class="input-box">
+                        {#                    HIDDEN INPUTS#}
+                        <input name="view_number" id="view_number" type="hidden" value="{{ 0 }}">
+                        <input name="vote_number" id="vote_number" type="hidden" value="{{ 0 }}">
+                        <input name="answers_number" id="answers_number" type="hidden" value="{{ 0 }}">
+                        <input name="status" id="status" type="hidden" value="{{ "new" }}">
+
+                        {#                    INPUTS#}
+                        <label for="title">Title question:</label><br>
+                        <input class="input-field" name="title" id="title" type="text" minlength="5" maxlength="100" value="" required><br>
+                        <label for="message">Message question:</label><br>
+                        <textarea class="textarea-field" name="message" id="message" minlength="5" maxlength="1500" required></textarea><br>
+                    </div>
+
+                    <div class="image-box">
+                    {#                    IMAGE#}
+                        <label for="image">Image:</label><br>
+                        <input type="file" name="image" id="image" value="No file uploaded yet"><br>
+                    </div>
+
+                    <div class="checkbox">
+                    {#                    TAGS#}
+                        <label for="question_tags">Choose tags:</label><br>
                         {% for tag in tags_list %}
-                            <input type="checkbox" name="{{ tag['name'] }}" id="{{ tag['name'] }}" value="{{ tag['name'] }}">{{ tag['name'] }}
+                            <input class="input-checkbox" type="checkbox" name="{{ tag['name'] }}" id="{{ tag['name'] }}" value="{{ tag['name'] }}">{{ tag['name'] }}
                         {% endfor %}
-                    <br>
-                    <label for="add_new_tag">Add a new tag:</label><br>
-                    <input type="text" name="tag" id="tag" minlength="2" maxlength="15"><br>
+                        <br>
+                        <label for="add_new_tag">Add a new tag:</label><br>
+                        <input class="new-tag" type="text" name="tag" id="tag" minlength="2" maxlength="15"><br>
+                    </div>
 
 
-                    <input name="view_number" id="view_number" type="hidden" value="{{ 0 }}">
-                    <input name="vote_number" id="vote_number" type="hidden" value="{{ 0 }}">
-                    <input name="answers_number" id="answers_number" type="hidden" value="{{ 0 }}">
-                    <input name="status" id="status" type="hidden" value="{{ "new" }}">
 
-                    <input class="submit-form" type="submit" value="Add new question">
                 </form>
-            </div>
-    </div>
-    {% else %}
-        <div class="question-info">
-            <h4>Question information:</h4>
-            <h5>{{ question["title"] }}:</h5>
-            <p>{{ question["message"] }}</p>
         </div>
-        <div class="form-box-2">
-            <div class="form-header">
-                <h2>Add new answer</h2>
+        {% else %}
+            <div class="question-info">
+                <div class="form-header">
+                    <h4>Question information:</h4>
+                </div>
+                <h5>{{ question["title"] }}:</h5>
+                <p>{{ question["message"] }}</p>
             </div>
-            <div class="user-box">
+
+            <div class="form-box-2">
+
+                <div class="form-header">
+                    <h2>Add new question</h2>
+                </div>
+
                 <form action="{{ url_for("post_an_answer_post", question_id=question["id"]) }}" method="post" enctype="multipart/form-data">
-                    <input name="question_id" id="question_id" type="hidden" value="{{ question_id }}">
-                    <label for="message">New answer:</label><br><br>
-                    <textarea class="textarea-field" name="message" id="message" minlength="1" maxlength="5000"></textarea>
-                    <br><br>
-                    <input name="image" id="image" type="hidden" value="">
-                    <input name="vote_number" id="vote_number" type="hidden" value="{{ 0 }}">
-                    <br><br>
-                    <input type="file" name="image" id="image" value="No file uploaded yet">
-                    <br><br>
-                    <button class="submit-form" type="submit">Add answer</button>
-                </form>
-            </div>
-        </div>
-    {% endif %}
 
+                    <div class="input-box">
+                        {#                    INPUTS HIDDEN#}
+                        <input name="question_id" id="question_id" type="hidden" value="{{ question_id }}">
+                        <input name="image" id="image" type="hidden" value="">
+                        <input name="vote_number" id="vote_number" type="hidden" value="{{ 0 }}">
+                        {#                    INPUTS#}
+                        <label for="message">New answer:</label><br>
+                        <textarea class="textarea-field" name="message" id="message" minlength="1" maxlength="5000" required></textarea><br>
+                    </div>
+
+                    <div class="image-box">
+                        {#                    IMAGE#}
+                        <label for="image">Image:</label><br>
+                        <input type="file" name="image" id="image" value="No file uploaded yet"><br>
+                    </div>
+
+                    <div class="submit-button" >
+                        <button type="submit" >Add new answer</button>
+                    </div>
+
+                </form>
+
+            </div>
+    {% endif %}
 {% endblock %}
