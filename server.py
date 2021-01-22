@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, redirect, request
 import data_manager, util, connection, os
 from settings import *
+from flask_paginate import Pagination, get_page_args
 
 app = Flask(__name__)
 
@@ -61,8 +62,39 @@ def index():
     # TAGS CLOUD
     tags_cloud = data_manager.list_tags_with_counts()
 
-    questions = data_manager.get_list_questions(actual_filters, sorting_mode, server_state.actual_tag)
-    return render_template("index.html", headers=headers, questions=questions, server_state=server_state, tags_cloud=tags_cloud)
+    #PAGINATION
+    page, per_page, offset = get_page_args(page_parameter='page',\
+                                           per_page_parameter='per_page')
+    per_page=4
+    offset = (page - 1) * per_page
+
+    total_result_question = data_manager.get_list_questions(actual_filters, \
+                                                sorting_mode, \
+                                                server_state.actual_tag,\
+                                                offset=0,\
+                                                per_page=0,\
+                                                just_count_result_number=True)
+
+    count_number_index = 0
+    total_result_question = total_result_question[count_number_index]['count']
+
+    paginations_questions = data_manager.get_list_questions(actual_filters, \
+                                                sorting_mode, \
+                                                server_state.actual_tag,\
+                                                offset=offset,\
+                                                per_page=per_page)
+
+    pagination = Pagination(page=page, per_page=per_page, \
+                            total=total_result_question, \
+                            css_framework='bootstrap4')
+
+    return render_template("index.html", headers=headers, \
+                           questions=paginations_questions, \
+                           server_state=server_state, \
+                           tags_cloud=tags_cloud,\
+                           page=page,\
+                           per_page=per_page,
+                           pagination=pagination)
 
 @app.route('/', methods=["POST"])
 def index_post():

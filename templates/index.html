@@ -3,8 +3,10 @@
 {% set go_to = "add_question_get" %}
 
 {% block content %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
@@ -151,7 +153,7 @@
 </nav>
 
 
-
+{# Tags pills (buttons) #}
 <table class="table">
     <tr>
         <td>
@@ -195,6 +197,7 @@
     </tr>
 </table>
 
+{# Questions list #}
 <table class="table table-hover align-middle">
         <thead class = "table-light">
             <tr>
@@ -274,5 +277,9 @@
         </tbody>
         <tfoot></tfoot>
     </table>
+        <div class="d-flex flex-row-reverse">
+        {{ pagination.links }}
+    </div>
+
 
 {% endblock %}
