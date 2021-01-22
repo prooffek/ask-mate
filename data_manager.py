@@ -209,7 +209,6 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                             AND {query_part_by_status} \
                             AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
                                 OR message LIKE '%%{actual_filter_by_search_mode}%%') \
-                            LIMIT {per_page} OFFSET {offset} \
                             \
                         )\
                         SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
@@ -218,6 +217,7 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                         GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
                         l.submission_time, l.id, l.message, l.image\
                         ORDER BY l.{sorting_column} {sorting_direction}\
+                        LIMIT {per_page} OFFSET {offset} \
                 "
         else: #just count results number (without tags)
 
@@ -233,7 +233,6 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                             AND {query_part_by_status} \
                             AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
                                 OR message LIKE '%%{actual_filter_by_search_mode}%%') \
-                            LIMIT {per_page} OFFSET {offset} \
                             \
                         ),\
                         results_questions_without_tags AS \
@@ -264,7 +263,6 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                             AND {query_part_by_status} \
                             AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
                                 OR message LIKE '%%{actual_filter_by_search_mode}%%') \
-                            LIMIT {per_page} OFFSET {offset} \
                         ),\
                         questions_before_tag_filtering AS \
                         (\
@@ -276,6 +274,7 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                         )\
                         SELECT qq.* FROM questions_before_tag_filtering qq WHERE  qq.tags_names LIKE '%%{selected_tag}%%' \
                         ORDER BY qq.{sorting_column} {sorting_direction}\
+                        LIMIT {per_page} OFFSET {offset} \
                 "
         else: #just count results number
             full_query = f" \
@@ -290,7 +289,6 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
                             AND {query_part_by_status} \
                             AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
                                 OR message LIKE '%%{actual_filter_by_search_mode}%%') \
-                            LIMIT {per_page} OFFSET {offset} \
                         ),\
                         questions_before_tag_filtering AS \
                         (\
