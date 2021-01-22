@@ -35,11 +35,11 @@
     </div>
     {% else %}
         <div class="question-info">
-            <h4>Question:</h4>
+            <h4>Question information:</h4>
             <h5>{{ question["title"] }}:</h5>
             <p>{{ question["message"] }}</p>
         </div>
-        <div class="form-box">
+        <div class="form-box-2">
             <div class="form-header">
                 <h2>Add new answer</h2>
             </div>
@@ -47,14 +47,14 @@
                 <form action="{{ url_for("post_an_answer_post", question_id=question["id"]) }}" method="post" enctype="multipart/form-data">
                     <input name="question_id" id="question_id" type="hidden" value="{{ question_id }}">
                     <label for="message">New answer:</label><br><br>
-                    <textarea name="message" id="message" minlength="1" maxlength="5000"></textarea>
+                    <textarea class="textarea-field" name="message" id="message" minlength="1" maxlength="5000"></textarea>
                     <br><br>
                     <input name="image" id="image" type="hidden" value="">
                     <input name="vote_number" id="vote_number" type="hidden" value="{{ 0 }}">
                     <br><br>
                     <input type="file" name="image" id="image" value="No file uploaded yet">
                     <br><br>
-                    <button type="submit">Add answer</button>
+                    <button class="submit-form" type="submit">Add answer</button>
                 </form>
             </div>
         </div>
