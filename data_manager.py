@@ -121,7 +121,16 @@ def get_headers_from_table_for_main_page(cursor: RealDictCursor) -> list:
             SELECT column_name \
             FROM information_schema.columns \
             WHERE table_name = '{QUESTION_TABLE_NAME}' or table_name = '{QUESTION_TAG_TABLE_NAME}'  \
-            AND column_name != 'question_id'\
+            AND column_name IN ('{question.vote_number}',\
+                                '{question.view_number}',\
+                                '{question.answers_number}',\
+                                '{question.title}',\
+                                '{question.status}',\
+                                '{question.submission_time}',\
+                                '{question.id}',\
+                                '{question.message}',\
+                                '{question.image}',\
+                                'tag_id')\
             "
 
     cursor.execute(query)
@@ -144,8 +153,10 @@ def get_headers_from_table_for_main_page(cursor: RealDictCursor) -> list:
     return new_headers
 
 @connection.connection_handler
-def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode:list, selected_tag: str) -> list:
+def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode:list, selected_tag: str,\
+                       offset :int = 0, per_page : int = 10, just_count_result_number : bool = False) -> list:
 
+    #FILTERING
     actual_filter_by_date_mode = actual_filters[0]
     actual_filter_by_status_mode = actual_filters[1]
     actual_filter_by_search_mode = actual_filters[2]
@@ -170,61 +181,133 @@ def get_list_questions(cursor: RealDictCursor, actual_filters:list, sorting_mode
     elif actual_filter_by_status_mode == filter.status_all:
         query_part_by_status = "status IN ('new', 'discussed', 'closed')"
 
+    # FILTERING BY TAGS
     query_part_by_tag = ""
     if selected_tag == tag.all_tags:
         query_part_by_tag
 
 
-
+    #SORTING
     sorting_column = sorting_mode[0]
     sorting_direction = "DESC" if sorting_mode[1] == sort.descending else "ASC"
 
+    #PAGINATION
+    per_page = 'ALL' if per_page == 0 else per_page
 
     if selected_tag == tag.all_tags:
-        full_query = f" \
-                    WITH listed_questions AS \
-                    (\
-                        SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
-                        FROM question_tag \
-                        RIGHT JOIN question q on q.id = question_tag.question_id \
-                        LEFT JOIN tag on question_tag.tag_id = tag.id \
-                        WHERE  submission_time >= '{query_part_by_date}' \
-                        AND {query_part_by_status} \
-                        AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
-                            OR message LIKE '%%{actual_filter_by_search_mode}%%' \
+        if just_count_result_number == False:
+
+            full_query = f" \
+                        WITH listed_questions AS \
+                        (\
+                            SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, \
+                            q.submission_time,  tag.name,  q.id, q.message, q.image \
+                            FROM question_tag \
+                            RIGHT JOIN question q on q.id = question_tag.question_id \
+                            LEFT JOIN tag on question_tag.tag_id = tag.id \
+                            WHERE  submission_time >= '{query_part_by_date}' \
+                            AND {query_part_by_status} \
+                            AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                                OR message LIKE '%%{actual_filter_by_search_mode}%%') \
+                            LIMIT {per_page} OFFSET {offset} \
+                            \
                         )\
-                    )\
-                    SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, string_agg(l.name, ', ') as tags_names, l.id, l.message, l.image\
-                    FROM listed_questions l \
-                    GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, l.id, l.message, l.image\
-                    ORDER BY l.{sorting_column} {sorting_direction}\
-            "
-
-
-    else:
-
-        full_query = f" \
-                    WITH listed_questions AS \
-                    (\
-                        SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, q.submission_time,  tag.name,  q.id, q.message, q.image \
-                        FROM question_tag \
-                        RIGHT JOIN question q on q.id = question_tag.question_id \
-                        LEFT JOIN tag on question_tag.tag_id = tag.id \
-                        WHERE  submission_time >= '{query_part_by_date}' \
-                        AND {query_part_by_status} \
-                        AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
-                            OR message LIKE '%%{actual_filter_by_search_mode}%%' \
-                        )\
-                    ),\
-                    questions_before_tag_filtering AS \
-                    (\
-                        SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time,  string_agg(l.name, ', ') as tags_names , l.id, l.message, l.image\
+                        SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
+                        l.submission_time, string_agg(l.name, ', ') as tags_names, l.id, l.message, l.image\
                         FROM listed_questions l \
-                        GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, l.submission_time, l.id, l.message, l.image\
-                    )\
-                    SELECT qq.* FROM questions_before_tag_filtering qq WHERE  qq.tags_names LIKE '%%{selected_tag}%%' \
-                    ORDER BY qq.{sorting_column} {sorting_direction}\
-            "
+                        GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
+                        l.submission_time, l.id, l.message, l.image\
+                        ORDER BY l.{sorting_column} {sorting_direction}\
+                "
+        else: #just count results number (without tags)
+
+            full_query = f" \
+                        WITH listed_questions AS \
+                        (\
+                            SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, \
+                            q.submission_time,  tag.name,  q.id, q.message, q.image \
+                            FROM question_tag \
+                            RIGHT JOIN question q on q.id = question_tag.question_id \
+                            LEFT JOIN tag on question_tag.tag_id = tag.id \
+                            WHERE  submission_time >= '{query_part_by_date}' \
+                            AND {query_part_by_status} \
+                            AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                                OR message LIKE '%%{actual_filter_by_search_mode}%%') \
+                            LIMIT {per_page} OFFSET {offset} \
+                            \
+                        ),\
+                        results_questions_without_tags AS \
+                        (\
+                            SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
+                            l.submission_time, string_agg(l.name, ', ') as tags_names, l.id, l.message, l.image\
+                            FROM listed_questions l \
+                            GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
+                            l.submission_time, l.id, l.message, l.image\
+                            ORDER BY l.{sorting_column} {sorting_direction}\
+                        )\
+                        SELECT COUNT(*) AS count FROM results_questions_without_tags\
+                "
+
+
+    else: # for query with tags
+
+        if just_count_result_number == False:
+            full_query = f" \
+                        WITH listed_questions AS \
+                        (\
+                            SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, \
+                            q.submission_time,  tag.name,  q.id, q.message, q.image \
+                            FROM question_tag \
+                            RIGHT JOIN question q on q.id = question_tag.question_id \
+                            LEFT JOIN tag on question_tag.tag_id = tag.id \
+                            WHERE  submission_time >= '{query_part_by_date}' \
+                            AND {query_part_by_status} \
+                            AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                                OR message LIKE '%%{actual_filter_by_search_mode}%%') \
+                            LIMIT {per_page} OFFSET {offset} \
+                        ),\
+                        questions_before_tag_filtering AS \
+                        (\
+                            SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
+                            l.submission_time,  string_agg(l.name, ', ') as tags_names , l.id, l.message, l.image\
+                            FROM listed_questions l \
+                            GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
+                            l.submission_time, l.id, l.message, l.image\
+                        )\
+                        SELECT qq.* FROM questions_before_tag_filtering qq WHERE  qq.tags_names LIKE '%%{selected_tag}%%' \
+                        ORDER BY qq.{sorting_column} {sorting_direction}\
+                "
+        else: #just count results number
+            full_query = f" \
+                        WITH listed_questions AS \
+                        (\
+                            SELECT q.vote_number, q.view_number, q.answers_number, q.title, q.status, \
+                            q.submission_time,  tag.name,  q.id, q.message, q.image \
+                            FROM question_tag \
+                            RIGHT JOIN question q on q.id = question_tag.question_id \
+                            LEFT JOIN tag on question_tag.tag_id = tag.id \
+                            WHERE  submission_time >= '{query_part_by_date}' \
+                            AND {query_part_by_status} \
+                            AND (title LIKE '%%{actual_filter_by_search_mode}%%'\
+                                OR message LIKE '%%{actual_filter_by_search_mode}%%') \
+                            LIMIT {per_page} OFFSET {offset} \
+                        ),\
+                        questions_before_tag_filtering AS \
+                        (\
+                            SELECT l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
+                            l.submission_time,  string_agg(l.name, ', ') as tags_names , l.id, l.message, l.image\
+                            FROM listed_questions l \
+                            GROUP BY l.vote_number, l.view_number, l.answers_number, l.title, l.status, \
+                            l.submission_time, l.id, l.message, l.image\
+                        ),\
+                        results_questions_with_tags AS \
+                        (\
+                            SELECT qq.* FROM questions_before_tag_filtering qq WHERE  qq.tags_names LIKE '%%{selected_tag}%%' \
+                            ORDER BY qq.{sorting_column} {sorting_direction}\
+                        )\
+                        SELECT count(*) AS count FROM results_questions_with_tags \
+                "
+
 
 
     param = {\
