@@ -4,8 +4,6 @@
     list-style: none;
     text-decoration: none;
     box-sizing: border-box;
-    /*border: none;*/
-    /*background: none;*/
 }
 
 
@@ -16,8 +14,23 @@
     background-color: lightgray;
 }
 
+.header-back {
+    width: 10%;
+    height: 100%;
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-back a img {
+    height: auto;
+    width: 80%;
+    padding-left: 2vw;
+}
+
 .header-logo {
-    width: 67%;
+    width: 62%;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -32,7 +45,7 @@
 
 
 .header-button {
-    width: 22%;
+    width: 17%;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -41,12 +54,12 @@
 }
 
 .header-button a img {
-    height: 11vw;
+    height: 10vw;
     width: auto;
 }
 
 .header-button img {
-    height: 11vw;
+    height: 10vw;
     width: auto;
 }
 
