@@ -1,9 +1,13 @@
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, session
 import data_manager, util, connection, os
 from settings import *
 from flask_paginate import Pagination, get_page_args
+from os import urandom
+import bcrypt
+
 
 app = Flask(__name__)
+app.secret_key = urandom(16)
 
 class server_state:
 
@@ -418,19 +422,48 @@ def delete_comment(comment_id):
 
 @app.route("/login")
 def login_get():
-    return render_template("login_register.html", login_or_register="login")
+    return render_template("login_register.html", login_or_register="login", email=FORM_EMAIL, pswrd=FORM_PASSWORD)
 
-@app.route("/login")
+
+@app.route("/login", methods=["POST"])
 def login_post():
-    pass
+    login = request.form.get(FORM_EMAIL)
+    password = request.form.get(FORM_PASSWORD).encode("utf-8")
+    data_from_db = data_manager.get_id_login_password(login)
+
+    if data_from_db != [] and bcrypt.checkpw(password, data_from_db[0].get(FORM_PASSWORD).encode('utf-8')):
+        session[SESSION_KEY] = data_from_db[0][DB_USER_ID]
+        return redirect(url_for("index"))
+    else:
+        message = "Incorrect login or password"
+        return render_template("login_register.html", login_or_register="login", message=message, email=FORM_EMAIL,
+                               pswrd=FORM_PASSWORD)
 
 @app.route("/register")
 def register_get():
-    return render_template("login_register.html", login_or_register="register")
+    return render_template("login_register.html", login_or_register="register", username=FORM_USERNAME, email=FORM_EMAIL,
+                           pswrd=FORM_PASSWORD, confirm_pswrd=FORM_CONFIRM_PSWRD)
 
-@app.route("/register")
+@app.route("/register", methods=["POST"])
 def register_post():
-    pass
+    login = request.form.get(FORM_EMAIL)
+    password = request.form.get(FORM_PASSWORD)
+    confirm_pswrd = request.form.get(FORM_CONFIRM_PSWRD)
+    user_name = request.form.get(FORM_USERNAME)
+    user_db_data = data_manager.get_id_username_login_password(login, user_name)
+
+    if password != confirm_pswrd:
+        message = "Passwords provided do not match. Try again."
+    elif user_db_data != []:
+        message = "Username or email already occupied"
+    else:
+        current_date = util.current_datetime()
+        password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(16))
+        data_manager.add_to_table(user_name, login, password.decode('utf-8'), current_date)
+        message = "Account created successfully"
+
+    return render_template("login_register.html", login_or_register="register", username=FORM_USERNAME, email=FORM_EMAIL,
+                           pswrd=FORM_PASSWORD, confirm_pswrd=FORM_CONFIRM_PSWRD, message=message)
 
 @app.route("/login-google", methods=["GET"])
 def login_google():

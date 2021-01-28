@@ -2,6 +2,13 @@ QUESTION_TABLE_NAME = "question"
 ANSWER_TABLE_NAME = "answer"
 COMMENTS_TABLE_NAME = "comment"
 QUESTION_TAG_TABLE_NAME = "question_tag"
+FORM_USERNAME = "user_name"
+FORM_PASSWORD = "password"
+FORM_CONFIRM_PSWRD = "confirm_password"
+FORM_EMAIL = "email"
+FORM_USER_PHOTO = "user_photo"
+DB_USER_ID = "user_id"
+SESSION_KEY = "user_id"
 
 
 class answer:

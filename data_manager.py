@@ -20,8 +20,6 @@ def get_tags_names(cursor: RealDictCursor) -> list:
     return cursor.fetchall()
 
 
-
-
 @connection.connection_handler
 def get_question_by_id(cursor: RealDictCursor, question_id: int) -> list:
     query = f"""
@@ -579,3 +577,39 @@ def list_tags_with_counts(cursor: RealDictCursor) -> list:
             GROUP BY tag.name"""
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_id_login_password(cursor: RealDictCursor, email: str) -> list:
+    cursor.execute("""
+            SELECT user_id, email, password
+            FROM users
+            WHERE email = %(email)s;
+            """,
+            {"email": email})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_id_username_login_password(cursor: RealDictCursor, email: str, user_name: str) -> list:
+    cursor.execute("""
+            SELECT user_id, username, email, password
+            FROM users
+            WHERE email = %(email)s OR username = %(user_name)s;
+            """,
+            {"email": email, "user_name": user_name})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def add_to_table(cursor: RealDictCursor, user_name, email, password, date):
+    cursor.execute("""
+        INSERT INTO users(username, password, email, join_date)
+        VALUES (%(user_name)s, %(password)s, %(email)s, %(date)s)
+        """,
+        {
+            "user_name": user_name,
+            "email": email,
+            "password": password,
+            "date": date
+        })
