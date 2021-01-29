@@ -1,0 +1,29 @@
+<link rel="stylesheet" href="layout.html">
+
+{% block login_button %}
+
+<div class="header-logging">
+    {% if session %}
+        <div class="dropdown">
+            <form action="#">
+                <button><img src="/static/images/user.png"></button>
+            </form>
+            <div class="dropdown-content">
+                <a href="#">Edit profile</a>
+                <a href="#">Show your questions</a>
+                <a href="#">Show your answers</a>
+                <a href="#">Show your comments</a>
+                <a href="#">Show all users</a>
+                <a href="{{ url_for("logout") }}">Log out</a>
+            </div>
+        </div>
+    {% else %}
+        <div>
+            <form action="{{ url_for('login_get')}}">
+                <button type="submit"><img src="/static/images/login-button-png-18015.png"></button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

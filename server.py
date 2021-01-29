@@ -465,6 +465,18 @@ def register_post():
     return render_template("login_register.html", login_or_register="register", username=FORM_USERNAME, email=FORM_EMAIL,
                            pswrd=FORM_PASSWORD, confirm_pswrd=FORM_CONFIRM_PSWRD, message=message)
 
+
+@app.route('/logout')
+def logout():
+    try:
+        session.pop(SESSION_KEY)
+        message = "You've been logged out successfully."
+    except:
+        message = "You are not logged in"
+
+    return render_template("login_register.html", login_or_register="register", username=FORM_USERNAME, email=FORM_EMAIL,
+                    pswrd=FORM_PASSWORD, confirm_pswrd=FORM_CONFIRM_PSWRD, message=message)
+
 @app.route("/login-google", methods=["GET"])
 def login_google():
     pass
