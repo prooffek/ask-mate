@@ -214,8 +214,11 @@ def change_question_status():
 
 @app.route("/add-question", methods=["GET"])
 def add_question_get():
-    list_of_tags = data_manager.get_tags_names()
-    return render_template("add-question.html", tags_list=list_of_tags)
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        list_of_tags = data_manager.get_tags_names()
+        return render_template("add-question.html", tags_list=list_of_tags)
 
 
 # funkcja przerobiona - ale przekierowanie na stronę główną, będę musiała to poprawić na przekierowanie na to nowo dodane pytanie
@@ -236,8 +239,11 @@ def add_question_post():
 
 @app.route("/question/<question_id>/new_answer", methods=["GET"])
 def post_an_answer_get(question_id):
-    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    return render_template("add-question.html", question_id=question_id, question=question)
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+        return render_template("add-question.html", question_id=question_id, question=question)
 
 
 @app.route("/question/<question_id>/new_answer", methods=["POST"])
@@ -263,34 +269,43 @@ def post_an_answer_post(question_id):
 
 @app.route("/answer/<answer_id>/delete endpoint")
 def delete_answer(answer_id):
-    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
-    question_id = answer["question_id"]
-    util.delete_image(answer["image"])
-    data_manager.delete_answer(answer_id)
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+        question_id = answer["question_id"]
+        util.delete_image(answer["image"])
+        data_manager.delete_answer(answer_id)
 
-    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    question["answers_number"] -= 1
-    if question["answers_number"] == 0:
-        question["status"] = "new"
-    data_manager.update_question(question, question_id)
+        question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+        question["answers_number"] -= 1
+        if question["answers_number"] == 0:
+            question["status"] = "new"
+        data_manager.update_question(question, question_id)
 
-    return redirect(url_for("display_a_question", question_id=question_id))
+        return redirect(url_for("display_a_question", question_id=question_id))
 
 
 @app.route("/question/<question_id>/delete")
 def delete_question(question_id):
-    data_manager.del_question_tag(question_id)
-    data_manager.delete_question(question_id)
-    data_manager.delete_answers_by_question_id(question_id)
-    return redirect(url_for("index"))
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        data_manager.del_question_tag(question_id)
+        data_manager.delete_question(question_id)
+        data_manager.delete_answers_by_question_id(question_id)
+        return redirect(url_for("index"))
 
 
 @app.route("/question/<question_id>/edit", methods=["GET"])
 def edit_question_get(question_id):
-    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    question_tags = util.question_tags_names(question_id)
-    all_tags = data_manager.get_tags_names()
-    return render_template("edit.html", question_id=question_id, question=question, tags_list=all_tags,
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+        question_tags = util.question_tags_names(question_id)
+        all_tags = data_manager.get_tags_names()
+        return render_template("edit.html", question_id=question_id, question=question, tags_list=all_tags,
                            tags_selected=question_tags)
 
 @app.route("/question/<question_id>/edit", methods=["POST"])
@@ -317,24 +332,33 @@ def edit_question_post(question_id):
 
 @app.route("/question/<question_id>/remove_image")
 def delete_image_from_question(question_id):
-    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    util.delete_image(question["image"])
-    question["image"] = ""
-    data_manager.update_question(question, question_id)
-    return redirect(url_for("display_a_question", question_id=question_id))
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+        util.delete_image(question["image"])
+        question["image"] = ""
+        data_manager.update_question(question, question_id)
+        return redirect(url_for("display_a_question", question_id=question_id))
 
 @app.route("/<answer_id>/delete-img")
 def delete_answer_img(answer_id):
-    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
-    util.delete_image(answer["image"])
-    data_manager.del_answer_img_from_db(answer["id"])
-    return redirect(url_for('display_a_question', question_id=answer['question_id']))
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+        util.delete_image(answer["image"])
+        data_manager.del_answer_img_from_db(answer["id"])
+        return redirect(url_for('display_a_question', question_id=answer['question_id']))
 
 @app.route("/edit/<answer_id>")
 def edit_answer_get(answer_id):
-    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
-    img_path = os.path.join(util.IMAGE_PATH, answer["image"])
-    return render_template('edit.html', answer_id=answer_id, answer=answer, img_path=img_path)
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+        img_path = os.path.join(util.IMAGE_PATH, answer["image"])
+        return render_template('edit.html', answer_id=answer_id, answer=answer, img_path=img_path)
 
 @app.route("/edit/<answer_id>", methods=["POST"])
 def edit_answer_post(answer_id):
@@ -352,8 +376,11 @@ def edit_answer_post(answer_id):
 
 @app.route("/question/<question_id>/new-comment", methods=["GET"])
 def add_comment_to_question_get(question_id):
-    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    return render_template("add-comment.html", question=question, mode="question")
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+        return render_template("add-comment.html", question=question, mode="question")
 
 @app.route("/question/<question_id>/new-comment", methods=["POST"])
 def add_comment_to_question_post(question_id):
@@ -365,9 +392,12 @@ def add_comment_to_question_post(question_id):
 
 @app.route('/answer/<answer_id>/new-comment')
 def add_comment_to_answer_get(answer_id):
-    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
-    question = util.take_out_of_the_list(data_manager.get_question_by_id(answer["question_id"]))
-    return render_template("add-comment.html", answer=answer, question=question, mode="answer")
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+        question = util.take_out_of_the_list(data_manager.get_question_by_id(answer["question_id"]))
+        return render_template("add-comment.html", answer=answer, question=question, mode="answer")
 
 
 @app.route('/answer/<answer_id>/new-comment', methods=["POST"])
@@ -381,9 +411,12 @@ def add_comment_to_answer_post(answer_id):
 
 @app.route('/comment/<comment_id>/edit', methods=["GET"])
 def edit_comment_get(comment_id):
-    comment = util.take_out_of_the_list(data_manager.get_comment_by_comment_id(comment_id))
-    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(comment["answer_id"])) if comment["question_id"] is None else None
-    return render_template("edit_comment.html", comment=comment, answer=answer)
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        comment = util.take_out_of_the_list(data_manager.get_comment_by_comment_id(comment_id))
+        answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(comment["answer_id"])) if comment["question_id"] is None else None
+        return render_template("edit_comment.html", comment=comment, answer=answer)
 
 
 @app.route('/comment/<comment_id>/edit', methods=["POST"])
@@ -407,12 +440,15 @@ def edit_comment_post(comment_id):
 
 @app.route('/comments/<comment_id>/delete')
 def delete_comment(comment_id):
-    comment = util.take_out_of_the_list(data_manager.get_comment_by_comment_id(comment_id))
-    if comment["question_id"] is not None:
-        question_id = comment["question_id"]
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
     else:
-        answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(comment["answer_id"]))
-        question_id = answer["question_id"]
+        comment = util.take_out_of_the_list(data_manager.get_comment_by_comment_id(comment_id))
+        if comment["question_id"] is not None:
+            question_id = comment["question_id"]
+        else:
+            answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(comment["answer_id"]))
+            question_id = answer["question_id"]
 
     data_manager.delete_comment(comment_id)
     return redirect(url_for("display_a_question", question_id=question_id))

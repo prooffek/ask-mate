@@ -8,7 +8,7 @@ FORM_CONFIRM_PSWRD = "confirm_password"
 FORM_EMAIL = "email"
 FORM_USER_PHOTO = "user_photo"
 DB_USER_ID = "user_id"
-SESSION_KEY = "user_id"
+SESSION_KEY = DB_USER_ID
 
 
 class answer:
