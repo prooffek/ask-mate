@@ -642,7 +642,7 @@ def bind_user_with_comment(cursor: RealDictCursor, user_id, comment_id):
         })
 
 @connection.connection_handler
-def get_username_by_id(user_id):
+def get_username_by_id(cursor: RealDictCursor, user_id) -> list:
     cursor.execute("""
         SELECT username
         FROM users
