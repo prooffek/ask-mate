@@ -57,3 +57,9 @@ def add_question_tag_to_db(question_id, data_from_form):
 def update_question_tags(question_id, data_from_form):
     data_manager.del_question_tag(question_id)
     add_question_tag_to_db(question_id, data_from_form)
+
+def users_id(session):
+    try:
+        return session["user_id"]
+    except:
+        return False

@@ -386,7 +386,9 @@ def add_comment_to_question_get(question_id):
 def add_comment_to_question_post(question_id):
     comment = dict(request.form)
     comment["submission_time"] = util.current_datetime()
-    data_manager.add_comment_to_question(comment)
+    comment_id = util.take_out_of_the_list(data_manager.add_comment_to_question(comment))["id"]
+    user_id = session[SESSION_KEY]
+    data_manager.bind_user_with_comment(user_id, comment_id)
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
@@ -404,8 +406,14 @@ def add_comment_to_answer_get(answer_id):
 def add_comment_to_answer_post(answer_id):
     comment = dict(request.form)
     comment["submission_time"] = util.current_datetime()
-    data_manager.add_comment_to_answer(comment)
+    # data_manager.add_comment_to_answer(comment)
+    # answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+    # return redirect(url_for("display_a_question", question_id=answer["question_id"]))
+
+    comment_id = util.take_out_of_the_list(data_manager.add_comment_to_answer(comment))["id"]
     answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+    user_id = session[SESSION_KEY]
+    data_manager.bind_user_with_comment(user_id, comment_id)
     return redirect(url_for("display_a_question", question_id=answer["question_id"]))
 
 
@@ -449,6 +457,7 @@ def delete_comment(comment_id):
         else:
             answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(comment["answer_id"]))
             question_id = answer["question_id"]
+
 
     data_manager.delete_comment(comment_id)
     return redirect(url_for("display_a_question", question_id=question_id))

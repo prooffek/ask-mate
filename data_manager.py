@@ -455,8 +455,11 @@ def update_question(cursor: RealDictCursor, question, question_id):
 def add_comment_to_question(cursor: RealDictCursor, comment):
     command = """
             INSERT INTO comment(question_id, message, submission_time)
-            VALUES (%(question_id)s, %(message)s, %(submission_time)s)
-    """
+            VALUES (%(question_id)s, %(message)s, %(submission_time)s);
+            SELECT id
+            FROM comment
+            WHERE submission_time = %(submission_time)s
+            """
 
     param = {
         "question_id": comment["question_id"],
@@ -465,13 +468,18 @@ def add_comment_to_question(cursor: RealDictCursor, comment):
 
             }
     cursor.execute(command, param)
+    return cursor.fetchall()
 
 
 @connection.connection_handler
 def add_comment_to_answer(cursor: RealDictCursor, comment: dict):
     query = """
             INSERT INTO comment(answer_id, message, submission_time, edited_count)
-            VALUES (%(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s)"""
+            VALUES (%(answer_id)s, %(message)s, %(submission_time)s, %(edited_count)s);
+            SELECT id
+            FROM comment
+            WHERE submission_time = %(submission_time)s
+            """
     param = {
         "answer_id": f"{comment['answer_id']}",
         "message": f"{comment['message']}",
@@ -479,13 +487,19 @@ def add_comment_to_answer(cursor: RealDictCursor, comment: dict):
         "edited_count": f"{comment['edited_count']}"
     }
     cursor.execute(query, param)
+    return cursor.fetchall()
 
 
 @connection.connection_handler
 def get_all_comments(cursor: RealDictCursor) -> RealDictCursor:
     query = """
-            SELECT *
-            FROM comment"""
+            SELECT c.id AS comment_id, c.question_id, c.answer_id, c.message, c.submission_time, c.edited_count, usrs.username
+            FROM comment c
+            LEFT JOIN user_comment uc
+            ON c.id = uc.comment_id
+            LEFT JOIN users usrs
+            ON uc.user_id = usrs.user_id;
+            """
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -525,8 +539,10 @@ def update_comment(cursor: RealDictCursor, comment):
 @connection.connection_handler
 def delete_comment(cursor: RealDictCursor, comment_id):
     command = """
+                DELETE FROM user_comment
+                WHERE comment_id = %(comment_id)s;
                 DELETE FROM comment
-                WHERE id = %(comment_id)s"""
+                WHERE id = %(comment_id)s;"""
     param = {"comment_id": f"{comment_id}"}
     cursor.execute(command, param)
 
@@ -613,3 +629,24 @@ def add_to_table(cursor: RealDictCursor, user_name, email, password, date):
             "password": password,
             "date": date
         })
+
+@connection.connection_handler
+def bind_user_with_comment(cursor: RealDictCursor, user_id, comment_id):
+    cursor.execute("""
+        INSERT INTO user_comment(user_id, comment_id)
+        VALUES(%(user_id)s, %(comment_id)s)
+        """,
+        {
+            "user_id": user_id,
+            "comment_id": comment_id
+        })
+
+@connection.connection_handler
+def get_username_by_id(user_id):
+    cursor.execute("""
+        SELECT username
+        FROM users
+        WHERE user_id = %(user_id)s;
+        """,
+        {"user_id": user_id})
+    return cursor.fetchall()
