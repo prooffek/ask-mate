@@ -192,12 +192,13 @@ def display_a_question(question_id):
     question["view_number"] += 1
     data_manager.update_question(question, question_id)
     tags = data_manager.get_nonquestion_by_question_id(question_id, QUESTION_TAG_TABLE_NAME)
+    user_id = util.users_id(session)
 
     question_tags = [util.take_out_of_the_list(data_manager.get_tag_by_id(tag["tag_id"]))
                      for tag in tags]
 
     return render_template("display_question.html", question=question, answers=answers, comments=comments,
-                           question_tags=question_tags, img_path=util.IMAGE_PATH) #img_path=connection.IMAGE_PATH)
+                           question_tags=question_tags, img_path=util.IMAGE_PATH, user_id=user_id) #img_path=connection.IMAGE_PATH)
 
 
 @app.route("/change-question-status", methods=["POST"])
