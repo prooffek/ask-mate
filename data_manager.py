@@ -602,14 +602,37 @@ def get_id_username_login_password(cursor: RealDictCursor, email: str, user_name
 
 
 @connection.connection_handler
-def add_to_table(cursor: RealDictCursor, user_name, email, password, date):
+def add_to_table(cursor: RealDictCursor, user_name, email, password, date, reputation, count_questions, count_answers, count_comments):
     cursor.execute("""
-        INSERT INTO users(username, password, email, join_date)
-        VALUES (%(user_name)s, %(password)s, %(email)s, %(date)s)
+        INSERT INTO users(username, password, email, join_date, reputation, count_questions, count_answers, count_comments)
+        VALUES (%(user_name)s, %(password)s, %(email)s, %(date)s, %(reputation)s, %(count_questions)s, %(count_answers)s, %(count_comments)s)
         """,
         {
             "user_name": user_name,
             "email": email,
             "password": password,
-            "date": date
-        })
+            "date": date,
+            "reputation": reputation,
+            "count_questions": count_questions,
+            "count_answers": count_answers,
+            "count_comments": count_comments
+            })
+
+
+@connection.connection_handler
+def get_users(cursor:RealDictCursor) -> list:
+    query = """ SELECT username, join_date, reputation, count_questions, count_answers, count_comments
+                FROM users
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_headers_to_users_list(cursor: RealDictCursor) -> list:
+    query = """ SELECT column_name 
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_NAME = 'users';
+    """
+    cursor.execute(query)
+    return cursor.fetchall()

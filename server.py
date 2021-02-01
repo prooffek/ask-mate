@@ -459,7 +459,11 @@ def register_post():
     else:
         current_date = util.current_datetime()
         password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(16))
-        data_manager.add_to_table(user_name, login, password.decode('utf-8'), current_date)
+        reputation = 0
+        count_questions = 0
+        count_answers = 0
+        count_comments = 0
+        data_manager.add_to_table(user_name, login, password.decode('utf-8'), current_date, reputation, count_questions, count_answers, count_comments)
         message = "Account created successfully"
 
     return render_template("login_register.html", login_or_register="register", username=FORM_USERNAME, email=FORM_EMAIL,
@@ -484,6 +488,14 @@ def login_google():
 @app.route("/login-google", methods=["POST"])
 def login_google_post():
     return ("<h1>google login</h1>")
+
+
+@app.route("/users-page")
+def list_users():
+    headers = data_manager.get_headers_to_users_list()
+    users = data_manager.get_users()
+
+    return render_template("users-page.html", headers=headers, users=users)
 
 
 if __name__ == "__main__":
