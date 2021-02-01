@@ -27,6 +27,7 @@
                 <div class="input-box">
                     {#                    INPUTS HIDDEN#}
                     <input name="question_id" id="question_id" type="hidden" value="{{ question["id"] }}">
+                    <input name="user_id" id="user_id" type="hidden" value="{{ session["user_id"] }}">
                     {#                    INPUTS#}
                     <label for="message">Comment message:</label><br>
                     <textarea class="textarea-fiels" name="message" id="message" minlength="1" maxlength="1500"></textarea>
@@ -65,6 +66,7 @@
                     {#                    INPUTS HIDDEN#}
                     <input type="hidden" name="answer_id" value="{{ answer["id"] }}">
                     <input type="hidden" name="edited_count" value="{{ 0 }}">
+                    <input name="user_id" id="user_id" type="hidden" value="{{ session["user_id"] }}">
 
                     {#                    INPUT#}
                     <label for="answer_comment">Comment message:</label><br>
