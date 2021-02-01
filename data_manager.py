@@ -674,3 +674,37 @@ def get_username_by_id(cursor: RealDictCursor, user_id) -> list:
         {"user_id": user_id})
     return cursor.fetchall()
 
+
+@connection.connection_handler
+def update_reputation(cursor: RealDictCursor, table_1, table_2, col_name, relevant_id, amount, operant):
+    cursor.execute(f"""
+        UPDATE users
+        SET reputation = reputation {operant} %(amount)s
+        FROM (SELECT users.username
+            FROM {table_1} tab_1
+            LEFT JOIN {table_2} tab_2
+            ON tab_1.id = tab_2.{col_name}
+            LEFT JOIN users
+            ON tab_2.user_id = users.user_id
+            WHERE tab_1.id = %(relevant_id)s) AS usrs
+        WHERE users.username = usrs.username;""",
+    {
+        "relevant_id": relevant_id,
+        "amount": amount
+    })
+
+# @connection.connection_handler
+# def update_reputation(cursor: RealDictCursor, table_1, table_2, col_name, relevant_id, amount, operant):
+#     cursor.execute(f"""
+#         SELECT users.username
+#         FROM {table_1} tab_1
+#         LEFT JOIN {table_2} tab_2
+#         ON tab_1.id = tab_2.{col_name}
+#         LEFT JOIN users
+#         ON tab_2.user_id = users.user_id
+#         WHERE tab_1.id = %(relevant_id)s;""",
+#     {
+#         "relevant_id": relevant_id,
+#         "amount": amount
+#     })
+#     return cursor.fetchall()

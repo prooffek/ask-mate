@@ -170,6 +170,7 @@ def vote():
     if vote_for_answer_or_question == "vote_for_question":
         if vote_type == "up_vote":
             data_manager.vote_for_question(question_id=question_id, vote_up_or_down="up")
+            data_manager.update_reputation("question", "user_question", "question_id", question_id, 5, "+")
         else:
             data_manager.vote_for_question(question_id=question_id, vote_up_or_down="down")
         return redirect(url_for("display_a_question", question_id = question_id))
@@ -178,6 +179,7 @@ def vote():
         answer_id = request.form.get("answer_id")
         if vote_type == "up_vote":
             data_manager.vote_for_answer(answer_id=answer_id, vote_up_or_down="up")
+            data_manager.update_reputation("answer", "user_answer", "answer_id", answer_id, 10, "+")
         else:
             data_manager.vote_for_answer(answer_id=answer_id, vote_up_or_down="down")
         return redirect(url_for("display_a_question", question_id = question_id))
