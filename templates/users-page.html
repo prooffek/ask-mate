@@ -20,7 +20,7 @@
             {% for user in users %}
                 <tr>
                     {% for header in user %}
-                        {% if user[header] == "username" %}
+                        {% if header == "username" %}
                             <td>
                                 <a href="#">{{ user[header] }}</a>
                             </td>

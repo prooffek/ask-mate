@@ -693,6 +693,46 @@ def update_reputation(cursor: RealDictCursor, table_1, table_2, col_name, releva
         "amount": amount
     })
 
+
+@connection.connection_handler
+def change_count_comment(cursor: RealDictCursor, user_id, operant):
+    command = f""" UPDATE users
+                  SET count_comments = count_comments {operant} 1  
+                  WHERE user_id = %(user_id)s
+    """
+    param = {
+                "user_id": user_id,
+    }
+
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def change_count_question(cursor: RealDictCursor, user_id, operant):
+    command = f""" UPDATE users
+                  SET count_questions = count_questions {operant} 1  
+                  WHERE user_id = %(user_id)s
+    """
+    param = {
+                "user_id": user_id,
+    }
+
+    cursor.execute(command, param)
+
+
+@connection.connection_handler
+def change_count_answer(cursor: RealDictCursor, user_id, operant):
+    command = f""" UPDATE users
+                  SET count_answers = count_answers {operant} 1  
+                  WHERE user_id = %(user_id)s
+    """
+    param = {
+                "user_id": user_id,
+    }
+
+    cursor.execute(command, param)
+
+
 # @connection.connection_handler
 # def update_reputation(cursor: RealDictCursor, table_1, table_2, col_name, relevant_id, amount, operant):
 #     cursor.execute(f"""
