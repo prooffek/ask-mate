@@ -637,7 +637,7 @@ def add_to_table(cursor: RealDictCursor, user_name, email, password, date, reput
 
 @connection.connection_handler
 def get_users(cursor:RealDictCursor) -> list:
-    query = """ SELECT username, join_date, reputation, count_questions, count_answers, count_comments
+    query = """ SELECT username, reputation, count_questions, count_answers, count_comments, join_date
                 FROM users
     """
     cursor.execute(query)

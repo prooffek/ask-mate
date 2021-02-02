@@ -565,7 +565,7 @@ def login_google_post():
 
 @app.route("/users-page")
 def list_users():
-    headers = data_manager.get_headers_to_users_list()
+    headers = ["username", "join_date", "count_questions", "count_answers", "count_comments", "reputation"]
     users = data_manager.get_users()
 
     return render_template("users-page.html", headers=headers, users=users)
