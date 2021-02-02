@@ -32,22 +32,30 @@
 {#        VOTE FOR QUESTION#}
             <div class="vote-container">
                 <div id="up">
-                    <form method = "POST" action="{{ url_for("vote") }}">
-                        <input type="hidden" name="question_id" value="{{ question["id"] }}">
-                        <input type="hidden" name="url_origin" value="display_question">
-                        <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
-                        <button type="submit" name="vote" value="up_vote"><img src="/static/images/up-chevron.png"></button>
-                    </form>
+                        <form method = "POST" action="{{ url_for("vote") }}">
+                            <input type="hidden" name="question_id" value="{{ question["id"] }}">
+                            <input type="hidden" name="url_origin" value="display_question">
+                            <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
+                            {% if user_id %}
+                                <button type="submit" name="vote" value="up_vote"><img src="/static/images/up-chevron.png"></button>
+                            {% else %}
+                                <button type="button" name="vote" value="up_vote" disabled><img src="/static/images/up-chevron.png"></button>
+                            {% endif %}
+                        </form>
                 </div>
                 <div id="num">
                     <p>{{ question["vote_number"] }}</p>
                 </div>
                 <div id="down">
-                    <form method = "POST" action="{{ url_for("vote") }}">
-                        <input type="hidden" name="question_id" value="{{ question["id"] }}">
-                        <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
-                        <button type="submit" name="vote" value="down_vote"><img src="/static/images/down-chevron.png"></button>
-                    </form>
+                        <form method = "POST" action="{{ url_for("vote") }}">
+                            <input type="hidden" name="question_id" value="{{ question["id"] }}">
+                            <input type="hidden" name="vote_for_answer_or_question" value="vote_for_question">
+                            {% if user_id %}
+                                <button type="submit" name="vote" value="down_vote"><img src="/static/images/down-chevron.png"></button>
+                            {% else %}
+                                <button type="submit" name="vote" value="down_vote" disabled><img src="/static/images/down-chevron.png"></button>
+                            {% endif %}
+                        </form>
                 </div>
             </div>
 
@@ -158,7 +166,11 @@
                             <input type="hidden" name="url_origin" value="display_question">
                             <input type="hidden" name="vote_for_answer_or_question" value="vote_for_answer">
                             <input type="hidden" name="answer_id" value="{{ answer["id"] }}">
-                            <button type="submit" name="vote" value="up_vote"><img src="/static/images/up-chevron.png"></button>
+                            {% if user_id %}
+                                <button type="submit" name="vote" value="up_vote"><img src="/static/images/up-chevron.png"></button>
+                            {% else %}
+                                <button type="submit" name="vote" value="up_vote" disabled><img src="/static/images/up-chevron.png"></button>
+                            {% endif %}
                         </form>
                     </div>
                     <div id="num">
@@ -170,7 +182,11 @@
                             <input type="hidden" name="url_origin" value="display_question">
                             <input type="hidden" name="vote_for_answer_or_question" value="vote_for_answer">
                             <input type="hidden" name="answer_id" value="{{ answer["id"] }}">
-                            <button type="submit" name="vote" value="down_vote"><img src="/static/images/down-chevron.png"></button>
+                            {% if user_id %}
+                                <button type="submit" name="vote" value="down_vote"><img src="/static/images/down-chevron.png"></button>
+                            {% else %}
+                                <button type="submit" name="vote" value="down_vote" disabled><img src="/static/images/down-chevron.png"></button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
