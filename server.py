@@ -173,6 +173,7 @@ def vote():
             data_manager.update_reputation("question", "user_question", "question_id", question_id, 5, "+")
         else:
             data_manager.vote_for_question(question_id=question_id, vote_up_or_down="down")
+            data_manager.update_reputation("question", "user_question", "question_id", question_id, 2, "-")
         return redirect(url_for("display_a_question", question_id = question_id))
 
     else: # vote_for_answer
@@ -182,6 +183,7 @@ def vote():
             data_manager.update_reputation("answer", "user_answer", "answer_id", answer_id, 10, "+")
         else:
             data_manager.vote_for_answer(answer_id=answer_id, vote_up_or_down="down")
+            data_manager.update_reputation("question", "user_question", "question_id", question_id, 2, "-")
         return redirect(url_for("display_a_question", question_id = question_id))
 
 
@@ -219,7 +221,9 @@ def change_question_status():
 @app.route("/add-question", methods=["GET"])
 def add_question_get():
     if SESSION_KEY not in session:
-        return redirect(url_for("login_get"))
+        message = "PLease, log in to ask a question."
+        return render_template("login_register.html", login_or_register="login", message=message, email=FORM_EMAIL,
+                               pswrd=FORM_PASSWORD)
     else:
         list_of_tags = data_manager.get_tags_names()
         return render_template("add-question.html", tags_list=list_of_tags)
