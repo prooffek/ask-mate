@@ -6,21 +6,27 @@
         <thead class = "table-light">
             <tr>
                 {% for header in headers %}
-                    {% for property in header %}
-                        {% if header[property] != "email" and header[property] != "password" and header[property] != "user_photo" and header[property] != "user_id" %}
-                            <th>
-                                {{ header[property].replace("_", " ").capitalize() }}
-                            </th>
-                        {% endif %}
-                    {% endfor %}
+                    {% if header == "username" %}
+                        <th>Username</th>
+                    {% elif header == "join_date" %}
+                        <th>Registration date</th>
+                    {% elif header == "count_questions" %}
+                        <th>Count of asked questions</th>
+                    {% elif header == "count_answers" %}
+                        <th>Count of answers</th>
+                    {% elif header == "count_comments" %}
+                        <th>Count of comments</th>
+                    {% elif header == "reputation" %}
+                        <th>Reputation</th>
+                    {% endif %}
                 {% endfor %}
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
                 <tr>
-                    {% for header in user %}
-                        {% if user[header] == "username" %}
+                    {% for header in headers %}
+                        {% if header == "username" %}
                             <td>
                                 <a href="#">{{ user[header] }}</a>
                             </td>

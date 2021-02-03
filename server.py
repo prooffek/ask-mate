@@ -240,8 +240,11 @@ def add_question_post():
         util.add_image(image_file)
         question["image"] = image_file.filename
     return_value = data_manager.add_question(question)
-
     util.add_question_tag_to_db(return_value["id"], question)
+
+    user_id = session[SESSION_KEY]
+    data_manager.change_count_question(user_id, "+")
+
     return redirect(url_for("display_a_question", question_id=return_value["id"]))
 
 
@@ -272,6 +275,9 @@ def post_an_answer_post(question_id):
         question["status"] = "discussed"
     data_manager.update_question(question, question_id)
 
+    user_id = session[SESSION_KEY]
+    data_manager.change_count_answer(user_id, "+")
+
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
@@ -291,6 +297,9 @@ def delete_answer(answer_id):
             question["status"] = "new"
         data_manager.update_question(question, question_id)
 
+        user_id = session[SESSION_KEY]
+        data_manager.change_count_answer(user_id, "-")
+
         return redirect(url_for("display_a_question", question_id=question_id))
 
 
@@ -302,6 +311,10 @@ def delete_question(question_id):
         data_manager.del_question_tag(question_id)
         data_manager.delete_question(question_id)
         data_manager.delete_answers_by_question_id(question_id)
+
+        user_id = session[SESSION_KEY]
+        data_manager.change_count_question(user_id, "-")
+
         return redirect(url_for("index"))
 
 
@@ -390,14 +403,18 @@ def add_comment_to_question_get(question_id):
         question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
         return render_template("add-comment.html", question=question, mode="question")
 
+
 @app.route("/question/<question_id>/new-comment", methods=["POST"])
 def add_comment_to_question_post(question_id):
-    comment = dict(request.form)
-    comment["submission_time"] = util.current_datetime()
-    comment_id = util.take_out_of_the_list(data_manager.add_comment_to_question(comment))["id"]
-    user_id = session[SESSION_KEY]
-    data_manager.bind_user_with_comment(user_id, comment_id)
-    return redirect(url_for("display_a_question", question_id=question_id))
+        comment = dict(request.form)
+        comment["submission_time"] = util.current_datetime()
+        comment_id = util.take_out_of_the_list(data_manager.add_comment_to_question(comment))["id"]
+        user_id = session[SESSION_KEY]
+        data_manager.bind_user_with_comment(user_id, comment_id)
+
+        data_manager.change_count_comment(user_id, "+")
+
+        return redirect(url_for("display_a_question", question_id=question_id))
 
 
 @app.route('/answer/<answer_id>/new-comment')
@@ -422,6 +439,7 @@ def add_comment_to_answer_post(answer_id):
     answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
     user_id = session[SESSION_KEY]
     data_manager.bind_user_with_comment(user_id, comment_id)
+    data_manager.change_count_comment(user_id, "+")
     return redirect(url_for("display_a_question", question_id=answer["question_id"]))
 
 
@@ -468,6 +486,8 @@ def delete_comment(comment_id):
 
 
     data_manager.delete_comment(comment_id)
+    user_id = session[SESSION_KEY]
+    data_manager.change_count_comment(user_id, "-")
     return redirect(url_for("display_a_question", question_id=question_id))
 
 
@@ -545,7 +565,7 @@ def login_google_post():
 
 @app.route("/users-page")
 def list_users():
-    headers = data_manager.get_headers_to_users_list()
+    headers = ["username", "join_date", "count_questions", "count_answers", "count_comments", "reputation"]
     users = data_manager.get_users()
 
     return render_template("users-page.html", headers=headers, users=users)
