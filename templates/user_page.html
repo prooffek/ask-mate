@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="/static/css/user_page.css">
+
+<section class="profile">
+  <div class="header">
+    <div class="details">
+      <img src="/static/images/user.png"  class="profile-pic">
+      <h1 class="heading">{{ user_info["username"] }}</h1>
+      <div class="location">
+        <p>{{ user_info["email"] }}</p>
+      </div>
+      <div class="stats">
+        <div class="col-4">
+          <h4>{{ user_info["reputation"] }}</h4>
+          <p>Reputation</p>
+        </div>
+        <div class="col-4">
+          <h4>{{ user_info["count_questions"] }}</h4>
+          <p>Questions asked</p>
+        </div>
+        <div class="col-4">
+          <h4>{{ user_info["count_answers"] }}</h4>
+          <p>Answers posted</p>
+        </div>
+        <div class="col-4">
+          <h4>{{ user_info["count_comments"] }}</h4>
+          <p>Comments posted</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+{% endblock %}

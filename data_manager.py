@@ -585,6 +585,20 @@ def del_question_tag(cursor: RealDictCursor, question_id):
     param = {"question_id": f"{question_id}"}
     cursor.execute(command, param)
 
+
+@connection.connection_handler
+def get_user_profil_info(cursor: RealDictCursor, user_id):
+    command = f"""
+        SELECT u.username, u.email, u.reputation,
+        u.count_questions, u.count_answers, u.count_comments
+        FROM users u
+        WHERE u.user_id = %(user_id)s
+    """
+    param = {"user_id":f"{user_id}"}
+    cursor.execute(command, param)
+    return cursor.fetchall()
+
+
 @connection.connection_handler
 def list_tags_with_counts(cursor: RealDictCursor) -> list:
     query = """SELECT  tag.name, count(*)

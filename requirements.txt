@@ -1,0 +1,5 @@
+pip install flask
+pip install psycopg2
+pip install python-dateutil
+pip install flask-paginate
+pip install bcrypt

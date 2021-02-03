@@ -551,5 +551,14 @@ def list_users():
     return render_template("users-page.html", headers=headers, users=users)
 
 
+@app.route("/user_page")
+def user_page():
+   # if SESSION_KEY in session:
+    user_id = session[SESSION_KEY]
+    query_result_0 = 0
+    user_info = data_manager.get_user_profil_info(user_id)[query_result_0]
+    return render_template("user_page.html",user_info=user_info)
+
 if __name__ == "__main__":
     app.run()
+
