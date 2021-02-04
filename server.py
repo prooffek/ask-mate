@@ -183,7 +183,7 @@ def vote():
             data_manager.update_reputation("answer", "user_answer", "answer_id", answer_id, 10, "+")
         else:
             data_manager.vote_for_answer(answer_id=answer_id, vote_up_or_down="down")
-            data_manager.update_reputation("question", "user_question", "question_id", question_id, 2, "-")
+            data_manager.update_reputation("answer", "user_answer", "answer_id", answer_id, 2, "-")
         return redirect(url_for("display_a_question", question_id = question_id))
 
 
@@ -270,9 +270,10 @@ def post_an_answer_post(question_id):
         util.add_image(image_file)
 
     return_value = data_manager.add_answer(new_answer)
+    if return_value != None:
+        question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
+        question["answers_number"] = int(question["answers_number"]) + 1
 
-    question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
-    question["answers_number"] = int(question["answers_number"]) + 1
     if question["status"] != "discussed":
         question["status"] = "discussed"
     data_manager.update_question(question, question_id)
