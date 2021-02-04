@@ -824,6 +824,44 @@ def change_count_answer(cursor: RealDictCursor, user_id, operant):
 
     cursor.execute(command, param)
 
+@connection.connection_handler
+def get_user_questions(cursor: RealDictCursor, user_id):
+    query = f"""
+        SELECT * 
+        FROM user_question ua
+        INNER JOIN question on ua.question_id = question.id
+        WHERE ua.user_id = {user_id}
+        ORDER BY question.submission_time
+    """
+    cursor.execute(query,{'user_id': f'{user_id}'})
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_user_answers(cursor: RealDictCursor, user_id):
+    query = f"""
+        SELECT * 
+        FROM user_answer ua
+        INNER JOIN answer on ua.answer_id = answer.id
+        WHERE ua.user_id = {user_id}
+        ORDER BY answer.submission_time
+    """
+    cursor.execute(query,{'user_id': f'{user_id}'})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_user_comments(cursor: RealDictCursor, user_id):
+    query = f"""
+        SELECT * 
+        FROM user_comment ua
+        INNER JOIN comment on ua.comment_id = comment.id
+        WHERE ua.user_id = {user_id}
+        ORDER BY comment.submission_time
+    """
+    cursor.execute(query,{'user_id': f'{user_id}'})
+    return cursor.fetchall()
+
+
 
 # @connection.connection_handler
 # def update_reputation(cursor: RealDictCursor, table_1, table_2, col_name, relevant_id, amount, operant):

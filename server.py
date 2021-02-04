@@ -52,6 +52,16 @@ class server_state:
         else:
             server_state.actual_advanced_filter_on_status = state.off
 
+    #FOR USER's PAGE
+    is_enabled_user_activity_lists = user_page.is_enabled_user_activity_lists_default
+    actual_user_activity_list = user_page.user_activity_list_default
+
+    def toogle_user_activity_list():
+        if server_state.is_enabled_user_activity_lists == state.off:
+            server_state.is_enabled_user_activity_lists = state.on
+        else:
+            server_state.is_enabled_user_activity_lists = state.off
+
 @app.route('/', methods=["GET"])
 def index():
     headers = data_manager.get_headers_from_table_for_main_page()
@@ -574,13 +584,39 @@ def list_users():
     return render_template("users-page.html", headers=headers, users=users)
 
 
-@app.route("/user_page")
+@app.route("/user_page", methods=["GET"])
 def user_page():
    # if SESSION_KEY in session:
     user_id = session[SESSION_KEY]
     query_result_0 = 0
     user_info = data_manager.get_user_profil_info(user_id)[query_result_0]
-    return render_template("user_page.html",user_info=user_info)
+
+    list_of_user_activity = []
+    if server_state.actual_user_activity_list == "answer" \
+        and server_state.is_enabled_user_activity_lists == "yes":
+        list_of_user_activity = data_manager.get_user_answers(user_id)
+    elif server_state.actual_user_activity_list == "question" \
+        and server_state.is_enabled_user_activity_lists == "yes":
+        list_of_user_activity = data_manager.get_user_questions(user_id)
+    elif server_state.actual_user_activity_list == "comment" \
+        and server_state.is_enabled_user_activity_lists == "yes":
+        list_of_user_activity = data_manager.get_user_comments(user_id)
+
+    return render_template("user_page.html",user_info=user_info, \
+                           server_state=server_state,\
+                           list_of_user_activity=list_of_user_activity)
+
+@app.route("/user_page", methods=["POST"])
+def user_page_post():
+    chosen_user_activity_list = request.form.get("chosen_user_activity_list")
+    toogle_user_activity_list = request.form.get("toogle_user_activity_list")
+    if toogle_user_activity_list == "yes":
+        server_state.toogle_user_activity_list()
+
+    if chosen_user_activity_list in ["comment", "answer", "question"]:
+        server_state.actual_user_activity_list = chosen_user_activity_list
+
+    return redirect(url_for("user_page"))
 
 if __name__ == "__main__":
     app.run()

@@ -70,3 +70,8 @@ class filter:
 class state:
     on = "yes"
     off = "no"
+
+class user_page:
+    is_enabled_user_activity_lists_default = "no"
+    user_activity_list_default = "answer" # possible states "answer", "question", "comment"
+
