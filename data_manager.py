@@ -22,23 +22,48 @@ def get_tags_names(cursor: RealDictCursor) -> list:
 
 @connection.connection_handler
 def get_question_by_id(cursor: RealDictCursor, question_id: int) -> list:
-    query = f"""
-            SELECT *
-            FROM question
-            WHERE id = %(question_id)s"""
-    param = {"question_id": f"{question_id}"}
-    cursor.execute(query, param)
+    # query = f"""
+    #         SELECT *
+    #         FROM question
+    #         WHERE id = %(question_id)s"""
+    # param = {"question_id": f"{question_id}"}
+    # cursor.execute(query, param)
+
+    query = """
+    WITH question_1 AS (
+        SELECT uq.user_id, q. *
+        FROM question q 
+        LEFT JOIN user_question uq on q.id = uq.question_id
+        WHERE q.id = %(question_id)s
+    )
+    SELECT u.username, u.email, *
+    FROM question_1
+    LEFT JOIN users u on u.user_id = question_1.user_id
+    """
+
+    cursor.execute(query, {'question_id': f"{question_id}"})
     return cursor.fetchall()
 
 @connection.connection_handler
 def get_nonquestion_by_question_id(cursor: RealDictCursor, question_id, table_name: str) -> list:
     if table_name == ANSWER_TABLE_NAME:
-        query = f"SELECT * \
-                FROM {table_name} \
-                WHERE question_id = {question_id} \
-                ORDER BY vote_number DESC\
-                "
-        cursor.execute(query)
+        # f"SELECT * \
+        #                 FROM {table_name} \
+        #                 WHERE question_id = {question_id} \""
+        query = """
+        WITH answer_1 AS (
+            SELECT ua.user_id, a.*
+            FROM answer a 
+            LEFT JOIN user_answer ua on a.id = ua.answer_id
+            WHERE a.question_id = %(question_id)s
+        )
+        SELECT u.username, u.email, a.*
+        FROM answer_1 a
+        LEFT JOIN users u on u.user_id = a.user_id
+        ORDER BY a.vote_number DESC 
+        """
+
+        cursor.execute(query,{'question_id': f"{question_id}"})
         return cursor.fetchall()
 
     elif table_name == COMMENTS_TABLE_NAME:
@@ -57,6 +82,28 @@ def get_nonquestion_by_question_id(cursor: RealDictCursor, question_id, table_na
                 "
         cursor.execute(query)
         return cursor.fetchall()
+
+
+
+    # f"SELECT * \
+    #                 FROM {table_name} \
+    #                 WHERE question_id = {question_id} \""
+    query = """
+    WITH question_1 AS (
+        SELECT uq.user_id, q. *
+        FROM question q 
+        LEFT JOIN user_question uq on q.id = uq.question_id
+        WHERE q.id = %(question_id)s
+    )
+    SELECT u.username, u.email, *
+    FROM question_1
+    LEFT JOIN users u on u.user_id = question_1.user_id
+    """
+
+    cursor.execute(query, {'question_id': f"{question_id}"})
+    return cursor.fetchall()
+
+
 
 
 @connection.connection_handler
@@ -329,7 +376,8 @@ def get_answer_by_answer_id(cursor: RealDictCursor, answer_id: int) -> dict:
             WHERE id = %(answer_id)s"""
     param = {"answer_id": f"{answer_id}"}
     cursor.execute(query, param)
-    return cursor.fetchall()
+    result = cursor.fetchall()
+    return result
 
 @connection.connection_handler
 def vote_for_question(cursor: RealDictCursor, question_id: int, vote_up_or_down="up") -> None:
@@ -372,7 +420,10 @@ def vote_for_answer(cursor: RealDictCursor, answer_id: int, vote_up_or_down="up"
 def add_answer(cursor: RealDictCursor, answer: dict):
     command = """
             INSERT INTO answer(submission_time, vote_number, question_id, message, image)
-            VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s,%(image)s)"""
+            VALUES (%(submission_time)s,%(vote_number)s,%(question_id)s,%(message)s,%(image)s)
+            RETURNING id
+            """
+
     param = {
             "submission_time": answer["submission_time"],
             "vote_number": answer["vote_number"],
@@ -381,6 +432,7 @@ def add_answer(cursor: RealDictCursor, answer: dict):
             "image": answer["image"]
             }
     cursor.execute(command, param)
+    return cursor.fetchone()
 
 
 @connection.connection_handler
@@ -547,6 +599,7 @@ def delete_comment(cursor: RealDictCursor, comment_id):
     cursor.execute(command, param)
 
 
+
 @connection.connection_handler
 def get_tags_with_ids(cursor: RealDictCursor) -> list:
     query = """
@@ -677,6 +730,31 @@ def bind_user_with_comment(cursor: RealDictCursor, user_id, comment_id):
             "user_id": user_id,
             "comment_id": comment_id
         })
+
+
+@connection.connection_handler
+def bind_user_with_question(cursor: RealDictCursor, user_id, question_id):
+    cursor.execute("""
+        INSERT INTO user_question(user_id, question_id)
+        VALUES(%(user_id)s, %(question_id)s)
+        """,
+        {
+            "user_id": user_id,
+            "question_id": question_id
+        })
+
+
+@connection.connection_handler
+def bind_user_with_answer(cursor: RealDictCursor, user_id, answer_id):
+    cursor.execute("""
+        INSERT INTO user_answer(user_id, answer_id)
+        VALUES(%(user_id)s, %(answer_id)s)
+        """,
+        {
+            "user_id": user_id,
+            "answer_id": answer_id
+        })
+
 
 @connection.connection_handler
 def get_username_by_id(cursor: RealDictCursor, user_id) -> list:

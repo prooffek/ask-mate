@@ -241,6 +241,8 @@ def add_question_post():
         question["image"] = image_file.filename
     return_value = data_manager.add_question(question)
     util.add_question_tag_to_db(return_value["id"], question)
+    user_id = session[SESSION_KEY]
+    data_manager.bind_user_with_question(user_id, question_id=return_value["id"])
 
     user_id = session[SESSION_KEY]
     data_manager.change_count_question(user_id, "+")
@@ -267,7 +269,7 @@ def post_an_answer_post(question_id):
         image_file = request.files["image"]
         util.add_image(image_file)
 
-    data_manager.add_answer(new_answer)
+    return_value = data_manager.add_answer(new_answer)
 
     question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
     question["answers_number"] = int(question["answers_number"]) + 1
@@ -277,6 +279,7 @@ def post_an_answer_post(question_id):
 
     user_id = session[SESSION_KEY]
     data_manager.change_count_answer(user_id, "+")
+    data_manager.bind_user_with_answer(user_id=user_id, answer_id=return_value["id"])
 
     return redirect(url_for("display_a_question", question_id=question_id))
 

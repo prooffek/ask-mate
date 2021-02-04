@@ -87,6 +87,12 @@
                 </p>
                 <small>
                     <b>Viewed</b>: {{ question["view_number"] }} times  <b>Question asked</b>: {{ question["submission_time"] }}
+                    {% if question["username"]%}
+                            <b>Asked by: {{ question["username"] }} ({{ question["email"] }})</b>
+                        {% else %}
+                            <b>Asked by: anonymous</b>
+                        {% endif %}
+
                 </small>
             </div>
         </div>
@@ -201,7 +207,13 @@
                             </form>
                         </div>
                     {% endif %}
-                    <small><b>Answer posted</b>: {{ answer["submission_time"] }}</small>
+                    <small><b>Answer posted</b>: {{ answer["submission_time"] }}
+                    {% if answer["username"]%}
+                        <b> by: </b>{{ answer["username"] }} ({{ answer["email"] }})
+                        {% else %}
+                        <b> by:</b> anonymous
+                        {% endif %}
+                    </small>
                 </div>
             </div>
 
