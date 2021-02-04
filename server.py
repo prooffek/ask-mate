@@ -568,10 +568,13 @@ def login_google_post():
 
 @app.route("/users-page")
 def list_users():
-    headers = ["username", "join_date", "count_questions", "count_answers", "count_comments", "reputation"]
-    users = data_manager.get_users()
+    if SESSION_KEY not in session:
+        return redirect(url_for("login_get"))
+    else:
+        headers = ["username", "join_date", "count_questions", "count_answers", "count_comments", "reputation"]
+        users = data_manager.get_users()
 
-    return render_template("users-page.html", headers=headers, users=users)
+        return render_template("users-page.html", headers=headers, users=users)
 
 
 @app.route("/user_page")
