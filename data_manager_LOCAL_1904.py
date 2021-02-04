@@ -862,47 +862,6 @@ def get_user_comments(cursor: RealDictCursor, user_id):
     return cursor.fetchall()
 
 
-def delete_comments_by_question_id(cursor: RealDictCursor, question_id):
-    command = """DELETE 
-                 FROM comment
-                 WHERE question_id = %(question_id)s  """
-
-    param = {"question_id": question_id}
-
-    cursor.execute(command, param)
-
-
-@connection.connection_handler
-def delete_comments_by_answer_id(cursor: RealDictCursor, answer_id):
-    command = """DELETE 
-                 FROM comment
-                 WHERE answer_id = %(answer_id)s  """
-
-    param = {"answer_id": answer_id}
-
-
-    cursor.execute(command, param)
-
-
-@connection.connection_handler
-def delete_binding_to_user(cursor: RealDictCursor, id, table_name, component_name):
-    command = f"""DELETE
-                  FROM {table_name}
-                  WHERE {component_name} = {id} """
-    cursor.execute(command)
-
-@connection.connection_handler
-def get_comment_by_answer_id(cursor: RealDictCursor, answer_id):
-    query = """SELECT *
-               FROM comment
-               WHERE answer_id = %(answer_id)s"""
-
-    param = {
-        "answer_id": answer_id
-    }
-    cursor.execute(query, param)
-    return cursor.fetchall()
-
 
 # @connection.connection_handler
 # def update_reputation(cursor: RealDictCursor, table_1, table_2, col_name, relevant_id, amount, operant):
