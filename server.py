@@ -292,15 +292,27 @@ def delete_answer(answer_id):
     else:
         answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
         question_id = answer["question_id"]
+        # delete image from answer
         util.delete_image(answer["image"])
+
+        # get comments by answer_id and delete binding comments with user
+        comments = data_manager.get_comment_by_answer_id(answer_id)
+        for comment in comments:
+            data_manager.delete_binding_to_user(comment["id"], "user_comment", "comment_id")
+        # delete comments to answer  and binding answer with user
+        data_manager.delete_comments_by_answer_id(answer_id)
+        data_manager.delete_binding_to_user(answer_id, "user_answer", "answer_id")
+        # delete answer
         data_manager.delete_answer(answer_id)
 
+        # change answers number and status question
         question = util.take_out_of_the_list(data_manager.get_question_by_id(question_id))
         question["answers_number"] -= 1
         if question["answers_number"] == 0:
             question["status"] = "new"
         data_manager.update_question(question, question_id)
 
+        # change count answer bind to user
         user_id = session[SESSION_KEY]
         data_manager.change_count_answer(user_id, "-")
 
@@ -312,9 +324,28 @@ def delete_question(question_id):
     if SESSION_KEY not in session:
         return redirect(url_for("login_get"))
     else:
+        # delete bind tag with question id
         data_manager.del_question_tag(question_id)
-        data_manager.delete_question(question_id)
+
+        # delete answer, comments to answer and bind answer to user and bind comment-answer to user
+        answers = data_manager.get_nonquestion_by_question_id(question_id, "answer")
+        for answer in answers:
+            comments = data_manager.get_comment_by_answer_id(answer["id"])
+            for comment in comments:
+                data_manager.delete_binding_to_user(comment["id"], "user_comment", "comment_id")
+            data_manager.delete_comments_by_answer_id(answer["id"])
+            data_manager.delete_binding_to_user(answer["id"], "user_answer", "answer_id")
         data_manager.delete_answers_by_question_id(question_id)
+
+        # delete comments to question and bind comment-question to user
+        comments_to_question = data_manager.get_nonquestion_by_question_id(question_id, "comment")
+        for comment_question in comments_to_question:
+            data_manager.delete_binding_to_user(comment_question["id"], "user_comment", "comment_id")
+        data_manager.delete_comments_by_question_id(question_id)
+
+        # delete bind question to user and delete question
+        data_manager.delete_binding_to_user(question_id, "user_question", "question_id")
+        data_manager.delete_question(question_id)
 
         user_id = session[SESSION_KEY]
         data_manager.change_count_question(user_id, "-")
