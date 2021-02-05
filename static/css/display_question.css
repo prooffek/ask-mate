@@ -366,17 +366,17 @@
 }
 
 .accepted_answer {
-    float: left;
-}
-
-.accepted_answer button img {
-    
+    float: right;
+    margin-right: 40px;
+    margin-top: -40px;
 
 }
 
-.accepted_answer img {
+.accepted_answer button {
+    border: none;
 
 }
+
 
 /*.comment-answer {*/
 /*    width: 50%;*/

@@ -163,6 +163,18 @@
     {% for answer in answers %}
         <div class="question-answers">
 
+            {% if username == question["username"] and answer["accepted"] != true %}
+                <div class="accepted_answer">
+                    <form action="{{ url_for("accepted_answer", answer_id=answer["id"]) }}">
+                        <button type="submit" name="accepted_answer" value="accepted_answer"><img src="/static/images/accepted.png"></button>
+                    </form>
+                </div>
+            {% elif answer["accepted"] == true %}
+                <div class="accepted_answer">
+                    <img src="/static/images/star.png">
+                </div>
+            {% endif %}
+
             <div class="answer-cell">
     {#        VOTE FOR ANSWER#}
                 <div class="answer-vote-container">
@@ -218,6 +230,7 @@
                 </div>
             </div>
 
+
 {#            ADD COMMENT, EDIT AND DELETE BUTTONS#}
 
             {% if user_id %}
@@ -234,17 +247,6 @@
 
                 </div>
             {%  endif %}
-            {% if username == question["username"] and answer["accepted"] != true %}
-                <div class="accepted_answer">
-                    <form action="{{ url_for("accepted_answer", answer_id=answer["id"]) }}">
-                        <button type="submit" name="accepted_answer" value="accepted_answer"><img src="/static/images/accepted.png"></button>
-                    </form>
-                </div>
-            {% elif answer["accepted"] == true %}
-                <div class="accepted_answer">
-                    <img src="/static/images/star.png">
-                </div>
-            {% endif %}
         </div>
 
 {#        COMMENTS TO ANSWER#}
