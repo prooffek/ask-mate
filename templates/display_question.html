@@ -88,9 +88,9 @@
                 <small>
                     <b>Viewed</b>: {{ question["view_number"] }} times  <b>Question asked</b>: {{ question["submission_time"] }}
                     {% if question["username"]%}
-                            <b>Asked by: {{ question["username"] }} ({{ question["email"] }})</b>
+                            <b> by: {{ question["username"] }} ({{ question["email"] }})</b>
                         {% else %}
-                            <b>Asked by: anonymous</b>
+                            <b> by: anonymous</b>
                         {% endif %}
 
                 </small>
