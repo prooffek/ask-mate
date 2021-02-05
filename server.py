@@ -653,6 +653,16 @@ def user_page_post():
 
     return redirect(url_for("user_page"))
 
+@app.route("/answer/<answer_id>/accepted")
+def accepted_answer(answer_id):
+    answer = util.take_out_of_the_list(data_manager.get_answer_by_answer_id(answer_id))
+    accepted = "TRUE"
+    data_manager.update_accepted_status(accepted, answer_id)
+    data_manager.update_reputation("answer", "user_answer", "answer_id", answer_id, 15, "+")
+    return redirect(url_for("display_a_question", question_id=answer["question_id"]))
+
+
+
 if __name__ == "__main__":
     app.run()
 

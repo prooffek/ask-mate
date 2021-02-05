@@ -365,6 +365,19 @@
     /*border: black solid 1px;*/
 }
 
+.accepted_answer {
+    float: left;
+}
+
+.accepted_answer button img {
+    
+
+}
+
+.accepted_answer img {
+
+}
+
 /*.comment-answer {*/
 /*    width: 50%;*/
 /*    height: 100%;*/

@@ -104,8 +104,6 @@ def get_nonquestion_by_question_id(cursor: RealDictCursor, question_id, table_na
     return cursor.fetchall()
 
 
-
-
 @connection.connection_handler
 def get_tag_by_id(cursor: RealDictCursor, tag_id: int) -> list:
     query = """
@@ -861,7 +859,7 @@ def get_user_comments(cursor: RealDictCursor, user_id):
     cursor.execute(query,{'user_id': f'{user_id}'})
     return cursor.fetchall()
 
-
+@connection.connection_handler
 def delete_comments_by_question_id(cursor: RealDictCursor, question_id):
     command = """DELETE 
                  FROM comment
@@ -902,6 +900,31 @@ def get_comment_by_answer_id(cursor: RealDictCursor, answer_id):
     }
     cursor.execute(query, param)
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_user_id_by_answer_id(cursor: RealDictCursor, answer_id):
+    query = """SELECT user_id
+               FROM user_answer
+               WHERE answer_id = %(answer_id)s"""
+
+    param = {
+        "answer_id": answer_id
+    }
+    cursor.execute(query, param)
+    return cursor.fetchall()
+
+@connection.connection_handler
+def update_accepted_status(cursor: RealDictCursor, accepted, answer_id):
+    command = """UPDATE answer
+                 SET accepted = %(accepted)s
+                 WHERE id = %(answer_id)s
+    """
+    param = {
+        "accepted": accepted,
+        "answer_id": answer_id
+    }
+    cursor.execute(command, param)
 
 
 # @connection.connection_handler

@@ -28,7 +28,7 @@
                     {% for header in headers %}
                         {% if header == "username" %}
                             <td>
-                                <a href="#">{{ user[header] }}</a>
+                                <a href={{ url_for("user_page") }}>{{ user[header] }}</a>
                             </td>
                         {% else %}
                             <td>
