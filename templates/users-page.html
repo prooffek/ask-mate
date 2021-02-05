@@ -26,15 +26,9 @@
             {% for user in users %}
                 <tr>
                     {% for header in headers %}
-                        {% if header == "username" %}
-                            <td>
-                                <a href={{ url_for("user_page") }}>{{ user[header] }}</a>
-                            </td>
-                        {% else %}
-                            <td>
-                                {{ user[header] }}
-                            </td>
-                        {% endif %}
+                        <td>
+                            {{ user[header] }}
+                        </td>
                     {% endfor %}
                 </tr>
             {% endfor %}
