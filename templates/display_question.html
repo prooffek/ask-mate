@@ -90,7 +90,7 @@
                     {% if question["username"]%}
                             <b> by: {{ question["username"] }} ({{ question["email"] }})</b>
                         {% else %}
-                            <b> by: anonymous</b>
+                            <b> by: deleted user</b>
                         {% endif %}
 
                 </small>
@@ -98,7 +98,7 @@
         </div>
 
 {#        DELETE QUESTION#}
-        {% if user_id %}
+        {% if question["username"] %}
             <div class="del-question-button">
                 <form action="{{ url_for('delete_question', question_id=question["id"])}}" style="display: inline; vertical-align: top">
                     <button type="submit" name="delete_question" value="delete_question"><img src="/static/images/delete_question.png"></button>
@@ -135,7 +135,7 @@
                         {% if comment["username"] %}
                             <b>Comment added by </b><em>{{ comment["username"] }}</em> <b>on</b> {{ comment["submission_time"] }}.
                         {% else %}
-                            <b>Comment added by </b><em>anonymous</em> <b>on</b> {{ comment["submission_time"] }}.
+                            <b>Comment added by </b><em>deleted user</em> <b>on</b> {{ comment["submission_time"] }}.
                         {% endif %}
 
                         {% if comment["edited_count"] %}
@@ -224,7 +224,7 @@
                     {% if answer["username"]%}
                         <b> by: </b>{{ answer["username"] }} ({{ answer["email"] }})
                         {% else %}
-                        <b> by:</b> anonymous
+                        <b> by:</b> deleted user
                         {% endif %}
                     </small>
                 </div>
@@ -233,7 +233,7 @@
 
 {#            ADD COMMENT, EDIT AND DELETE BUTTONS#}
 
-            {% if user_id %}
+            {% if answer["username"] %}
                 <div class="answer-buttons">
                     <form action="{{ url_for("delete_answer", answer_id=answer["id"]) }}">
                         <button type="submit"><img src="/static/images/delete_answer.png"></button>
@@ -260,7 +260,7 @@
                             {% if comment["username"] %}
                                 <b>Comment added by </b><em>{{ comment["username"] }}</em> <b>on</b> {{ comment["submission_time"] }}.
                             {% else %}
-                                <b>Comment added by </b><em>anonymous</em> <b>on</b> {{ comment["submission_time"] }}.
+                                <b>Comment added by </b><em>deleted user</em> <b>on</b> {{ comment["submission_time"] }}.
                             {% endif %}
 
                             {% if comment["edited_count"] %}
